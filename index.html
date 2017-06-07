@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <link rel="shortcut icon" type="image/png" href="favicon.png" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+      <link rel="stylesheet" href="styles.css">
+      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+      <title>Раскладка</title>
+   </head>
+   <body>
+      <header>
+         <ul class="side-nav z-depth-3 fixed">
+            <li>
+               <div class="userView light-green darken-1" style="height: 140px;">
+                  <div class="input-field inline">
+                     <input type="number" id="people" value="1">
+                     <label class="active" for="people">Человек:</label>
+                  </div>
+                  <div class="input-field inline">
+                     <input type="number" id="days" value="1">
+                     <label class="active" for="days">Дней:</label>
+                  </div>
+               </div>
+            </li>
+            <ul class="foodlist collapsible" data-collapsible="expandable">
+               <li class="active">
+                  <div class="collapsible-header light-green lighten-4 active"><b>Каши</b></div>
+                  <div class="foodlist1 collapsible-body porrige"></div>
+               </li>
+               <li class="active">
+                  <div class="collapsible-header light-green lighten-4 active"><b>Супы</b></div>
+                  <div class="foodlist2 collapsible-body soup"></div>
+               </li>
+            </ul>
+         </ul>
+      </header>
+      <main style="padding-left: 300px; min-height: 100vh;">
+         <div class="row light-green lighten-4">
+            <div class="col s6"><h5>Раскладка по дням</h5></div>
+            <div class="col s6"><h5>Список продуктов</h5></div>
+         </div>
+         <div class="row" style="min-height: 100vh;">
+            <div class="choicelist collection col s6" style="min-height: 100vh;"></div>
+            <div class="productlist col s6"></div>
+            <div class="hiddenlist hide"></div>
+         </div>
+      </main>
+      <script src="dist/build.js"></script>
+   </body>
+</html>
