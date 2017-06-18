@@ -76,41 +76,109 @@
 
 let foodlist = {
       'food': [
+
+         // Каши
          {
             'name': 'Рисовая каша',
             'type': 'porrige',
             'ingridients': {
-               'рис': 100,
-               'соль': 200,
-               'вода': 300
+               'рис': 75,
+               'вода': 300,
+               'молоко сухое': 20,
+               'сухофрукты': 10,
+               'сгущенка': 20,
+               'соль': 2
             }
          },
          {
             'name': 'Гречневая каша',
             'type': 'porrige',
             'ingridients': {
-               'греча': 10,
-               'соль': 20,
-               'изюм': 30
+               'гречка': 100,
+               'молоко сухое': 10,
+               'сгущенка': 20,
+               'сахар': 10,
+               'соль': 2
             }
          },
          {
             'name': 'Пшенная каша',
             'type': 'porrige',
             'ingridients': {
-               'пшено': 10,
-               'соль': 20,
-               'молоко': 40
+               'пшено': 80,
+               'молоко сухое': 40,
+               'сахар': 10,
+               'соль': 2
             }
          },
+         {
+            'name': 'Манная каша',
+            'type': 'porrige',
+            'ingridients': {
+               'манка': 70,
+               'молоко сухое': 20,
+               'сахар': 10,
+               'соль': 2
+            }
+         },
+         {
+            'name': 'Овсяная каша',
+            'type': 'porrige',
+            'ingridients': {
+               'овсяные хлопья': 70,
+               'молоко сухое': 40,
+               'соль': 2,
+               'сахар': 10
+            }
+         },
+
+
+         // Супы
          {
             'name': 'Рыбный суп',
             'type': 'soup',
             'ingridients': {
                'рыба': 60,
-               'соль': 30,
-               'картошка': 140,
-               'морковь': 40
+               'картошка': 50,
+               'морковь': 50,
+               'соль': 10
+            }
+         },
+
+
+         // Напитки
+         {
+            'name': 'Чай',
+            'type': 'drink',
+            'ingridients': {
+               'чай листовой': 5,
+               'сахар': 20
+            }
+         },
+         {
+            'name': 'Кофе',
+            'type': 'drink',
+            'ingridients': {
+               'кофе растворимый': 5,
+               'молоко сухое': 20,
+               'сахар': 20
+            }
+         },
+         {
+            'name': 'Какао',
+            'type': 'drink',
+            'ingridients': {
+               'какао порошок': 10,
+               'молоко сухое': 10,
+               'сахар': 10
+            }
+         },
+         {
+            'name': 'Кисель',
+            'type': 'drink',
+            'ingridients': {
+               'кисель сухой': 50,
+               'сахар': 30
             }
          }
       ]
@@ -126,8 +194,6 @@ let foodlist = {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_js__ = __webpack_require__(0);
-
-
 
 
 
@@ -161,20 +227,41 @@ class App {
 
    // Зарендерим дни
    _renderDays() {
-      console.log('qwe');
       let
-         numberOfDays = $('#days').val();
+         currentNumber = $(".tourDay").length,
+         numberOfDays = $('#days').val(),
+         i;
+      function dayContent(number) {
+         return `
+         <li class="tourDay day`+ number + `">
+            <div class="dayMainTitle light-green lighten-3 collapsible-header active">День ` + number + `</div>
+            <div class="collapsible-body">
+               <div class="daySubTitle">Завтрак</div>
+               <ul class="meal meal1"></ul>
+               <div class="daySubTitle">Обед</div>
+               <ul class="meal meal2"></ul>
+               <div class="daySubTitle">Ужин</div>
+               <ul class="meal meal3"></ul>
+            </div>
+         </li>
+         `;
+      };
 
-      for (var i = 1; i <= numberOfDays; i++) {
-         $('.choicelist').append(`<div class="day`+ i + `">
-                           <div class="dayMainTitle">День ` + i + `</div>
-                           <div class="daySubTitle">Завтрак</div>
-                           <ul class="meal1"></ul>
-                           <div class="daySubTitle">Обед</div>
-                           <ul class="meal2"></ul>
-                           <div class="daySubTitle">Ужин</div>
-                           <ul class="meal3"></ul>
-                        </div><hr />`);
+      if (numberOfDays > currentNumber) {
+         for (i = currentNumber + 1; i <= numberOfDays; i++) {
+            $('.choicelist').append(dayContent(i));
+            $('.choicelist').collapsible('open', 0);
+         }
+      }
+      else if (numberOfDays < currentNumber) {
+         // TODO: удаление из списка ингридиентов, с удаленного дня
+         for (i = currentNumber; i > numberOfDays; i--) {
+            $('.day' + i).remove();
+         }
+      }
+      else {
+         $('.choicelist').append(dayContent(1));
+         $('.choicelist').collapsible('open', 0);
       }
    }
 
@@ -212,8 +299,7 @@ class App {
          },
          numberOfDays = $('#days').val();
 
-      $('.foodlist1').sortable(optsFoodlist);
-      $('.foodlist2').sortable(optsFoodlist);
+      $('.food').sortable(optsFoodlist);
       for (let day = 1; day <= numberOfDays; day++) {
          for (let meal = 1; meal <= 3; meal++) {
             $('.day' + day + ' .meal' + meal).sortable(optsChoiceList);
@@ -221,7 +307,7 @@ class App {
       }
    }
 
-   // По нажатию на блюдо
+   // Выбор блюда
    _onDragStop(event, ui) {
       let
          targetId = event.item.dataset.id,
@@ -234,13 +320,12 @@ class App {
          output = JSON.parse( ingridients );
       }
 
-         $('.hiddenlist').text( JSON.stringify( this.combine(targetMenu, output) ) );
+      $('.hiddenlist').text( JSON.stringify( this.combine(targetMenu, output) ) );
 
-         $('.productlist').empty();
-         $.each( this.combine(targetMenu, output), function( key, value ) {
-           $('.productlist').append( key + ': ' + value * numberOfPeople + '<br />' );
-         });
-      // }
+      $('.productlist').empty();
+      $.each( this.combine(targetMenu, output), function( key, value ) {
+        $('.productlist').append( key + ': ' + value * numberOfPeople + '<br />' );
+      });
    }
 
    // Складываем ингридиенты двух блюд

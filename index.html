@@ -17,7 +17,7 @@
       <header>
          <ul class="side-nav z-depth-3 fixed">
             <li>
-               <div class="userView light-green darken-1" style="height: 140px;">
+               <div class="userView light-green darken-1" style="height: 125px;">
                   <div class="input-field inline">
                      <input type="number" id="people" value="1">
                      <label class="active" for="people">Человек:</label>
@@ -29,24 +29,36 @@
                </div>
             </li>
             <ul class="foodlist collapsible" data-collapsible="expandable">
-               <li class="active">
-                  <div class="collapsible-header light-green lighten-4 active"><b>Каши</b></div>
-                  <div class="foodlist1 collapsible-body porrige"></div>
+               <li>
+                  <div class="collapsible-header light-green lighten-4 active">Напитки</div>
+                  <div class="food drink collapsible-body"></div>
                </li>
-               <li class="active">
-                  <div class="collapsible-header light-green lighten-4 active"><b>Супы</b></div>
-                  <div class="foodlist2 collapsible-body soup"></div>
+               <li>
+                  <div class="collapsible-header light-green lighten-4 active">Каши</div>
+                  <div class="food porrige collapsible-body"></div>
+               </li>
+               <li>
+                  <div class="collapsible-header light-green lighten-4 active">Супы</div>
+                  <div class="food soup collapsible-body"></div>
+               </li>
+               <li>
+                  <div class="collapsible-header light-green lighten-4 active">Второе</div>
+                  <div class="food hot collapsible-body"></div>
+               </li>
+               <li>
+                  <div class="collapsible-header light-green lighten-4 active">Перекусы</div>
+                  <div class="food snack collapsible-body"></div>
                </li>
             </ul>
          </ul>
       </header>
-      <main style="padding-left: 300px; min-height: 100vh;">
+      <main>
          <div class="row light-green lighten-4">
             <div class="col s6"><h5>Раскладка по дням</h5></div>
             <div class="col s6"><h5>Список продуктов</h5></div>
          </div>
-         <div class="row" style="min-height: 100vh;">
-            <div class="choicelist collection col s6"></div>
+         <div class="row">
+            <div class="choicelist col s6" data-collapsible="expandable"></div>
             <div class="productlist col s6"></div>
             <div class="hiddenlist hide"></div>
          </div>

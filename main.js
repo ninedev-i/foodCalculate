@@ -2,8 +2,6 @@
 
 import {foodlist} from './data.js';
 
-
-
 class App {
 
    constructor() {
@@ -33,20 +31,41 @@ class App {
 
    // Зарендерим дни
    _renderDays() {
-      console.log('qwe');
       let
-         numberOfDays = $('#days').val();
+         currentNumber = $(".tourDay").length,
+         numberOfDays = $('#days').val(),
+         i;
+      function dayContent(number) {
+         return `
+         <li class="tourDay day`+ number + `">
+            <div class="dayMainTitle light-green lighten-3 collapsible-header active">День ` + number + `</div>
+            <div class="collapsible-body">
+               <div class="daySubTitle">Завтрак</div>
+               <ul class="meal meal1"></ul>
+               <div class="daySubTitle">Обед</div>
+               <ul class="meal meal2"></ul>
+               <div class="daySubTitle">Ужин</div>
+               <ul class="meal meal3"></ul>
+            </div>
+         </li>
+         `;
+      };
 
-      for (var i = 1; i <= numberOfDays; i++) {
-         $('.choicelist').append(`<div class="day`+ i + `">
-                           <div class="dayMainTitle">День ` + i + `</div>
-                           <div class="daySubTitle">Завтрак</div>
-                           <ul class="meal1"></ul>
-                           <div class="daySubTitle">Обед</div>
-                           <ul class="meal2"></ul>
-                           <div class="daySubTitle">Ужин</div>
-                           <ul class="meal3"></ul>
-                        </div><hr />`);
+      if (numberOfDays > currentNumber) {
+         for (i = currentNumber + 1; i <= numberOfDays; i++) {
+            $('.choicelist').append(dayContent(i));
+            $('.choicelist').collapsible('open', 0);
+         }
+      }
+      else if (numberOfDays < currentNumber) {
+         // TODO: удаление из списка ингридиентов, с удаленного дня
+         for (i = currentNumber; i > numberOfDays; i--) {
+            $('.day' + i).remove();
+         }
+      }
+      else {
+         $('.choicelist').append(dayContent(1));
+         $('.choicelist').collapsible('open', 0);
       }
    }
 
@@ -84,8 +103,7 @@ class App {
          },
          numberOfDays = $('#days').val();
 
-      $('.foodlist1').sortable(optsFoodlist);
-      $('.foodlist2').sortable(optsFoodlist);
+      $('.food').sortable(optsFoodlist);
       for (let day = 1; day <= numberOfDays; day++) {
          for (let meal = 1; meal <= 3; meal++) {
             $('.day' + day + ' .meal' + meal).sortable(optsChoiceList);
@@ -93,7 +111,7 @@ class App {
       }
    }
 
-   // По нажатию на блюдо
+   // Выбор блюда
    _onDragStop(event, ui) {
       let
          targetId = event.item.dataset.id,
@@ -106,13 +124,12 @@ class App {
          output = JSON.parse( ingridients );
       }
 
-         $('.hiddenlist').text( JSON.stringify( this.combine(targetMenu, output) ) );
+      $('.hiddenlist').text( JSON.stringify( this.combine(targetMenu, output) ) );
 
-         $('.productlist').empty();
-         $.each( this.combine(targetMenu, output), function( key, value ) {
-           $('.productlist').append( key + ': ' + value * numberOfPeople + '<br />' );
-         });
-      // }
+      $('.productlist').empty();
+      $.each( this.combine(targetMenu, output), function( key, value ) {
+        $('.productlist').append( key + ': ' + value * numberOfPeople + '<br />' );
+      });
    }
 
    // Складываем ингридиенты двух блюд
