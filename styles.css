@@ -11,6 +11,11 @@ li.collection-item {
 li.collection-item:hover {
    background-color: #f1f8e9;
 }
+
+.choicelist {
+   border-top: 0px;
+   border-bottom: 0px;
+}
 .choicelist .daySubTitle {
    font-weight: bold;
    margin-top: 10px;
@@ -18,7 +23,13 @@ li.collection-item:hover {
 .meal1,
 .meal2,
 .meal3 {
-   min-height: 10px;
+   min-height: 46px;
+   border: 1px solid white;
+}
+.markTarget .meal1,
+.markTarget .meal2,
+.markTarget .meal3 {
+   border: 2px dashed #DCEDC8;
 }
 .input-field {
    width: 100px;

@@ -136,10 +136,20 @@ class App {
 
    constructor() {
       this.data = __WEBPACK_IMPORTED_MODULE_0__data_js__["a" /* foodlist */].food;
-      this.days = document.querySelector('#days'),
-      this._renderFoodList();
-      this._sortable();
       this._initEvents();
+   }
+
+   _initEvents() {
+      let
+         that = this;
+
+      this._renderFoodList();
+      this._renderDays();
+      this._sortable();
+      $('#days').on('keyup', function() {
+         that._renderDays();
+         that._sortable();
+      });
    }
 
    // Выводим список всех блюд
@@ -149,12 +159,23 @@ class App {
       });
    }
 
-   _initEvents() {
-      $('#days').on('keyup', this._changeNumberOfDays.bind(this));
-   }
+   // Зарендерим дни
+   _renderDays() {
+      console.log('qwe');
+      let
+         numberOfDays = $('#days').val();
 
-   _changeNumberOfDays(data) {
-      $('.choicelist').append('<div>День номер </div>')
+      for (var i = 1; i <= numberOfDays; i++) {
+         $('.choicelist').append(`<div class="day`+ i + `">
+                           <div class="dayMainTitle">День ` + i + `</div>
+                           <div class="daySubTitle">Завтрак</div>
+                           <ul class="meal1"></ul>
+                           <div class="daySubTitle">Обед</div>
+                           <ul class="meal2"></ul>
+                           <div class="daySubTitle">Ужин</div>
+                           <ul class="meal3"></ul>
+                        </div><hr />`);
+      }
    }
 
    // Добавим drag&drop для списков
@@ -170,7 +191,13 @@ class App {
                put: false,
                revertClone: true
             },
-            sort: false
+            sort: false,
+            onStart: function () {
+               $('.choicelist').addClass('markTarget');
+            },
+            onEnd: function () {
+               $('.choicelist').removeClass('markTarget');
+            }
          },
          optsChoiceList = {
             group: {
@@ -182,11 +209,15 @@ class App {
             onAdd: function (event) {
                that._onDragStop(event);
             }
-         };
+         },
+         numberOfDays = $('#days').val();
+
       $('.foodlist1').sortable(optsFoodlist);
       $('.foodlist2').sortable(optsFoodlist);
-      for (let i = 1; i <= 3; i++) {
-         $('.choicelist .meal' + i).sortable(optsChoiceList);
+      for (let day = 1; day <= numberOfDays; day++) {
+         for (let meal = 1; meal <= 3; meal++) {
+            $('.day' + day + ' .meal' + meal).sortable(optsChoiceList);
+         }
       }
    }
 
