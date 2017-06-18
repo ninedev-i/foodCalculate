@@ -8,9 +8,10 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
       <link rel="stylesheet" href="styles.css">
       <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-      <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
+      <script src="js/sortable/jquery.binding.js"></script>
+      <script src="js/sortable/Sortable.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-      <title>Раскладка</title>
+      <title>Калькулятор завхоза</title>
    </head>
    <body>
       <header>
@@ -45,7 +46,14 @@
             <div class="col s6"><h5>Список продуктов</h5></div>
          </div>
          <div class="row" style="min-height: 100vh;">
-            <div class="choicelist collection col s6" style="min-height: 100vh;"></div>
+            <div class="choicelist collection col s6" style="min-height: 100vh; border-top: 0px; border-bottom: 0px;">
+               <div class="daySubTitle">Завтрак</div>
+               <ul class="meal1"></ul>
+               <div class="daySubTitle">Обед</div>
+               <ul class="meal2"></ul>
+               <div class="daySubTitle">Ужин</div>
+               <ul class="meal3"></ul>
+            </div>
             <div class="productlist col s6"></div>
             <div class="hiddenlist hide"></div>
          </div>

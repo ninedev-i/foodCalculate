@@ -8,19 +8,25 @@ class App {
 
    constructor() {
       this.data = foodlist.food;
-      // this.elements = document.querySelector('.foodlist');
+      this.days = document.querySelector('#days'),
       this._renderFoodList();
       this._sortable();
+      this._initEvents();
    }
 
    // Выводим список всех блюд
    _renderFoodList() {
-      // this.data.forEach(function(item, i, allFoodList) {
-      //    $( ".foodlist" ).append( `<li data-id="` + i + `" class="collection-item grey-text text-darken-4">` + item.name + `</li>` );
-      // });
       this.data.forEach(function(item, i, allFoodList) {
          $( '.' + item.type ).append( `<li data-id="` + i + `" class="collection-item grey-text text-darken-4">` + item.name + `</li>` );
       });
+   }
+
+   _initEvents() {
+      $('#days').on('keyup', this._changeNumberOfDays.bind(this));
+   }
+
+   _changeNumberOfDays(data) {
+      $('.choicelist').append('<div>День номер </div>')
    }
 
    // Добавим drag&drop для списков
@@ -28,10 +34,7 @@ class App {
       // TODO: сохранение в local storage https://github.com/RubaXa/Sortable#store
       let
          that = this,
-         foodlist1 = document.querySelector('.foodlist1'),
-         foodlist2 = document.querySelector('.foodlist2'),
-         choicelist = document.querySelector('.choicelist'),
-         opts = {
+         optsFoodlist = {
             animation: 200,
             group: {
                name: 'shared',
@@ -40,22 +43,23 @@ class App {
                revertClone: true
             },
             sort: false
-         };
-
-      Sortable.create(foodlist1, opts);
-      Sortable.create(foodlist2, opts);
-
-      Sortable.create(choicelist, {
-         group: {
-            name: 'shared',
-            pull: true,
-            put: true,
-            revertClone: false
          },
-         onAdd: function (event) {
-            that._onDragStop(event);
-         }
-      });
+         optsChoiceList = {
+            group: {
+               name: 'shared',
+               pull: true,
+               put: true,
+               revertClone: false
+            },
+            onAdd: function (event) {
+               that._onDragStop(event);
+            }
+         };
+      $('.foodlist1').sortable(optsFoodlist);
+      $('.foodlist2').sortable(optsFoodlist);
+      for (let i = 1; i <= 3; i++) {
+         $('.choicelist .meal' + i).sortable(optsChoiceList);
+      }
    }
 
    // По нажатию на блюдо
@@ -64,19 +68,18 @@ class App {
          targetId = event.item.dataset.id,
          targetMenu = this.data[targetId].ingridients,
          ingridients = $('.hiddenlist').text(),
+         numberOfPeople = $('#people').val(),
          output = {};
 
       if (ingridients != '') {
          output = JSON.parse( ingridients );
       }
 
-      // if (event.target.parentElement.className === 'choicelist collection col s4 ui-sortable') {
-         // $( ".choicelist" ).append( `<di>` + event.target.innerText + `</li>` );
-         $( ".hiddenlist" ).text( JSON.stringify( this.combine(targetMenu, output) ) );
+         $('.hiddenlist').text( JSON.stringify( this.combine(targetMenu, output) ) );
 
-         $( ".productlist" ).empty();
+         $('.productlist').empty();
          $.each( this.combine(targetMenu, output), function( key, value ) {
-           $( ".productlist" ).append( key + ": " + value + '<br />' );
+           $('.productlist').append( key + ': ' + value * numberOfPeople + '<br />' );
          });
       // }
    }
