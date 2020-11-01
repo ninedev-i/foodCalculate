@@ -51,8 +51,15 @@ export default {
          days: computed(() => store.state.days),
          timetable: computed(() => store.state.timetable),
          addDish: (id, dayKey, dishKey) => {
-            const addedDish = store.getters.dishById(+id);
+            const addedDish = {...store.getters.dishById(+id)};
             store.dispatch('addDish', {addedDish, dayKey, dishKey});
+         },
+         moveDish: (dishJSON, moveFrom, moveTo) => {
+            const movedDish = JSON.parse(dishJSON);
+            store.dispatch('moveDish', {movedDish, moveFrom, moveTo});
+         },
+         deleteDish: (id, dayKey, dishKey) => {
+            store.dispatch('deleteDish', {id, dayKey, dishKey});
          },
       }
    },
@@ -74,23 +81,11 @@ export default {
          if (addDish) {
             this.addDish(addDish, dayKey, dishKey)
          } else if (moveDish) {
-            const moveSettings = JSON.parse(ev.dataTransfer.getData('moveSettings'));
-            this.moveDish(moveDish, moveSettings, dayKey, dishKey)
+            const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
+            this.moveDish(moveDish, moveFrom,{dayKey, dishKey})
          }
          this.$refs[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
       },
-
-      moveDish(data, deletedItem, dayKey, dishKey) {
-         const movedDish = JSON.parse(data);
-         this.timetable[dayKey].dishes[dishKey].menu.push(movedDish);
-         this.deleteDish(movedDish.id, deletedItem.dayKey, deletedItem.dishKey);
-      },
-
-      // FIX: сейчас удаляет все итемы с одинаковым id (они должны быть уникальны)
-      deleteDish(id, dayKey, dishKey) {
-         const editedMenu = this.timetable[dayKey].dishes[dishKey].menu.filter((item) => id !== item.id);
-         this.timetable[dayKey].dishes[dishKey].menu = editedMenu;
-      }
    }
 }
 </script>
@@ -106,7 +101,6 @@ export default {
             font-weight: bold;
             margin: 0 0 8px 14px;
          }
-
       }
 
       &-menu {

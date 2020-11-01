@@ -144,6 +144,14 @@ const actions = {
     addDish({commit}, {addedDish, dayKey, dishKey}) {
         commit('ADD_DISH', {addedDish, dayKey, dishKey});
     },
+    moveDish({commit}, {moveFrom, moveTo, movedDish}) {
+        const id = movedDish.id;
+        commit('DELETE_DISH', {id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey});
+        commit('MOVE_DISH', {dish: movedDish, dayKey: moveTo.dayKey, dishKey: moveTo.dishKey});
+    },
+    deleteDish({commit}, {id, dayKey, dishKey}) {
+        commit('DELETE_DISH', {id, dayKey, dishKey});
+    },
 }
 
 const mutations = {
@@ -169,7 +177,19 @@ const mutations = {
     ADD_DISH(state, {addedDish, dayKey, dishKey}) {
         const timetable = state.timetable.slice(0);
         timetable[dayKey].dishes[dishKey].menu.push(addedDish);
+        timetable[dayKey].dishes[dishKey].menu.map((item, i) => {
+            if (item.id === addedDish.id) {
+                item.id = `${dayKey}_${dishKey}_${i}`;
+            }
+        })
         state.timetable = timetable;
+    },
+    MOVE_DISH(state, {dish, dayKey, dishKey}) {
+        state.timetable[dayKey].dishes[dishKey].menu.push(dish);
+    },
+    DELETE_DISH(state, {id, dayKey, dishKey}) {
+        const editedMenu = state.timetable[dayKey].dishes[dishKey].menu.slice(0);
+        state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
     }
 }
 
