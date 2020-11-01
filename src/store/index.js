@@ -162,7 +162,7 @@ const mutations = {
            }
         } else {
             // FIXME: удаление вероятно вредит UX (когда пользователь стирает кол-во дней)
-            timetable.splice(timetable.length + difference, -difference);
+            // timetable.splice(timetable.length + difference, -difference);
         }
         state.timetable = timetable;
     },

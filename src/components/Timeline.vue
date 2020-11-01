@@ -1,31 +1,31 @@
 <template>
    <div
       class="timeline-day"
-      v-for="(day, dayKey) in timetable"
+      v-for="(dayKey) in days"
       v-bind:key="dayKey"
       >
-      <div class="timeline-day-title">День {{dayKey + 1}}</div>
+      <div class="timeline-day-title">День {{dayKey}}</div>
 
       <div class="timeline-menu">
          <div
             class="timeline-menu-dish"
-            v-for="(dish, dishKey) in day.dishes"
+            v-for="(dish, dishKey) in timetable[dayKey - 1].dishes"
             v-bind:key="dishKey"
             >
             <div class="timeline-menu-title">{{dish.name}}</div>
             <div
                class="timeline-menu-dishes"
-               @drop="drop($event, dayKey, dishKey)"
-               @dragover="allowDrop($event, dayKey, dishKey)"
-               @dragleave="removeBorder($event, dayKey, dishKey)"
-               :ref="`day_${dayKey}_${dishKey}`"
+               @drop="drop($event, dayKey - 1, dishKey)"
+               @dragover="allowDrop($event, dayKey - 1, dishKey)"
+               @dragleave="removeBorder($event, dayKey - 1, dishKey)"
+               :ref="`day_${dayKey - 1}_${dishKey}`"
                >
                <div v-for="(dish, menuKey) in dish.menu" :key="menuKey">
                   <dish
                      :dish="dish"
-                     :dayKey="dayKey"
+                     :dayKey="dayKey - 1"
                      :dishKey="dishKey"
-                     @delete-item="deleteDish(dish.id, dayKey, dishKey)"
+                     @delete-item="deleteDish(dish.id, dayKey - 1, dishKey)"
                   />
                </div>
             </div>
@@ -48,6 +48,7 @@ export default {
       const store = useStore();
 
       return {
+         days: computed(() => store.state.days),
          timetable: computed(() => store.state.timetable),
          addDish: (id, dayKey, dishKey) => {
             const addedDish = store.getters.dishById(+id);
