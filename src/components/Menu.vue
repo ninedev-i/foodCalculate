@@ -34,43 +34,46 @@ export default {
    setup() {
       const store = useStore();
 
+      const dishes = computed(() => store.state.dishes);
+      const dishesByGroup = computed(() => store.getters.dishesByGroup);
+      const groups = reactive([
+          {
+              id: 0,
+              name: 'Напитки',
+              expanded: true
+          },
+          {
+              id: 1,
+              name: 'Каши',
+              expanded: true
+          },
+          {
+              id: 2,
+              name: 'Второе',
+              expanded: true
+          },
+          {
+              id: 3,
+              name: 'Супы',
+              expanded: true
+          }
+      ]);
+
+      const dragStart = (ev) => ev.dataTransfer.setData('addDish', ev.target.getAttribute('id'));
+      const toggleGroup = (groupId) => {
+          groups.value.map((group) => {
+              if (group.id === groupId) {
+                  group.expanded = !group.expanded;
+              }
+          })
+      };
+
       return {
-         dishes: computed(() => store.state.dishes),
-         dishesByGroup: computed(() => store.getters.dishesByGroup),
-         groups: reactive([
-            {
-               id: 0,
-               name: 'Напитки',
-               expanded: true
-            },
-            {
-               id: 1,
-               name: 'Каши',
-               expanded: true
-            },
-            {
-               id: 2,
-               name: 'Второе',
-               expanded: true
-            },
-            {
-               id: 3,
-               name: 'Супы',
-               expanded: true
-            }
-         ])
-      }
-   },
-   methods: {
-      dragStart(ev) {
-         ev.dataTransfer.setData('addDish', ev.target.getAttribute('id'));
-      },
-      toggleGroup(groupId) {
-         this.groups.map((group) => {
-            if (group.id === groupId) {
-               group.expanded = !group.expanded;
-            }
-         })
+         dishes,
+         dishesByGroup,
+         groups,
+         dragStart,
+         toggleGroup,
       }
    }
 }

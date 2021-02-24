@@ -42,27 +42,33 @@ export default {
    setup() {
       const store = useStore();
 
+      const days = computed(() => store.state.days);
+      const people = computed(() => store.state.people);
+
+      const changeDays = (val) => store.dispatch('changeDays', val);
+      const changePeople = (val) => store.dispatch('changePeople', val);
+      const getPeopleCaption = (val) => {
+          let cases = [2, 0, 1, 1, 1, 2];
+          return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
+              ? 2
+              : cases[(val % 10 < 5) ? val % 10 :5]];
+      }
+      const getDaysCaption = (val) => {
+          let cases = [2, 0, 1, 1, 1, 2];
+          return ['день', 'дня', 'дней'][(val % 100 > 4 && val % 100 < 20)
+              ? 2
+              : cases[(val % 10 < 5) ? val % 10 :5]];
+      }
+
       return {
-         days: computed(() => store.state.days),
-         people: computed(() => store.state.people),
-         changeDays: (val) => store.dispatch('changeDays', val),
-         changePeople: (val) => store.dispatch('changePeople', val),
+         days,
+         people,
+         changeDays,
+         changePeople,
+         getDaysCaption,
+         getPeopleCaption,
       }
    },
-   methods: {
-      getPeopleCaption(val) {
-         let cases = [2, 0, 1, 1, 1, 2];
-         return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
-            ? 2
-            : cases[(val % 10 < 5) ? val % 10 :5]];
-      },
-      getDaysCaption(val) {
-         let cases = [2, 0, 1, 1, 1, 2];
-         return ['день', 'дня', 'дней'][(val % 100 > 4 && val % 100 < 20)
-            ? 2
-            : cases[(val % 10 < 5) ? val % 10 :5]];
-      }
-   }
 }
 </script>
 

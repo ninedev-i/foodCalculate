@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import foodMenu from '@/components/Menu';
-import config from '@/components/Config';
-import timeline from '@/components/Timeline'
+import foodMenu from '@/components/Menu.vue';
+import config from '@/components/Config.vue';
+import timeline from '@/components/Timeline.vue'
 
 export default {
    name: 'App',

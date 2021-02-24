@@ -4,13 +4,25 @@
       draggable="true"
       v-on:dragstart="dragStart"
       >
-      <div class="dish-title">{{dish.name}}</div>
+      <div class="dish-title" :data-dish-number="dish.id">{{dish.name}}</div>
       <div
          v-for="({id, quantity}, key) in dish.ingredients"
          class="dish-ingredient"
          :key="key"
          >
-         {{ingredientById(id).name}}, {{quantity * people}} {{ingredientById(id).countCaption}}
+         <form v-if="isEdited" class="dish-edited">
+            <span>{{ingredientById(id).name}}</span>
+            <input
+               type="number"
+               v-bind:value="quantity"
+            />
+            <span class="dish-ingredient-caption">{{ingredientById(id).countCaption}}/чел.</span>
+         </form>
+         <div class="dish-ingredients-container" v-else>
+            <span class="dish-ingredient-caption">{{ingredientById(id).name}}</span>
+            <span>, {{quantity * people}} {{ingredientById(id).countCaption}}
+</span>
+         </div>
       </div>
 
       <div class="dish-toolbar">
@@ -25,7 +37,7 @@
 </template>
 
 <script>
-import {computed} from 'vue';
+import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
 
 export default {
@@ -35,26 +47,28 @@ export default {
       dayKey: Number,
       dishKey: Number,
    },
-   setup() {
+   setup(props, {emit}) {
       const store = useStore();
+      const isEdited = ref(false);
+      const people = computed(() => store.state.people);
+      const ingredientById = computed(() => store.getters.ingredientById);
+
+      const editItem = () => isEdited.value = true;
+      const deleteItem = () => emit('delete-item');
+      const dragStart = (ev) => {
+          ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
+          ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
+      };
 
       return {
-         ingredientById: computed(() => store.getters.ingredientById),
-         people: computed(() => store.state.people),
+         people,
+         isEdited,
+         ingredientById,
+         editItem,
+         dragStart,
+         deleteItem,
       }
    },
-   methods: {
-      deleteItem() {
-         this.$emit('delete-item');
-      },
-      dragStart(ev) {
-         ev.dataTransfer.setData('moveDish', JSON.stringify(this.dish));
-         ev.dataTransfer.setData('moveSettings', JSON.stringify({
-            dayKey: this.dayKey,
-            dishKey: this.dishKey
-         }));
-      }
-   }
 }
 </script>
 
@@ -84,6 +98,24 @@ export default {
       &-ingredient {
          color: #939393;
          font-size: 14px;
+
+         &-caption {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+         }
+      }
+
+      &-edited {
+         display: flex;
+         text-overflow: ellipsis;
+         overflow: hidden;
+         white-space: nowrap;
+
+         input {
+            width: 40px;
+            height: 14px;
+         }
       }
 
       &-toolbar {

@@ -149,6 +149,9 @@ const actions = {
         commit('DELETE_DISH', {id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey});
         commit('MOVE_DISH', {dish: movedDish, dayKey: moveTo.dayKey, dishKey: moveTo.dishKey});
     },
+    sortDish({commit}, {moveFrom, sortNumber, movedDish}) {
+        commit('SORT_DISH', {dish: movedDish, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey, sortNumber});
+    },
     deleteDish({commit}, {id, dayKey, dishKey}) {
         commit('DELETE_DISH', {id, dayKey, dishKey});
     },
@@ -186,6 +189,12 @@ const mutations = {
     },
     MOVE_DISH(state, {dish, dayKey, dishKey}) {
         state.timetable[dayKey].dishes[dishKey].menu.push(dish);
+    },
+    SORT_DISH(state, {dish, dayKey, dishKey, sortNumber}) {
+        // state.timetable[dayKey].dishes[dishKey].menu.push(dish);
+        const indexNumber = state.timetable[dayKey].dishes[dishKey].menu.indexNumber(dish);
+        state.timetable[dayKey].dishes[dishKey].menu.splice(indexNumber, 1);
+        state.timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, dish)
     },
     DELETE_DISH(state, {id, dayKey, dishKey}) {
         const editedMenu = state.timetable[dayKey].dishes[dishKey].menu.slice(0);
