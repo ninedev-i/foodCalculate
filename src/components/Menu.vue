@@ -18,7 +18,7 @@
                draggable="true"
                @dragstart="dragStart"
                >
-               {{item.name}}
+               {{item.title}}
             </div>
          </div>
       </div>

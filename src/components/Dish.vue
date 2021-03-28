@@ -4,14 +4,14 @@
       draggable="true"
       v-on:dragstart="dragStart"
       >
-      <div class="dish-title" :data-dish-number="dish.id">{{dish.name}}</div>
+      <div class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
       <div
          v-for="({id, quantity}, key) in dish.ingredients"
          class="dish-ingredient"
          :key="key"
          >
          <form v-if="isEdited" class="dish-edited">
-            <span>{{ingredientById(id).name}}</span>
+            <span>{{ingredientById(id).title}}</span>
             <input
                type="number"
                v-bind:value="quantity"
@@ -19,9 +19,8 @@
             <span class="dish-ingredient-caption">{{ingredientById(id).countCaption}}/чел.</span>
          </form>
          <div class="dish-ingredients-container" v-else>
-            <span class="dish-ingredient-caption">{{ingredientById(id).name}}</span>
-            <span>, {{quantity * people}} {{ingredientById(id).countCaption}}
-</span>
+            <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
+            <span>, {{quantity * people}} {{ingredientById(id).countCaption}}</span>
          </div>
       </div>
 

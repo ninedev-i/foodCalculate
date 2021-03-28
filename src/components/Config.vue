@@ -28,6 +28,7 @@
       </div>
       <div class="config-routes">
          <router-link class="config-link" active-class="config-link-active" to="/">Меню</router-link>
+         <router-link class="config-link" active-class="config-link-active" to="/add">Добавить блюда</router-link>
          <router-link class="config-link" active-class="config-link-active" to="/summary" :people="{people: +people}">Итого</router-link>
       </div>
    </div>

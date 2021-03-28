@@ -14,7 +14,7 @@
             @dragover="allowDrop($event, dayKey - 1, dishKey)"
             @dragleave="removeBorder($event, dayKey - 1, dishKey)"
             >
-            <div class="timeline-menu-title">{{dish.name}}</div>
+            <div class="timeline-menu-title">{{dish.title}}</div>
             <div
                class="timeline-menu-dishes"
                @drop="drop($event, dayKey - 1, dishKey)"

@@ -12,6 +12,7 @@
 import foodMenu from '@/components/Menu.vue';
 import config from '@/components/Config.vue';
 import timeline from '@/components/Timeline.vue'
+import {useStore} from 'vuex';
 
 export default {
    name: 'App',
@@ -19,6 +20,11 @@ export default {
       config,
       timeline,
       foodMenu,
+   },
+   setup() {
+       const store = useStore();
+       store.dispatch('getIngredients');
+       store.dispatch('getDishes');
    },
 }
 </script>
