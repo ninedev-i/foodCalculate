@@ -20,6 +20,10 @@
                >
                {{item.title}}
             </div>
+           <div
+               v-if="!dishes.length"
+               class="item item-skeleton"
+           ></div>
          </div>
       </div>
    </div>
@@ -125,7 +129,7 @@ export default {
       font-weight: bold;
       width: fit-content;
 
-      &:hover {
+      &:not(.item-skeleton):hover {
          box-shadow: @boxShadowHovered;
          padding: 6px 12px;
          //border-style: dashed;
@@ -133,5 +137,21 @@ export default {
          //border-width: 1.7px;
          cursor: move;
        }
+
+       &-skeleton {
+         height: 22px;
+         width: 150px;
+         background: linear-gradient(270deg, #e2e2e2, #fff);
+         background-size: 400% 400%;
+         animation: SkeletonAnimation 1s ease infinite;
+       }
    }
+
+  @keyframes SkeletonAnimation {
+    0%{background-position: 0 50%}
+    25%{background-position: 25% 50%}
+    50%{background-position: 50% 50%}
+    75%{background-position: 25% 50%}
+    100%{background-position: 0 50%}
+  }
 </style>

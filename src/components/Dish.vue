@@ -20,7 +20,7 @@
          </form>
          <div class="dish-ingredients-container" v-else>
             <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
-            <span>, {{quantity * people}} {{ingredientById(id).countCaption}}</span>
+            <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
          </div>
       </div>
 

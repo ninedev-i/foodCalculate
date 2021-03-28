@@ -80,6 +80,10 @@ export default {
          background: aqua;
          justify-content: space-between;
          align-items: baseline;
+
+         a {
+           color: #2c3e50;
+         }
       }
 
       &-settings {
