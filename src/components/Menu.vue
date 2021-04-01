@@ -17,13 +17,13 @@
                v-bind:key="key"
                draggable="true"
                @dragstart="dragStart"
-               >
+            >
                {{item.title}}
             </div>
-           <div
+            <div
                v-if="!dishes.length"
                class="item item-skeleton"
-           ></div>
+            ></div>
          </div>
       </div>
    </div>
@@ -44,26 +44,26 @@ export default {
       const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
       const groups = reactive([
-          {
-              id: 0,
-              name: 'Напитки',
-              expanded: true
-          },
-          {
-              id: 1,
-              name: 'Каши',
-              expanded: true
-          },
-          {
-              id: 2,
-              name: 'Второе',
-              expanded: true
-          },
-          {
-              id: 3,
-              name: 'Супы',
-              expanded: true
-          }
+         {
+            id: 0,
+            name: 'Напитки',
+            expanded: true
+         },
+         {
+            id: 1,
+            name: 'Каши',
+            expanded: true
+         },
+         {
+            id: 2,
+            name: 'Второе',
+            expanded: true
+         },
+         {
+            id: 3,
+            name: 'Супы',
+            expanded: true
+         }
       ]);
 
       const changeMenuType = () => store.dispatch('changeMenuType');
@@ -72,11 +72,11 @@ export default {
          return ev.dataTransfer.setData(type, ev.target.getAttribute('id'));
       };
       const toggleGroup = (groupId) => {
-          groups.map((group) => {
-              if (group.id === groupId) {
-                  group.expanded = !group.expanded;
-              }
-          });
+         groups.map((group) => {
+            if (group.id === groupId) {
+               group.expanded = !group.expanded;
+            }
+         });
       };
 
       return {
@@ -95,74 +95,74 @@ export default {
 </script>
 
 <style scoped lang="less">
-   @import "../assets/constants.less";
+@import "../assets/constants.less";
 
-   h3 {
-      margin: 12px;
-      text-align: center;
-   }
-   .food-menu {
-      width: 220px;
-      background: aquamarine;
-      height: 100%;
-      min-height: 100vh;
-      padding: 0 6px;
-      flex-shrink: 0;
+h3 {
+   margin: 12px;
+   text-align: center;
+}
+.food-menu {
+   width: 220px;
+   background: aquamarine;
+   height: 100%;
+   min-height: 100vh;
+   padding: 0 6px;
+   flex-shrink: 0;
 
-      &-category {
-         font-weight: bold;
-         margin: 16px 0 0 6px;
+   &-category {
+      font-weight: bold;
+      margin: 16px 0 0 6px;
+      display: flex;
+      cursor: pointer;
+
+      &-title {
+         margin-right: 10px;
+      }
+
+      &-spoiler {
+         transform: rotate(90deg);
          display: flex;
-         cursor: pointer;
+         justify-content: center;
 
-         &-title {
-            margin-right: 10px;
-         }
-
-         &-spoiler {
-            transform: rotate(90deg);
-            display: flex;
-            justify-content: center;
-
-            &-closed {
-               transform: rotate(270deg);
-            }
+         &-closed {
+            transform: rotate(270deg);
          }
       }
    }
+}
 
 
-   .item {
-      background: white;
-      margin: 6px;
+.item {
+   background: white;
+   margin: 6px;
+   padding: 6px 12px;
+   box-shadow: @boxShadow;
+   font-weight: bold;
+   width: fit-content;
+
+   &:not(.item-skeleton):hover {
+      box-shadow: @boxShadowHovered;
       padding: 6px 12px;
-      box-shadow: @boxShadow;
-      font-weight: bold;
-      width: fit-content;
-
-      &:not(.item-skeleton):hover {
-         box-shadow: @boxShadowHovered;
-         padding: 6px 12px;
-         //border-style: dashed;
-         //border-color: #9d9d9d;
-         //border-width: 1.7px;
-         cursor: move;
-       }
-
-       &-skeleton {
-         height: 22px;
-         width: 150px;
-         background: linear-gradient(270deg, #e2e2e2, #fff);
-         background-size: 400% 400%;
-         animation: SkeletonAnimation 1s ease infinite;
-       }
+      //border-style: dashed;
+      //border-color: #9d9d9d;
+      //border-width: 1.7px;
+      cursor: move;
    }
 
-  @keyframes SkeletonAnimation {
-    0%{background-position: 0 50%}
-    25%{background-position: 25% 50%}
-    50%{background-position: 50% 50%}
-    75%{background-position: 25% 50%}
-    100%{background-position: 0 50%}
-  }
+   &-skeleton {
+      height: 22px;
+      width: 150px;
+      background: linear-gradient(270deg, #e2e2e2, #fff);
+      background-size: 400% 400%;
+      animation: SkeletonAnimation 1s ease infinite;
+   }
+}
+
+@keyframes SkeletonAnimation {
+   0%{background-position: 0 50%}
+   25%{background-position: 25% 50%}
+   50%{background-position: 50% 50%}
+   75%{background-position: 25% 50%}
+   100%{background-position: 0 50%}
+}
 </style>

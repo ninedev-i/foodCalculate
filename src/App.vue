@@ -14,6 +14,7 @@ import config from '@/components/Config.vue';
 import timeline from '@/components/Timeline.vue';
 import {useStore} from 'vuex';
 import {watchEffect} from 'vue';
+import {useRouter} from 'vue-router';
 
 export default {
    name: 'App',
@@ -24,6 +25,8 @@ export default {
    },
    setup() {
       const store = useStore();
+      const router = useRouter();
+
       store.dispatch('getIngredients');
       store.dispatch('getDishes');
       const stopLoadingItemsWatcher = watchEffect(() => {
@@ -34,6 +37,11 @@ export default {
       if (store.state.ingredients.length && store.state.dishes.length) {
          stopLoadingItemsWatcher();
       }
+
+      router.afterEach(({path}) => {
+         const menuType = path === '/add' ? 'ingredients' : 'dishes';
+         store.dispatch('changeMenuType', menuType);
+      });
    },
 };
 </script>

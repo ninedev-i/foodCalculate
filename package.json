@@ -16,12 +16,12 @@
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
     "@vitejs/plugin-vue": "^1.2.0",
     "@vue/cli-plugin-babel": "~4.5.12",
     "@vue/cli-plugin-eslint": "~4.5.12",
     "@vue/cli-service": "~4.5.12",
     "@vue/compiler-sfc": "^3.0.9",
-    "babel-eslint": "^11.0.0-beta.2",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^7.8.0",
     "less": "^3.13.1",
@@ -38,7 +38,7 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
     "rules": {
       "indent": ["warn", 3],

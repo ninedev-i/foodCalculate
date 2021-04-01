@@ -5,13 +5,13 @@
       v-on:dragstart="dragStart"
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
-      >
+   >
       <div class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
       <div
          v-for="({id, quantity}, key) in dish.ingredients"
          class="dish-ingredient"
          :key="key"
-         >
+      >
          <form v-if="isEdited" class="dish-edited">
             <span>{{ingredientById(id).title}}</span>
             <input
@@ -93,78 +93,78 @@ export default {
 </script>
 
 <style lang="less">
-   @import "../assets/constants.less";
+@import "../assets/constants.less";
 
-   .dish {
-      &-container {
-         background: white;
-         padding: 12px;
-         margin-bottom: 8px;
-         position: relative;
-         border: 1px solid #ececec;
-         box-shadow: @boxShadow;
-         cursor: move;
+.dish {
+   &-container {
+      background: white;
+      padding: 12px;
+      margin-bottom: 8px;
+      position: relative;
+      border: 1px solid #ececec;
+      box-shadow: @boxShadow;
+      cursor: move;
 
-         &:hover {
-            box-shadow: @boxShadowHovered;
+      &:hover {
+         box-shadow: @boxShadowHovered;
 
-            .dish-toolbar {
-               display: flex;
-               flex-direction: row;
-            }
+         .dish-toolbar {
+            display: flex;
+            flex-direction: row;
          }
       }
+   }
 
-      &-ingredient {
-         color: #939393;
-         font-size: 14px;
+   &-ingredient {
+      color: #939393;
+      font-size: 14px;
 
-         &-caption {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-         }
-      }
-
-      &-edited {
-         display: flex;
+      &-caption {
          text-overflow: ellipsis;
          overflow: hidden;
          white-space: nowrap;
-
-         input {
-            width: 40px;
-            height: 14px;
-         }
-      }
-
-      &-toolbar {
-         position: absolute;
-         top: 0;
-         right: 0;
-         display: none;
-
-         &-delete {
-            color: red;
-            .toolbarItem();
-            &:hover {
-               color: #ee1111;
-               background: #eaeaea;
-            }
-         }
-
-         &-edit{
-            .toolbarItem();
-            &:hover {
-               color: green;
-               background: #eaeaea;
-            }
-         }
-      }
-
-      &-title {
-         margin-bottom: 6px;
-         font-weight: bold;
       }
    }
+
+   &-edited {
+      display: flex;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+
+      input {
+         width: 40px;
+         height: 14px;
+      }
+   }
+
+   &-toolbar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: none;
+
+      &-delete {
+         color: red;
+         .toolbarItem();
+         &:hover {
+            color: #ee1111;
+            background: #eaeaea;
+         }
+      }
+
+      &-edit{
+         .toolbarItem();
+         &:hover {
+            color: green;
+            background: #eaeaea;
+         }
+      }
+   }
+
+   &-title {
+      margin-bottom: 6px;
+      font-weight: bold;
+   }
+}
 </style>
