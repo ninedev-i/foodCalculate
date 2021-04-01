@@ -1,4 +1,4 @@
-import {createStore} from 'vuex'
+import {createStore} from 'vuex';
 import axios from 'axios';
 
 const api = axios.create({
@@ -14,16 +14,21 @@ const state = {
     days: 1,
     timetable: [{dishes: getDishFormat()}],
     ingredients: [],
-    dishes: []
+    dishes: [],
+    menuType: 'dishes',
 };
 
 const getters = {
     dishById: state => (id) => state.dishes.find(item => item.id === id),
     dishesByGroup: state => (groupId) => state.dishes.filter(item => item.type === groupId),
     ingredientById: state => (id) => state.ingredients.find(item => +item.id === +id),
+    ingredientsByGroup: state => (groupId) => state.ingredients.filter(item => item.type === groupId),
 };
 
 const actions = {
+    changeMenuType({commit}) {
+        commit('CHANGE_MENU_TYPE');
+    },
     changeDays({commit}, days) {
         commit('SET_DAYS', +days);
         commit('SET_TIMETABLE', +days);
@@ -37,8 +42,11 @@ const actions = {
     getIngredients({commit}) {
         api.get('ingredient').then(({data}) => commit('SET_INGREDIENT', data));
     },
-    addIngredient({commit}, data) {
+    saveIngredient({commit}, data) {
         api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENT', data));
+    },
+    addIngredientToDish({commit}, {ingredientId, dayKey, dishKey, dishId}) {
+        commit('ADD_INGREDIENT_TO_DISH', {ingredientId, dayKey, dishKey, dishId});
     },
     addDish({commit}, {addedDish, dayKey, dishKey}) {
         commit('ADD_DISH', {addedDish, dayKey, dishKey});
@@ -54,9 +62,12 @@ const actions = {
     deleteDish({commit}, {id, dayKey, dishKey}) {
         commit('DELETE_DISH', {id, dayKey, dishKey});
     },
-}
+};
 
 const mutations = {
+    CHANGE_MENU_TYPE(state) {
+        state.menuType = state.menuType === 'dishes' ? 'ingredients' : 'dishes';
+    },
     SET_DAYS(state, value) {
         state.days = value;
     },
@@ -89,7 +100,7 @@ const mutations = {
             if (item.id === addedDish.id) {
                 item.id = `${dayKey}_${dishKey}_${i}`;
             }
-        })
+        });
         state.timetable = timetable;
     },
     MOVE_DISH(state, {dish, dayKey, dishKey}) {
@@ -99,17 +110,26 @@ const mutations = {
         // state.timetable[dayKey].dishes[dishKey].menu.push(dish);
         const indexNumber = state.timetable[dayKey].dishes[dishKey].menu.indexNumber(dish);
         state.timetable[dayKey].dishes[dishKey].menu.splice(indexNumber, 1);
-        state.timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, dish)
+        state.timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, dish);
     },
     DELETE_DISH(state, {id, dayKey, dishKey}) {
         const editedMenu = state.timetable[dayKey].dishes[dishKey].menu.slice(0);
         state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
-    }
-}
+    },
+    ADD_INGREDIENT_TO_DISH(state, {ingredientId, dayKey, dishKey, dishId}) {
+        state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
+            if (item.id === dishId) {
+                const ingredientsKeys = Object.keys(item.ingredients);
+                const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1;
+                item.ingredients[ingredientKey] = {id: ingredientId, quantity: 0};
+            }
+        });
+    },
+};
 
 export default createStore({
     state,
     getters,
     actions,
     mutations
-})
+});

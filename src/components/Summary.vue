@@ -5,7 +5,7 @@
 <script>
 export default {
    name: 'Summary'
-}
+};
 </script>
 
 <style lang="less">

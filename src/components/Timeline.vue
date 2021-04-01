@@ -72,6 +72,9 @@ export default {
       };
       const allowDrop = (ev, dayKey, dishKey) => {
           ev.preventDefault();
+          if (ev.dataTransfer.types[0] !== 'adddish') {
+             return;
+          }
           divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
       };
       const removeBorder = (ev, dayKey, dishKey) => {
@@ -90,7 +93,7 @@ export default {
           const addedDish = ev.dataTransfer.getData('addDish');
           const movedDish = ev.dataTransfer.getData('moveDish');
           if (addedDish) {
-              addDish(addedDish, dayKey, dishKey)
+              addDish(addedDish, dayKey, dishKey);
           } else if (movedDish) {
               const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
 
@@ -98,9 +101,9 @@ export default {
                   const sortNumber = ev.target.getAttribute('data-dish-number')
                       ? +ev.target.getAttribute('data-dish-number').split('_')[2]
                       : null;
-                  sortDish(movedDish, moveFrom, sortNumber)
+                  sortDish(movedDish, moveFrom, sortNumber);
               } else {
-                  moveDish(movedDish, moveFrom,{dayKey, dishKey})
+                  moveDish(movedDish, moveFrom,{dayKey, dishKey});
               }
           }
           for (let component in divs.value) {
@@ -119,9 +122,9 @@ export default {
          moveDish,
          sortDish,
          deleteDish,
-      }
-   }
-}
+      };
+   },
+};
 </script>
 
 <style lang="less">

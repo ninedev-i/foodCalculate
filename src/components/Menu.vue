@@ -1,6 +1,6 @@
 <template>
    <div class="food-menu">
-      <h3>Блюда</h3>
+      <h3 @click="changeMenuType()">{{menuType === 'dishes' ? 'Блюда' : 'Ингредиенты'}}</h3>
       <div v-for="(group, groupId) in groups" v-bind:key="groupId">
          <div
             class="food-menu-category"
@@ -11,7 +11,7 @@
 
          <div v-if="group.expanded">
             <div
-               v-for="(item, key) in dishesByGroup(groupId)"
+               v-for="(item, key) in (menuType === 'dishes' ? dishesByGroup(groupId) : ingredientsByGroup(groupId))"
                :id="item.id"
                class="item"
                v-bind:key="key"
@@ -38,7 +38,10 @@ export default {
    setup() {
       const store = useStore();
 
+      const menuType = computed(() => store.state.menuType);
       const dishes = computed(() => store.state.dishes);
+      const ingredients = computed(() => store.state.ingredients);
+      const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
       const groups = reactive([
           {
@@ -63,24 +66,32 @@ export default {
           }
       ]);
 
-      const dragStart = (ev) => ev.dataTransfer.setData('addDish', ev.target.getAttribute('id'));
+      const changeMenuType = () => store.dispatch('changeMenuType');
+      const dragStart = (ev) => {
+         const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
+         return ev.dataTransfer.setData(type, ev.target.getAttribute('id'));
+      };
       const toggleGroup = (groupId) => {
-          groups.value.map((group) => {
+          groups.map((group) => {
               if (group.id === groupId) {
                   group.expanded = !group.expanded;
               }
-          })
+          });
       };
 
       return {
          dishes,
+         ingredients,
+         ingredientsByGroup,
          dishesByGroup,
          groups,
+         menuType,
          dragStart,
          toggleGroup,
-      }
+         changeMenuType,
+      };
    }
-}
+};
 </script>
 
 <style scoped lang="less">

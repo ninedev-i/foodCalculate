@@ -5,7 +5,7 @@
             <input type="text" class="ingredientInput" v-model="ingredientCaption" placeholder="Название" autofocus />
             <input type="text" class="ingredientInput" v-model="countCaption" placeholder="ед. измерения" />
 
-            <button type="button" class="ingredientButton" @click="addIngredient()">Добавить ингредиент</button>
+            <button type="button" class="ingredientButton" @click="saveIngredient()">Добавить ингредиент</button>
         </div>
 
         <div>
@@ -27,22 +27,22 @@ export default {
         const store = useStore();
 
         const ingredients = computed(() => store.state.ingredients);
-
         const ingredientCaption = ref('');
         const countCaption = ref('г');
-        const addIngredient = () => {
-            store.dispatch('addIngredient', {title: ingredientCaption.value, count_caption: countCaption.value});
+
+        const saveIngredient = () => {
+            store.dispatch('saveIngredient', {title: ingredientCaption.value, count_caption: countCaption.value});
             ingredientCaption.value = '';
-        }
+        };
 
         return {
             ingredients,
             ingredientCaption,
             countCaption,
-            addIngredient,
-        }
+            saveIngredient,
+        };
     },
-}
+};
 </script>
 
 <style lang="less">

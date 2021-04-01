@@ -53,13 +53,13 @@ export default {
           return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
               ? 2
               : cases[(val % 10 < 5) ? val % 10 :5]];
-      }
+      };
       const getDaysCaption = (val) => {
           let cases = [2, 0, 1, 1, 1, 2];
           return ['день', 'дня', 'дней'][(val % 100 > 4 && val % 100 < 20)
               ? 2
               : cases[(val % 10 < 5) ? val % 10 :5]];
-      }
+      };
 
       return {
          days,
@@ -68,9 +68,9 @@ export default {
          changePeople,
          getDaysCaption,
          getPeopleCaption,
-      }
+      };
    },
-}
+};
 </script>
 
 <style lang="less">

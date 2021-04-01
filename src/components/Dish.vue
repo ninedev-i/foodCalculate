@@ -3,6 +3,8 @@
       class="dish-container"
       draggable="true"
       v-on:dragstart="dragStart"
+      @drop="dropIngredient($event, dayKey - 1, dishKey)"
+      @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
       >
       <div class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
       <div
@@ -58,6 +60,17 @@ export default {
           ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
           ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
       };
+      const allowDropIngredient = (ev) => {
+         ev.preventDefault();
+         if (ev.dataTransfer.types[0] !== 'addingredient') {
+            return;
+         }
+         // TODO: подсветка границы
+      };
+      const dropIngredient = (ev) => {
+         const ingredientId = +ev.dataTransfer.getData('addIngredient');
+         store.dispatch('addIngredientToDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey, dishId: props.dish.id});
+      };
 
       return {
          people,
@@ -66,9 +79,11 @@ export default {
          editItem,
          dragStart,
          deleteItem,
-      }
+         allowDropIngredient,
+         dropIngredient,
+      };
    },
-}
+};
 </script>
 
 <style lang="less">
