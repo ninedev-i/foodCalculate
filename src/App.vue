@@ -13,6 +13,7 @@ import foodMenu from '@/components/Menu.vue';
 import config from '@/components/Config.vue';
 import timeline from '@/components/Timeline.vue';
 import {useStore} from 'vuex';
+import {watchEffect} from 'vue';
 
 export default {
    name: 'App',
@@ -22,45 +23,53 @@ export default {
       foodMenu,
    },
    setup() {
-       const store = useStore();
-       store.dispatch('getIngredients');
-       store.dispatch('getDishes');
+      const store = useStore();
+      store.dispatch('getIngredients');
+      store.dispatch('getDishes');
+      const stopLoadingItemsWatcher = watchEffect(() => {
+         if (store.state.ingredients.length && store.state.dishes.length) {
+            store.dispatch('setTimetableFromStorage');
+         }
+      });
+      if (store.state.ingredients.length && store.state.dishes.length) {
+         stopLoadingItemsWatcher();
+      }
    },
 };
 </script>
 
 <style lang="less">
-   @import (css) url('https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif');
+@import (css) url('https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif');
 
-   body {
+body {
+   margin: 0;
+}
+
+a {
+   text-decoration: none;
+}
+a:visited {
+   color: inherit;
+}
+
+.app-container {
+   font-family: 'Open Sans', sans-serif;
+   color: #2c3e50;
+   display: flex;
+
+   input[type=number]::-webkit-inner-spin-button,
+   input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
       margin: 0;
    }
+}
 
-   a {
-      text-decoration: none;
-   }
-   a:visited {
-      color: inherit;
-   }
-
-   .app-container {
-      font-family: 'Open Sans', sans-serif;
-      color: #2c3e50;
-      display: flex;
-
-      input[type=number]::-webkit-inner-spin-button,
-      input[type=number]::-webkit-outer-spin-button {
-         -webkit-appearance: none;
-         -moz-appearance: none;
-         appearance: none;
-         margin: 0;
-      }
-   }
-
-   .type {
-      width: 100%;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-   }
+.type {
+   width: 100%;
+   flex-grow: 1;
+   display: flex;
+   flex-direction: column;
+}
 </style>

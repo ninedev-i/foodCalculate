@@ -54,20 +54,26 @@ export default {
       const people = computed(() => store.state.people);
       const ingredientById = computed(() => store.getters.ingredientById);
 
-      const editItem = () => isEdited.value = true;
+      const editItem = () => {
+         isEdited.value = true;
+         store.dispatch('changeMenuType', 'ingredients');
+      };
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
-          ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
-          ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
+         ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
+         ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
       };
       const allowDropIngredient = (ev) => {
          ev.preventDefault();
          if (ev.dataTransfer.types[0] !== 'addingredient') {
-            return;
+            // return;
          }
          // TODO: подсветка границы
       };
       const dropIngredient = (ev) => {
+         if (ev.dataTransfer.types[0] !== 'addingredient') {
+            return;
+         }
          const ingredientId = +ev.dataTransfer.getData('addIngredient');
          store.dispatch('addIngredientToDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey, dishId: props.dish.id});
       };
