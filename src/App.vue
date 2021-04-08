@@ -31,11 +31,11 @@ export default {
       store.dispatch('getIngredients');
       store.dispatch('getDishes');
       const stopLoadingItemsWatcher = watchEffect(() => {
-         if (store.state.ingredients.length && store.state.dishes.length) {
+         if (store.state.food.ingredients.length && store.state.food.dishes.length) {
             store.dispatch('setTimetableFromStorage');
          }
       });
-      if (store.state.ingredients.length && store.state.dishes.length) {
+      if (store.state.food.ingredients.length && store.state.food.dishes.length) {
          stopLoadingItemsWatcher();
       }
 

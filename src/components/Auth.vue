@@ -27,7 +27,7 @@ export default {
    name: 'Auth',
    setup() {
       const store = useStore();
-      const userEmail = computed(() => store.state.userEmail);
+      const userEmail = computed(() => store.state.user.email);
 
       const email = ref('');
       const password = ref('');

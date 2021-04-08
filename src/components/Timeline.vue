@@ -53,7 +53,7 @@ export default {
       });
 
       const days = computed(() => store.state.days);
-      const timetable = computed(() => store.state.timetable);
+      const timetable = computed(() => store.state.food.timetable);
 
       const addDish = (id, dayKey, dishKey) => {
          const addedDish = {...store.getters.dishById(+id)};
@@ -107,6 +107,7 @@ export default {
             }
          }
          for (let component in divs.value) {
+            // FIXME: добавить проверку на существование класса
             divs.value[component].classList.remove('timeline-menu-dishes-hovered');
          }
       };

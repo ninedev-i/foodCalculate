@@ -19,7 +19,7 @@ export default {
    setup() {
       const store = useStore();
 
-      const ingredients = computed(() => store.state.ingredients);
+      const ingredients = computed(() => store.state.food.ingredients);
       const ingredientCaption = ref('');
       const countCaption = ref('г');
 

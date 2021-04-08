@@ -39,8 +39,8 @@ export default {
       const store = useStore();
 
       const menuType = computed(() => store.state.menuType);
-      const dishes = computed(() => store.state.dishes);
-      const ingredients = computed(() => store.state.ingredients);
+      const dishes = computed(() => store.state.food.dishes);
+      const ingredients = computed(() => store.state.food.ingredients);
       const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
       const groups = reactive([
