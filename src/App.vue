@@ -27,6 +27,7 @@ export default {
       const store = useStore();
       const router = useRouter();
 
+      store.dispatch('getUserInfo');
       store.dispatch('getIngredients');
       store.dispatch('getDishes');
       const stopLoadingItemsWatcher = watchEffect(() => {

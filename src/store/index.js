@@ -13,7 +13,30 @@ const saveToLocalStorage = (timetable) => {
    localStorage.setItem('timetable', JSON.stringify(timetable));
 };
 
+const destroyToken = () => {
+   localStorage.removeItem('token');
+};
+
+const getToken = () => {
+   let token = localStorage.getItem('token');
+   if (!token) {
+      return null;
+   }
+
+   return 'Bearer ' + token;
+};
+
+const setToken = (token) => {
+   localStorage.setItem('token', token);
+};
+
+const isAuthenticated = () => {
+   return !!getToken();
+};
+
 const state = {
+   userEmail: null,
+   userToken: null,
    people: 1,
    days: 1,
    timetable: [{dishes: getDishFormat()}],
@@ -30,6 +53,41 @@ const getters = {
 };
 
 const actions = {
+   register({commit}, data) {
+      return api.post('register', data);
+   },
+   login({commit}, loginData) {
+      return api
+         .post('login', loginData)
+         .then(({data}) => {
+            commit('SET_USER', loginData);
+            setToken(data.token);
+         });
+   },
+   logout({commit}) {
+      const headers = {
+         'Authorization': getToken()
+      };
+      api
+         .post('logout', {headers})
+         .then(() => {
+            commit('SET_USER', {email: null});
+            destroyToken();
+         });
+   },
+   getUserInfo({commit}) {
+      if (!isAuthenticated()) {
+         return;
+      }
+
+      const headers = {
+         'Authorization': getToken()
+      };
+      api.get('user', {headers})
+         .then((response) => {
+            commit('SET_USER', response.data);
+         });
+   },
    setTimetableFromStorage({commit}) {
       const data = JSON.parse(localStorage.getItem('timetable'));
       if (data) {
@@ -75,6 +133,9 @@ const actions = {
 };
 
 const mutations = {
+   SET_USER(state, data) {
+      state.userEmail = data.email;
+   },
    CHANGE_MENU_TYPE(state, value) {
       state.menuType = value || (state.menuType === 'dishes' ? 'ingredients' : 'dishes');
    },

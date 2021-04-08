@@ -1,6 +1,7 @@
 <template>
    <div class="config-container">
       <div class="config-settings">
+         <auth />
          <div>
             <input
                id="people"
@@ -37,9 +38,13 @@
 <script>
 import {computed} from 'vue';
 import {useStore} from 'vuex';
+import auth from '@/components/Auth.vue';
 
 export default {
    name: 'Config',
+   components: {
+      auth,
+   },
    setup() {
       const store = useStore();
 

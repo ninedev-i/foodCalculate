@@ -18,7 +18,7 @@
                type="number"
                v-bind:value="quantity"
             />
-            <span class="dish-ingredient-caption">{{ingredientById(id).countCaption}}/чел.</span>
+            <span class="dish-ingredient-caption">{{ingredientById(id).count_caption}}/чел.</span>
          </form>
          <div class="dish-ingredients-container" v-else>
             <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
