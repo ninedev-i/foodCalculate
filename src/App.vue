@@ -54,25 +54,36 @@ body {
    margin: 0;
 }
 
+input {
+   font-family: 'Open Sans', sans-serif;
+   outline: none;
+
+   &::-webkit-input-placeholder {
+      color: #a7a7a7;
+   }
+
+   &[type=number] {
+      &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         appearance: none;
+         margin: 0;
+      }
+   }
+}
+
 a {
    text-decoration: none;
-}
-a:visited {
-   color: inherit;
+
+   &:visited {
+      color: inherit;
+   }
 }
 
 .app-container {
    font-family: 'Open Sans', sans-serif;
    color: #2c3e50;
    display: flex;
-
-   input[type=number]::-webkit-inner-spin-button,
-   input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      margin: 0;
-   }
 }
 
 .type {

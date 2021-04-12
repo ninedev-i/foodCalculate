@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "vite build"
   },
   "dependencies": {
     "axios": "^0.21.1",

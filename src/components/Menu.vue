@@ -1,7 +1,7 @@
 <template>
    <div class="food-menu">
       <h3 @click="changeMenuType()">{{menuType === 'dishes' ? 'Блюда' : 'Ингредиенты'}}</h3>
-      <div v-for="(group, groupId) in groups" v-bind:key="groupId">
+      <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" v-bind:key="groupId">
          <div
             class="food-menu-category"
             @click="toggleGroup(groupId)">
@@ -26,6 +26,15 @@
             ></div>
          </div>
       </div>
+
+      <div
+         v-if="menuType === 'dishes'"
+         class="item item-custom"
+         draggable="true"
+         @dragstart="dragStart"
+      >
+         Свое блюдо
+      </div>
    </div>
 </template>
 
@@ -37,33 +46,24 @@ export default {
    name: 'Menu',
    setup() {
       const store = useStore();
-
       const menuType = computed(() => store.state.menuType);
       const dishes = computed(() => store.state.food.dishes);
       const ingredients = computed(() => store.state.food.ingredients);
       const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
-      const groups = reactive([
-         {
-            id: 0,
-            name: 'Напитки',
-            expanded: true
-         },
-         {
-            id: 1,
-            name: 'Каши',
-            expanded: true
-         },
-         {
-            id: 2,
-            name: 'Второе',
-            expanded: true
-         },
-         {
-            id: 3,
-            name: 'Супы',
-            expanded: true
-         }
+      const dishGroups = reactive([
+         {id: 0, name: 'Напитки', expanded: true},
+         {id: 1, name: 'Каши', expanded: true},
+         {id: 2, name: 'Второе', expanded: true},
+         {id: 3, name: 'Супы', expanded: true},
+      ]);
+      const ingredientGroups = reactive([
+         {id: 0, name: 'Крупы', expanded: true},
+         {id: 1, name: 'Мучное', expanded: true},
+         {id: 2, name: 'Специи и приправы', expanded: true},
+         {id: 3, name: 'Мясное', expanded: true},
+         {id: 4, name: 'Овощи и фрукты', expanded: true},
+         {id: 5, name: 'Другое', expanded: true},
       ]);
 
       const changeMenuType = () => store.dispatch('changeMenuType');
@@ -72,7 +72,7 @@ export default {
          return ev.dataTransfer.setData(type, ev.target.getAttribute('id'));
       };
       const toggleGroup = (groupId) => {
-         groups.map((group) => {
+         (menuType.value === 'dishes' ? dishGroups : ingredientGroups).map((group) => {
             if (group.id === groupId) {
                group.expanded = !group.expanded;
             }
@@ -84,7 +84,8 @@ export default {
          ingredients,
          ingredientsByGroup,
          dishesByGroup,
-         groups,
+         dishGroups,
+         ingredientGroups,
          menuType,
          dragStart,
          toggleGroup,
@@ -143,10 +144,11 @@ h3 {
    &:not(.item-skeleton):hover {
       box-shadow: @boxShadowHovered;
       padding: 6px 12px;
-      //border-style: dashed;
-      //border-color: #9d9d9d;
-      //border-width: 1.7px;
       cursor: move;
+   }
+
+   &-custom {
+      margin-top: 24px;
    }
 
    &-skeleton {

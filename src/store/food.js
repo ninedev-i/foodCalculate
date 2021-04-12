@@ -37,6 +37,9 @@ const actions = {
    saveIngredient({commit}, data) {
       api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENTS', data));
    },
+   saveDish({commit}, data) {
+      api.post('dish', data).then(({data}) => commit('SET_DISHES', data));
+   },
    addIngredientToDish({commit}, {ingredientId, dayKey, dishKey, dishId}) {
       commit('ADD_INGREDIENT_TO_DISH', {ingredientId, dayKey, dishKey, dishId});
    },
@@ -88,6 +91,9 @@ const mutations = {
       timetable[dayKey].dishes[dishKey].menu.map((item, i) => {
          if (item.id === addedDish.id) {
             item.id = `${dayKey}_${dishKey}_${i}`;
+            if (!item.ingredients) {
+               item.ingredients = [];
+            }
          }
       });
       state.timetable = timetable;
@@ -113,7 +119,7 @@ const mutations = {
       state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
          if (item.id === dishId) {
             const ingredientsKeys = Object.keys(item.ingredients);
-            const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1;
+            const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1 || 0;
             item.ingredients[ingredientKey] = {id: ingredientId, quantity: 0};
          }
       });

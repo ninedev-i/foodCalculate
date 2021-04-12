@@ -101,7 +101,9 @@ export default {
                const sortNumber = ev.target.getAttribute('data-dish-number')
                   ? +ev.target.getAttribute('data-dish-number').split('_')[2]
                   : null;
-               sortDish(movedDish, moveFrom, sortNumber);
+               if (sortNumber) {
+                  sortDish(movedDish, moveFrom, sortNumber);
+               }
             } else {
                moveDish(movedDish, moveFrom,{dayKey, dishKey});
             }
