@@ -7,19 +7,15 @@
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
    >
       <div class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
-      <div
-         v-for="({id, quantity}, key) in dish.ingredients"
-         class="dish-ingredient"
-         :key="key"
-      >
-         <form v-if="isEdited" class="dish-edited">
+      <div v-for="({id, quantity}, key) in dish.ingredients" class="dish-ingredient" :key="key">
+         <div v-if="isEdited" class="dish-edited">
             <span>{{ingredientById(id).title}}</span>
             <input
                type="number"
-               v-bind:value="quantity"
+               v-model="inputs[id]"
             />
             <span class="dish-ingredient-caption">{{ingredientById(id).count_caption}}/чел.</span>
-         </form>
+         </div>
          <div class="dish-ingredients-container" v-else>
             <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
             <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
@@ -53,9 +49,18 @@ export default {
       const isEdited = ref(false);
       const people = computed(() => store.state.people);
       const ingredientById = computed(() => store.getters.ingredientById);
+      const inputs = computed(() => props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {}));
 
       const editItem = () => {
-         isEdited.value = true;
+         if (isEdited.value) {
+            const {dayKey, dishKey} = props;
+            let ingredients = [];
+            Object.keys(inputs.value).forEach((id) => {
+               ingredients.push({id, quantity: +inputs.value[id]});
+            });
+            store.dispatch('updateDish', {dayKey, dishKey, dishId: props.dish.id, ingredients});
+         }
+         isEdited.value = !isEdited.value;
          store.dispatch('changeMenuType', 'ingredients');
       };
       const deleteItem = () => emit('delete-item');
@@ -80,6 +85,7 @@ export default {
 
       return {
          people,
+         inputs,
          isEdited,
          ingredientById,
          editItem,

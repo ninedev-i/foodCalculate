@@ -54,6 +54,9 @@ const actions = {
    deleteDish({commit}, {id, dayKey, dishKey}) {
       commit('DELETE_DISH', {id, dayKey, dishKey});
    },
+   updateDish({commit}, {dayKey, dishKey, dishId, ingredients}) {
+      commit('UPDATE_DISH', {dayKey, dishKey, dishId, ingredients});
+   },
 };
 
 const mutations = {
@@ -106,11 +109,20 @@ const mutations = {
       saveToLocalStorage(state.timetable);
    },
    ADD_INGREDIENT_TO_DISH(state, {ingredientId, dayKey, dishKey, dishId}) {
+      // TODO: добавить проверку на дублирование ингредиента
       state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
          if (item.id === dishId) {
             const ingredientsKeys = Object.keys(item.ingredients);
             const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1;
             item.ingredients[ingredientKey] = {id: ingredientId, quantity: 0};
+         }
+      });
+      saveToLocalStorage(state.timetable);
+   },
+   UPDATE_DISH(state, {dayKey, dishKey, dishId, ingredients}) {
+      state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
+         if (item.id === dishId) {
+            item.ingredients = ingredients;
          }
       });
       saveToLocalStorage(state.timetable);
