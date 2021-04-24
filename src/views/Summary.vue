@@ -1,5 +1,5 @@
 <template>
-   <div>Итого</div>
+   <section>Итого</section>
 </template>
 
 <script>

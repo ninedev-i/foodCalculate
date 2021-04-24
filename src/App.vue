@@ -1,16 +1,21 @@
 <template>
-   <div class="app-container">
-      <div class="type">
-         <config />
+   <Layout>
+      <template #header>
+         <Config />
+      </template>
+      <template #content>
          <router-view />
-      </div>
-      <foodMenu />
-   </div>
+      </template>
+      <template #sidebar>
+         <FoodMenu />
+      </template>
+   </Layout>
 </template>
 
 <script>
-import foodMenu from '@/components/Menu.vue';
-import config from '@/components/Config.vue';
+import FoodMenu from '@/components/Menu.vue';
+import Config from '@/components/Config.vue';
+import Layout from '@/components/Layout.vue';
 import {useStore} from 'vuex';
 import {watchEffect} from 'vue';
 import {useRouter} from 'vue-router';
@@ -18,8 +23,9 @@ import {useRouter} from 'vue-router';
 export default {
    name: 'App',
    components: {
-      config,
-      foodMenu,
+      Config,
+      FoodMenu,
+      Layout,
    },
    setup() {
       const store = useStore();
@@ -49,7 +55,7 @@ export default {
 @import (css) url('https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif');
 @import "./assets/constants.less";
 
-div {
+* {
    padding: 0;
    margin: 0;
 }
@@ -57,6 +63,9 @@ div {
 body {
    margin: 0;
    background: #f9fafe;
+   font-family: 'Open Sans', sans-serif;
+   color: @fontColor;
+   overflow-x: hidden;
 }
 
 a {
@@ -65,18 +74,5 @@ a {
    &:visited {
       color: inherit;
    }
-}
-
-.app-container {
-   font-family: 'Open Sans', sans-serif;
-   color: @fontColor;
-   display: flex;
-}
-
-.type {
-   width: 100%;
-   flex-grow: 1;
-   display: flex;
-   flex-direction: column;
 }
 </style>

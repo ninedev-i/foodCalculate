@@ -103,16 +103,8 @@ h3 {
    text-align: center;
 }
 .food-menu {
-   width: 220px;
-   background: @accentColor;
-   height: 100%;
-   min-height: 100vh;
    padding: 0 6px;
-   flex-shrink: 0;
-
-   @media (min-width: @largeResolution) {
-      width: 300px;
-   }
+   height: 100vh;
 
    &-category {
       font-weight: bold;

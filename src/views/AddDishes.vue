@@ -1,32 +1,30 @@
 <template>
-   <div class="addDishContainer">
-      <div class="ingredientContainer">
-         <h2>Добавить ингредиент</h2>
-         <Input
-            autofocus
-            type="text"
-            inputWidth="200px"
-            placeholder="Название"
-            :value="ingredientCaption"
-            @change="(ev) => ingredientCaption = ev.target.value"
-         />
-         <Input
-            type="text"
-            inputWidth="200px"
-            placeholder="ед. измерения"
-            :value="countCaption"
-            @change="(ev) => countCaption = ev.target.value"
-         />
+   <section class="addDish-container">
+      <h2>Добавить ингредиент</h2>
+      <Input
+         autofocus
+         type="text"
+         inputWidth="200px"
+         placeholder="Название"
+         :value="ingredientCaption"
+         @change="(ev) => ingredientCaption = ev.target.value"
+      />
+      <Input
+         type="text"
+         inputWidth="200px"
+         placeholder="ед. измерения"
+         :value="countCaption"
+         @change="(ev) => countCaption = ev.target.value"
+      />
 
-         <Button
-            type="button"
-            width="210px"
-            @click="saveIngredient()"
-         >
-            Добавить ингредиент
-         </Button>
-      </div>
-   </div>
+      <Button
+         type="button"
+         width="210px"
+         @click="saveIngredient()"
+      >
+         Добавить ингредиент
+      </Button>
+   </section>
 </template>
 
 <script>
@@ -64,17 +62,12 @@ export default {
 </script>
 
 <style lang="less">
-.addDishContainer {
-   margin: 12px 24px;
+.addDish-container {
    display: flex;
+   flex-direction: column;
 
    h2 {
       margin-top: 0;
    }
-}
-.ingredientContainer {
-   display: flex;
-   flex-direction: column;
-   margin-right: 24px;
 }
 </style>

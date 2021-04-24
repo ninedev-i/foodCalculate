@@ -1,5 +1,5 @@
 <template>
-   <div
+   <section
       class="timeline-day"
       v-for="(dayKey) in days"
       v-bind:key="dayKey"
@@ -31,7 +31,7 @@
             </div>
          </div>
       </div>
-   </div>
+   </section>
 </template>
 
 <script>
@@ -139,7 +139,6 @@ export default {
 
 .timeline {
    &-day {
-      margin: 12px;
       border-bottom: 1px solid #ececec;
 
       &-title {
