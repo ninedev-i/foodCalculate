@@ -120,6 +120,8 @@ export default {
       padding: 12px 12px 10px 12px;
       display: flex;
       align-items: center;
+      .ellipsis();
+
       &:hover {
          border-bottom: 4px solid @accentColor;
 

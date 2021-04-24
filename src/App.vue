@@ -62,10 +62,15 @@ export default {
 
 body {
    margin: 0;
-   background: #f9fafe;
+   background: @background;
    font-family: 'Open Sans', sans-serif;
    color: @fontColor;
    overflow-x: hidden;
+}
+
+h1 {
+   font-size: 1.3em;
+   margin: 0 0 12px 0;
 }
 
 a {

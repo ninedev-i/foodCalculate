@@ -144,7 +144,7 @@ h3 {
    }
 
    &-custom {
-      margin-top: 24px;
+      margin: 24px 6px 12px;
    }
 
    &-skeleton {

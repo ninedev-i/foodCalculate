@@ -31,11 +31,16 @@ export default {
          type: String,
          default: 'left'
       },
+      padding: {
+         type: String,
+         default: 'inherit'
+      },
    },
    setup(props) {
       const style = ref({
          width: props.inputWidth,
          textAlign: props.textAlign,
+         padding: props.padding,
       });
 
       return {
@@ -48,38 +53,39 @@ export default {
 <style lang="less" scoped>
 @import "../../assets/constants.less";
 
-   .input {
-      &-container {
-         padding: 0;
-         margin-bottom: 6px;
-         display: flex;
+.input {
+   &-container {
+      padding: 0;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: baseline;
 
-         input {
-            font-family: 'Open Sans', sans-serif;
-            outline: none;
-            border-radius: 2px;
+      input {
+         font-family: 'Open Sans', sans-serif;
+         outline: none;
+         border-radius: 2px;
 
-            &::-webkit-input-placeholder {
-               color: #a7a7a7;
-            }
+         &::-webkit-input-placeholder {
+            color: #a7a7a7;
+         }
 
-            &[type=number] {
-               &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
-                  -webkit-appearance: none;
-                  -moz-appearance: none;
-                  appearance: none;
-                  margin: 0;
-               }
+         &[type=number] {
+            &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+               -webkit-appearance: none;
+               -moz-appearance: none;
+               appearance: none;
+               margin: 0;
             }
          }
       }
-
-      &-borderBottom {
-         .inputBorderBottom();
-      }
-
-      &-default {
-         border: 1px solid @borderColor;
-      }
    }
+
+   &-borderBottom {
+      .inputBorderBottom();
+   }
+
+   &-default {
+      border: 1px solid @borderColor;
+   }
+}
 </style>

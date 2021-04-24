@@ -35,15 +35,12 @@ export default {
    display: flex;
    width: 100%;
 
-
    ::-webkit-scrollbar {
       -webkit-appearance: none;
       width: 5px;
-      cursor: pointer;
    }
    ::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      cursor: pointer !important;
    }
 
    ::-webkit-scrollbar-track {
@@ -62,15 +59,21 @@ export default {
       flex-direction: column;
       position: fixed;
       height: 100vh;
-      overflow: scroll;
+      overflow-y: scroll;
+
+      &:hover {
+         &::-webkit-scrollbar-thumb {
+            background-color: @borderColor;
+         }
+      }
 
       &::-webkit-scrollbar-thumb {
-         background-color: @borderColor;
+         background-color: @containerBackground;
       }
    }
 
    &-content {
-      margin: 56px 12px 0;
+      margin: 68px 12px 0;
    }
 
    &-sidebar {
@@ -79,11 +82,17 @@ export default {
       position: fixed;
       right: 0;
       width: 220px;
-      overflow: scroll;
+      overflow-y: scroll;
       background: @accentColor;
 
+      &:hover {
+         &::-webkit-scrollbar-thumb {
+            background-color: #40d9a6;
+         }
+      }
+
       &::-webkit-scrollbar-thumb {
-         background-color: #40d9a6;
+         background-color: @accentColor;
       }
 
       @media (min-width: @largeResolution) {

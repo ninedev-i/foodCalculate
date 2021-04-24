@@ -69,6 +69,10 @@ export default {
       const inputs = computed(() => props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {}));
       const dishName = ref('');
 
+      if (isEdited.value) {
+         store.dispatch('changeMenuType', 'ingredients');
+      }
+
       const getInputtedIngredients = () => {
          let ingredients = [];
          Object.keys(inputs.value).forEach((id) => {
@@ -78,18 +82,17 @@ export default {
       };
       const editItem = () => {
          if (isEdited.value) {
-            const {dayKey, dishKey} = props;
+            const {dayKey, dishKey, dish} = props;
             let ingredients = getInputtedIngredients();
 
             if (!props.dish.title) {
                // FIXME: добавить сохранение блюда в localstorage
                store.dispatch('saveDish', {title: dishName.value, ingredients: JSON.stringify(ingredients)});
-            } else {
-               store.dispatch('updateDish', {dayKey, dishKey, dishId: props.dish.id, ingredients});
             }
+            store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
          }
          isEdited.value = !isEdited.value;
-         store.dispatch('changeMenuType', 'ingredients');
+         store.dispatch('changeMenuType', (isEdited.value ? 'ingredients' : 'dishes'));
       };
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
@@ -140,6 +143,9 @@ export default {
       border: 1px solid #ececec;
       box-shadow: @boxShadow;
       cursor: move;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       @media (min-width: @largeResolution) {
          padding: 18px;

@@ -1,11 +1,12 @@
 <template>
-   <section class="addDish-container">
-      <h2>Добавить ингредиент</h2>
+   <section class="addDish">
+      <h1>Добавить ингредиент</h1>
       <Input
          autofocus
          type="text"
          inputWidth="200px"
          placeholder="Название"
+         padding="4px"
          :value="ingredientCaption"
          @change="(ev) => ingredientCaption = ev.target.value"
       />
@@ -13,6 +14,7 @@
          type="text"
          inputWidth="200px"
          placeholder="ед. измерения"
+         padding="4px"
          :value="countCaption"
          @change="(ev) => countCaption = ev.target.value"
       />
@@ -62,9 +64,10 @@ export default {
 </script>
 
 <style lang="less">
-.addDish-container {
+.addDish {
    display: flex;
    flex-direction: column;
+   margin: 0 12px;
 
    h2 {
       margin-top: 0;

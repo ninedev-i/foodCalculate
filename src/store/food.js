@@ -16,9 +16,32 @@ const state = () => ({
 
 const getters = {
    dishById: state => (id) => state.dishes.find(item => item.id === id),
+   // FIXME: ошибка когда добавляется новое блюдо без типа
    dishesByGroup: state => (groupId) => state.dishes.filter(item => item.type === groupId),
    ingredientById: state => (id) => state.ingredients.find(item => +item.id === +id),
    ingredientsByGroup: state => (groupId) => state.ingredients.filter(item => item.type === groupId),
+   getSummaryIngredients: (state, getters) => () => {
+      const output = new Map();
+
+      state.timetable
+         .map(item => item.dishes).flat()
+         .map(item => item.menu).flat()
+         .map(item => item.ingredients).flat()
+         .forEach((ingredient) => {
+            if (ingredient.quantity) {
+               output.set(ingredient.id, {
+                  ...output.get(ingredient.id),
+                  ...{
+                     quantity: (output.get(ingredient.id)?.quantity || 0) + ingredient.quantity,
+                     title: getters.ingredientById(ingredient.id).title,
+                     countCaption: getters.ingredientById(ingredient.id).count_caption,
+                  },
+               });
+            }
+         });
+
+      return output;
+   }
 };
 
 const actions = {
@@ -38,7 +61,7 @@ const actions = {
       api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENTS', data));
    },
    saveDish({commit}, data) {
-      api.post('dish', data).then(({data}) => commit('SET_DISHES', data));
+      api.post('dish', data).then(({data}) => commit('SET_DISHES', data, true));
    },
    addIngredientToDish({commit}, {ingredientId, dayKey, dishKey, dishId}) {
       commit('ADD_INGREDIENT_TO_DISH', {ingredientId, dayKey, dishKey, dishId});
@@ -57,8 +80,8 @@ const actions = {
    deleteDish({commit}, {id, dayKey, dishKey}) {
       commit('DELETE_DISH', {id, dayKey, dishKey});
    },
-   updateDish({commit}, {dayKey, dishKey, dishId, ingredients}) {
-      commit('UPDATE_DISH', {dayKey, dishKey, dishId, ingredients});
+   updateDish({commit}, {dayKey, dishKey, dishId, dishName, ingredients}) {
+      commit('UPDATE_DISH', {dayKey, dishKey, dishId, dishName, ingredients});
    },
 };
 
@@ -76,8 +99,11 @@ const mutations = {
    SET_TIMETABLE_FROM_STORE(state, timetable) {
       state.timetable = timetable;
    },
-   SET_DISHES(state, value) {
+   SET_DISHES(state, value, isNewDish) {
       state.dishes = value;
+      if (isNewDish) {
+         saveToLocalStorage(state.timetable);
+      }
    },
    SET_INGREDIENTS(state, value) {
       state.ingredients = value;
@@ -94,7 +120,9 @@ const mutations = {
          }
       });
       state.timetable = timetable;
-      saveToLocalStorage(timetable);
+      if (addedDish.title) {
+         saveToLocalStorage(timetable);
+      }
    },
    MOVE_DISH(state, {dish, dayKey, dishKey}) {
       state.timetable[dayKey].dishes[dishKey].menu.push(dish);
@@ -121,9 +149,10 @@ const mutations = {
       });
       saveToLocalStorage(state.timetable);
    },
-   UPDATE_DISH(state, {dayKey, dishKey, dishId, ingredients}) {
+   UPDATE_DISH(state, {dayKey, dishKey, dishId, dishName, ingredients}) {
       state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
          if (item.id === dishId) {
+            item.title = dishName;
             item.ingredients = ingredients;
          }
       });

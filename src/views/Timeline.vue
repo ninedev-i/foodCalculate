@@ -69,6 +69,7 @@ export default {
       };
       const deleteDish = (id, dayKey, dishKey) => {
          store.dispatch('deleteDish', {id, dayKey, dishKey});
+         store.dispatch('changeMenuType', 'dishes');
       };
       const allowDrop = (ev, dayKey, dishKey) => {
          ev.preventDefault();
