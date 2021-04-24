@@ -109,8 +109,12 @@ export default {
             }
          }
          for (let component in divs.value) {
-            // FIXME: добавить проверку на существование класса
-            divs.value[component].classList.remove('timeline-menu-dishes-hovered');
+            // eslint-disable-next-line no-prototype-builtins
+            if (divs.value.hasOwnProperty(component)) {
+               if (divs.value[component].classList.contains('timeline-menu-dishes-hovered')) {
+                  divs.value[component].classList.remove('timeline-menu-dishes-hovered');
+               }
+            }
          }
       };
 
@@ -131,6 +135,8 @@ export default {
 </script>
 
 <style lang="less">
+@import "../assets/constants.less";
+
 .timeline {
    &-day {
       margin: 12px;
@@ -152,6 +158,10 @@ export default {
          margin-bottom: 12px;
          min-height: 120px;
          height: 100%;
+
+         @media (min-width: @largeResolution) {
+            padding: 18px;
+         }
 
          &-hovered {
             border-style: dashed;

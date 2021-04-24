@@ -70,9 +70,6 @@ const mutations = {
          for (let i = 0; i < difference; i++) {
             timetable.push({dishes: getDishFormat()});
          }
-      } else {
-         // FIXME: удаление вероятно вредит UX (когда пользователь стирает кол-во дней)
-         // timetable.splice(timetable.length + difference, -difference);
       }
       state.timetable = timetable;
    },
@@ -115,9 +112,8 @@ const mutations = {
       saveToLocalStorage(state.timetable);
    },
    ADD_INGREDIENT_TO_DISH(state, {ingredientId, dayKey, dishKey, dishId}) {
-      // TODO: добавить проверку на дублирование ингредиента
       state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
-         if (item.id === dishId) {
+         if (item.id === dishId && !item.ingredients.map(item => item.id).includes(ingredientId)) {
             const ingredientsKeys = Object.keys(item.ingredients);
             const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1 || 0;
             item.ingredients[ingredientKey] = {id: ingredientId, quantity: 0};

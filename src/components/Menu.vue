@@ -110,6 +110,10 @@ h3 {
    padding: 0 6px;
    flex-shrink: 0;
 
+   @media (min-width: @largeResolution) {
+      width: 300px;
+   }
+
    &-category {
       font-weight: bold;
       margin: 16px 0 0 6px;

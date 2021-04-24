@@ -141,6 +141,10 @@ export default {
       box-shadow: @boxShadow;
       cursor: move;
 
+      @media (min-width: @largeResolution) {
+         padding: 18px;
+      }
+
       &:hover {
          box-shadow: @boxShadowHovered;
 
