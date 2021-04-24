@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import Summary from '@/components/Summary.vue';
-import Timeline from '@/components/Timeline.vue';
-import AddDishes from '@/components/AddDishes.vue';
+import Summary from '@/views/Summary.vue';
+import Timeline from '@/views/Timeline.vue';
+import AddDishes from '@/views/AddDishes.vue';
 
 export default createRouter({
    history: createWebHistory(),

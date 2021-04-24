@@ -11,7 +11,6 @@
 <script>
 import foodMenu from '@/components/Menu.vue';
 import config from '@/components/Config.vue';
-import timeline from '@/components/Timeline.vue';
 import {useStore} from 'vuex';
 import {watchEffect} from 'vue';
 import {useRouter} from 'vue-router';
@@ -20,7 +19,6 @@ export default {
    name: 'App',
    components: {
       config,
-      timeline,
       foodMenu,
    },
    setup() {
@@ -49,27 +47,16 @@ export default {
 
 <style lang="less">
 @import (css) url('https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif');
+@import "./assets/constants.less";
 
-body {
+div {
+   padding: 0;
    margin: 0;
 }
 
-input {
-   font-family: 'Open Sans', sans-serif;
-   outline: none;
-
-   &::-webkit-input-placeholder {
-      color: #a7a7a7;
-   }
-
-   &[type=number] {
-      &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
-         -webkit-appearance: none;
-         -moz-appearance: none;
-         appearance: none;
-         margin: 0;
-      }
-   }
+body {
+   margin: 0;
+   background: #f9fafe;
 }
 
 a {
@@ -82,7 +69,7 @@ a {
 
 .app-container {
    font-family: 'Open Sans', sans-serif;
-   color: #2c3e50;
+   color: @fontColor;
    display: flex;
 }
 

@@ -2,30 +2,32 @@
    <div class="config-container">
       <div class="config-settings">
          <auth />
-         <div>
-            <input
-               id="people"
-               class="config-input"
-               type="number"
-               step="1"
-               v-bind:value="people"
-               @input="changePeople($event.target.value)"
-               min="1"
-            />
-            <label class="config-label" for="people">{{getPeopleCaption(people)}}</label>
-         </div>
-         <div>
-            <input
-               id="days"
-               class="config-input"
-               type="number"
-               step="1"
-               min="1"
-               v-bind:value="days"
-               @input="changeDays($event.target.value)"
-            />
-            <label class="config-label" for="days">{{getDaysCaption(days)}}</label>
-         </div>
+         <Input
+            id="people"
+            class="config-input"
+            min="1"
+            max="500"
+            step="1"
+            type="number"
+            inputWidth="30px"
+            textAlign="center"
+            :value="people"
+            :label="getPeopleCaption(people)"
+            @input="changePeople($event.target.value)"
+         />
+         <Input
+            id="days"
+            class="config-input"
+            step="1"
+            min="1"
+            max="500"
+            type="number"
+            inputWidth="30px"
+            textAlign="center"
+            :value="days"
+            :label="getDaysCaption(days)"
+            @input="changeDays($event.target.value)"
+         />
       </div>
       <div class="config-routes">
          <router-link class="config-link" active-class="config-link-active" to="/">Меню</router-link>
@@ -39,11 +41,13 @@
 import {computed} from 'vue';
 import {useStore} from 'vuex';
 import auth from '@/components/Auth.vue';
+import Input from '@/components/common/Input.vue';
 
 export default {
    name: 'Config',
    components: {
       auth,
+      Input,
    },
    setup() {
       const store = useStore();
@@ -79,15 +83,18 @@ export default {
 </script>
 
 <style lang="less">
+@import "../assets/constants.less";
+
 .config {
    &-container {
       display: flex;
-      background: aqua;
+      background: @containerBackground;
+      box-shadow: @boxShadowHovered;
       justify-content: space-between;
       align-items: baseline;
 
       a {
-         color: #2c3e50;
+         color: @fontColor;
       }
    }
 
@@ -101,8 +108,6 @@ export default {
    }
 
    &-input {
-      width: 30px;
-      text-align: center;
       margin-right: 6px;
    }
 
@@ -112,21 +117,19 @@ export default {
 
    &-link {
       height: 100%;
-      padding: 12px;
+      padding: 12px 12px 10px 12px;
       display: flex;
       align-items: center;
       &:hover {
-         background: #0ce4e4;
-         text-decoration: underline;
+         border-bottom: 4px solid @accentColor;
 
          &.config-link-active {
-            background: #04f0f0;
             text-decoration: none;
             cursor: default;
          }
       }
       &-active {
-         background: #04f0f0;
+         border-bottom: 4px solid @accentColor;
          text-decoration: none;
       }
    }

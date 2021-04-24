@@ -1,30 +1,54 @@
 <template>
    <div>
       <div class="auth_main" @click="openDropdown()">{{userEmail || 'Вход'}}</div>
-   <div class="auth-dropdown" v-if="isOpenDropdown">
-      <form class="auth-dropdown-inputs" v-if="!userEmail">
-         <input type="text" class="auth-input" v-model="email" placeholder="Почта">
-         <input type="password" class="auth-input" v-model="password" placeholder="Пароль">
-         <input type="submit"
-                class="auth-button"
-                @click="isLogin ? login($event) : register($event)"
-                :value="isLogin ? 'Войти' : 'Зарегистрироваться'"
-         />
-         <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
-      </form>
-      <div v-else>
-         <button class="auth-button" @click="logout()">Выйти</button>
+      <div class="auth-dropdown" v-if="isOpenDropdown">
+         <form class="auth-dropdown-inputs" v-if="!userEmail">
+            <Input
+               type="text"
+               class="auth-input"
+               placeholder="Почта"
+               :value="email"
+               @change="(ev) => email = ev.target.value"
+            />
+            <Input
+               type="password"
+               class="auth-input"
+               placeholder="Пароль"
+               :value="password"
+               @change="(ev) => password = ev.target.value"
+            />
+            <Button
+               type="submit"
+               @click="isLogin ? login($event) : register($event)"
+            >
+               {{isLogin ? 'Войти' : 'Зарегистрироваться'}}
+            </Button>
+            <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
+         </form>
+         <div v-else>
+            <Button
+               type="button"
+               @click="logout()"
+            >
+               Выйти
+            </Button>
+         </div>
       </div>
-   </div>
    </div>
 </template>
 
 <script>
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
+import Input from '@/components/common/Input.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
    name: 'Auth',
+   components: {
+      Input,
+      Button,
+   },
    setup() {
       const store = useStore();
       const userEmail = computed(() => store.state.user.email);
@@ -72,6 +96,8 @@ export default {
 </script>
 
 <style lang="less">
+@import "../assets/constants.less";
+
 .auth {
    &_main {
       cursor: pointer;
@@ -96,16 +122,7 @@ export default {
    }
 
    &-input {
-      margin-bottom: 6px;
       padding: 4px 6px;
-   }
-
-   &-button {
-      background: aquamarine;
-      border: 0;
-      padding: 6px 12px;
-      font-weight: bold;
-      cursor: pointer;
    }
 
    &-toggle {
@@ -116,7 +133,7 @@ export default {
       margin-top: 6px;
       cursor: pointer;
       &:hover {
-         color: #00a6c1;
+         color: @linkColor;
       }
    }
 }

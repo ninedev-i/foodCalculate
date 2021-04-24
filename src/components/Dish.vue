@@ -1,19 +1,30 @@
 <template>
    <div
-      class="dish-container"
-      draggable="true"
+      :class="`dish-container ${isEdited ? 'dish-edited' : ''}`"
+      :draggable="!isEdited"
       v-on:dragstart="dragStart"
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
    >
       <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
-      <input v-else class="dish-input-title" placeholder="Название блюда" v-model="dishName" autofocus />
+      <Input
+         v-else
+         autofocus
+         borderBottom
+         class="dish-input-title"
+         placeholder="Название блюда"
+         :value="dishName"
+         @change="(ev) => dishName = ev.target.value"
+      />
       <div v-for="({id, quantity}, key) in dish.ingredients" class="dish-ingredient" :key="key">
-         <div v-if="isEdited" class="dish-edited">
+         <div v-if="isEdited" class="dish-edited-ingredients">
             <span>{{ingredientById(id).title}}</span>
-            <input
+            <Input
+               borderBottom
                type="number"
-               v-model="inputs[id]"
+               inputWidth="30px"
+               :value="inputs[id]"
+               @change="(ev) => inputs[id] = ev.target.value"
             />
             <span class="dish-ingredient-caption">{{ingredientById(id).count_caption}}/чел.</span>
          </div>
@@ -38,9 +49,13 @@
 <script>
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
+import Input from '@/components/common/Input.vue';
 
 export default {
    name: 'Dish',
+   components: {
+      Input,
+   },
    props: {
       dish: Object,
       dayKey: Number,
@@ -54,7 +69,7 @@ export default {
       const inputs = computed(() => props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {}));
       const dishName = ref('');
 
-      const getInputedIngredients = () => {
+      const getInputtedIngredients = () => {
          let ingredients = [];
          Object.keys(inputs.value).forEach((id) => {
             ingredients.push({id, quantity: +inputs.value[id]});
@@ -64,7 +79,7 @@ export default {
       const editItem = () => {
          if (isEdited.value) {
             const {dayKey, dishKey} = props;
-            let ingredients = getInputedIngredients();
+            let ingredients = getInputtedIngredients();
 
             if (!props.dish.title) {
                // FIXME: добавить сохранение блюда в localstorage
@@ -78,7 +93,7 @@ export default {
       };
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
-         const movedData = props.dish.title ? props.dish : {...props.dish, ...{title: dishName.value, type: 0, ingredients: getInputedIngredients()}};
+         const movedData = props.dish.title ? props.dish : {...props.dish, ...{title: dishName.value, type: 0, ingredients: getInputtedIngredients()}};
          ev.dataTransfer.setData('moveDish', JSON.stringify(movedData));
          ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
       };
@@ -118,7 +133,7 @@ export default {
 
 .dish {
    &-container {
-      background: white;
+      background: @containerBackground;
       padding: 12px;
       margin-bottom: 8px;
       position: relative;
@@ -146,25 +161,25 @@ export default {
    }
 
    &-input-title {
-      .inputBorderBottom();
-      width: 100%;
       margin-bottom: 6px;
       font-weight: bold;
       font-size: 16px;
    }
 
    &-edited {
-      .ellipsis();
-      display: flex;
+      cursor: default;
 
-      input {
-         .inputBorderBottom();
-         width: 30px;
-         height: 14px;
-         margin: 1px 6px 0;
-         text-align: center;
-         font-size: 14px;
-         padding-bottom: 2px;
+      &-ingredients {
+         .ellipsis();
+         display: flex;
+
+         input {
+            height: 14px;
+            margin: 1px 6px 0;
+            text-align: center;
+            font-size: 14px;
+            padding-bottom: 2px;
+         }
       }
    }
 

@@ -18,11 +18,16 @@ const actions = {
       commit('CHANGE_MENU_TYPE', type);
    },
    changePeople({commit}, people) {
-      commit('SET_PEOPLE', +people);
+      if (people > 0) {
+         commit('SET_PEOPLE', +people);
+      }
+
    },
    changeDays({commit}, days) {
-      commit('SET_DAYS', +days);
-      commit('SET_TIMETABLE', +days);
+      if (days > 0 && days <= 500) {
+         commit('SET_DAYS', +days);
+         commit('SET_TIMETABLE', +days);
+      }
    },
 };
 

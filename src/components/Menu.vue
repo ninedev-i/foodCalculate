@@ -104,7 +104,7 @@ h3 {
 }
 .food-menu {
    width: 220px;
-   background: aquamarine;
+   background: @accentColor;
    height: 100%;
    min-height: 100vh;
    padding: 0 6px;

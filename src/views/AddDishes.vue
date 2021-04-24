@@ -2,10 +2,29 @@
    <div class="addDishContainer">
       <div class="ingredientContainer">
          <h2>Добавить ингредиент</h2>
-         <input type="text" class="ingredientInput" v-model="ingredientCaption" placeholder="Название" autofocus />
-         <input type="text" class="ingredientInput" v-model="countCaption" placeholder="ед. измерения" />
+         <Input
+            autofocus
+            type="text"
+            inputWidth="200px"
+            placeholder="Название"
+            :value="ingredientCaption"
+            @change="(ev) => ingredientCaption = ev.target.value"
+         />
+         <Input
+            type="text"
+            inputWidth="200px"
+            placeholder="ед. измерения"
+            :value="countCaption"
+            @change="(ev) => countCaption = ev.target.value"
+         />
 
-         <button type="button" class="ingredientButton" @click="saveIngredient()">Добавить ингредиент</button>
+         <Button
+            type="button"
+            width="210px"
+            @click="saveIngredient()"
+         >
+            Добавить ингредиент
+         </Button>
       </div>
    </div>
 </template>
@@ -13,9 +32,15 @@
 <script>
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
+import Input from '@/components/common/Input.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
    name: 'AddDishes',
+   components: {
+      Input,
+      Button,
+   },
    setup() {
       const store = useStore();
 
@@ -51,14 +76,5 @@ export default {
    display: flex;
    flex-direction: column;
    margin-right: 24px;
-}
-.ingredientInput {
-   width: 200px;
-   padding: 3px;
-   margin-bottom: 6px;
-}
-.ingredientButton {
-   width: 210px;
-   padding: 5px;
 }
 </style>
