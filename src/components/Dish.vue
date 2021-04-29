@@ -33,14 +33,19 @@
             <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
          </div>
       </div>
+      <Button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</Button>
+
       <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
       <div class="dish-toolbar">
          <div
+            v-if="!isEdited"
             class="dish-toolbar-edit"
+            title="Редактировать"
             @click="editItem">✐</div>
          <div
             class="dish-toolbar-delete"
+            title="Удалить"
             @click="deleteItem">✖</div>
       </div>
    </div>
@@ -50,11 +55,13 @@
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
 import Input from '@/components/common/Input.vue';
+import Button from '@/components/common/Button.vue';
 
 export default {
    name: 'Dish',
    components: {
       Input,
+      Button,
    },
    props: {
       dish: Object,
@@ -86,7 +93,6 @@ export default {
             let ingredients = getInputtedIngredients();
 
             if (!props.dish.title) {
-               // FIXME: добавить сохранение блюда в localstorage
                store.dispatch('saveDish', {title: dishName.value, ingredients: JSON.stringify(ingredients)});
             }
             store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
@@ -148,7 +154,7 @@ export default {
       white-space: nowrap;
 
       @media (min-width: @largeResolution) {
-         padding: 18px;
+         padding: 12px 18px;
       }
 
       &:hover {
@@ -190,10 +196,10 @@ export default {
 
          input {
             height: 14px;
-            margin: 1px 6px 0;
+            margin: 2px 7px 0 !important;
             text-align: center;
             font-size: 14px;
-            padding-bottom: 2px;
+            padding-bottom: 2px !important;
          }
       }
    }
@@ -205,21 +211,30 @@ export default {
       display: none;
 
       &-delete {
-         color: red;
          .toolbarItem();
+         color: #e91e63;
+
          &:hover {
-            color: #ee1111;
-            background: #eaeaea;
+            background: @accentColorLight;
          }
       }
 
       &-edit{
          .toolbarItem();
+         color: #0277bd;
+         font-size: 14px;
+         transform: rotate(180deg);
+
          &:hover {
-            color: green;
-            background: #eaeaea;
+            background: @accentColorLight;
          }
       }
+   }
+
+   &-save {
+      max-width: 100px;
+      float: right;
+      font-size: 12px;
    }
 
    &-title {

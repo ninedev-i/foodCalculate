@@ -123,6 +123,7 @@ export default {
 
    &-input {
       padding: 4px 6px;
+      margin-bottom: 2px;
    }
 
    &-toggle {

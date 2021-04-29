@@ -4,7 +4,7 @@
       <div class="summary-table">
          <template v-for="dish of summary.keys()" :key="dish">
             <div class="summary-table-title">{{summary.get(dish).title}}</div>
-            <div class="summary-table-quantity">{{summary.get(dish).quantity}}</div>
+            <div class="summary-table-quantity">{{summary.get(dish).quantity * people}}</div>
             <div class="summary-table-countCaption">{{summary.get(dish).countCaption}}.</div>
          </template>
       </div>
@@ -19,10 +19,12 @@ export default {
    name: 'Summary',
    setup() {
       const store = useStore();
+      const people = computed(() => store.state.people);
       const ingredientById = computed(() => store.getters.ingredientById);
       const summary = computed(() => store.getters.getSummaryIngredients());
 
       return {
+         people,
          summary,
          ingredientById,
       };

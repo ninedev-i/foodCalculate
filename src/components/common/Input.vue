@@ -56,7 +56,6 @@ export default {
 .input {
    &-container {
       padding: 0;
-      margin-bottom: 6px;
       display: flex;
       align-items: baseline;
 

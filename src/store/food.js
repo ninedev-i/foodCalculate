@@ -22,7 +22,6 @@ const getters = {
    ingredientsByGroup: state => (groupId) => state.ingredients.filter(item => item.type === groupId),
    getSummaryIngredients: (state, getters) => () => {
       const output = new Map();
-
       state.timetable
          .map(item => item.dishes).flat()
          .map(item => item.menu).flat()

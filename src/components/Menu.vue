@@ -133,7 +133,6 @@ h3 {
    }
 }
 
-
 .item {
    background: white;
    margin: 6px;
