@@ -18,7 +18,7 @@
                draggable="true"
                @dragstart="dragStart"
             >
-               {{item.title}}
+               {{cutDishName(item.title)}}
             </div>
             <div
                v-if="!dishes.length"
@@ -29,9 +29,10 @@
 
       <div
          v-if="menuType === 'dishes'"
-         class="item item-custom"
-         draggable="true"
+         :class="`item item-custom ${isAuthenticated ? '' :'item-custom-disabled'}`"
+         :draggable="isAuthenticated"
          @dragstart="dragStart"
+         :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
       >
          Свое блюдо
       </div>
@@ -47,6 +48,7 @@ export default {
    setup() {
       const store = useStore();
       const menuType = computed(() => store.state.menuType);
+      const isAuthenticated = computed(() => !!store.state.user.email);
       const dishes = computed(() => store.state.food.dishes);
       const ingredients = computed(() => store.state.food.ingredients);
       const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
@@ -78,6 +80,7 @@ export default {
             }
          });
       };
+      const cutDishName = (caption) => caption.replace(/(каша|суп)/i, '').trim();
 
       return {
          dishes,
@@ -87,6 +90,8 @@ export default {
          dishGroups,
          ingredientGroups,
          menuType,
+         isAuthenticated,
+         cutDishName,
          dragStart,
          toggleGroup,
          changeMenuType,
@@ -137,7 +142,11 @@ h3 {
    font-weight: bold;
    width: fit-content;
 
-   &:not(.item-skeleton):hover {
+   &::first-letter {
+      text-transform: uppercase;
+   }
+
+   &:not(.item-skeleton):hover:not(.item-custom-disabled):hover {
       box-shadow: @boxShadowHovered;
       padding: 6px 12px;
       cursor: move;
@@ -145,6 +154,10 @@ h3 {
 
    &-custom {
       margin: 24px 6px 12px;
+
+      &-disabled {
+         color: gray;
+      }
    }
 
    &-skeleton {

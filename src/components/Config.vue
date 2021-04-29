@@ -1,7 +1,12 @@
 <template>
    <div class="config-container">
+      <nav class="config-routes">
+         <router-link class="config-link" active-class="config-link-active" to="/">Меню</router-link>
+         <router-link class="config-link" active-class="config-link-active" to="/add">Добавить блюда</router-link>
+         <router-link class="config-link" active-class="config-link-active" to="/summary" :people="{people: +people}">Итого</router-link>
+      </nav>
+
       <div class="config-settings">
-         <auth />
          <Input
             id="people"
             class="config-input"
@@ -28,12 +33,8 @@
             :label="getDaysCaption(days)"
             @input="changeDays($event.target.value)"
          />
+         <auth />
       </div>
-      <nav class="config-routes">
-         <router-link class="config-link" active-class="config-link-active" to="/">Меню</router-link>
-         <router-link class="config-link" active-class="config-link-active" to="/add">Добавить блюда</router-link>
-         <router-link class="config-link" active-class="config-link-active" to="/summary" :people="{people: +people}">Итого</router-link>
-      </nav>
    </div>
 </template>
 
@@ -122,10 +123,12 @@ export default {
       align-items: center;
       .ellipsis();
 
+      // TODO: Нижнее подчеркивание должно различаться у активного элемента и фокусированного
       &:hover {
-         border-bottom: 4px solid @accentColor;
+         font-weight: bold;
 
          &.config-link-active {
+            font-weight: normal;
             text-decoration: none;
             cursor: default;
          }

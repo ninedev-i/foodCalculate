@@ -12,7 +12,7 @@
          autofocus
          borderBottom
          class="dish-input-title"
-         placeholder="Название блюда"
+         placeholder="Введите название блюда"
          :value="dishName"
          @change="(ev) => dishName = ev.target.value"
       />
@@ -33,7 +33,7 @@
             <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
          </div>
       </div>
-      <div v-if="!dish.ingredients.length" class="dish-ingredient">Перетяните сюда ингредиенты</div>
+      <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
       <div class="dish-toolbar">
          <div
@@ -167,6 +167,11 @@ export default {
 
       &-caption {
          .ellipsis();
+      }
+
+      &-tip {
+         color: #d6d6d6;
+         font-size: 14px;
       }
    }
 
