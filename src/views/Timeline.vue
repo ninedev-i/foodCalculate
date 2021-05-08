@@ -4,6 +4,8 @@
       v-for="(dayKey) in days"
       v-bind:key="dayKey"
    >
+      <h1>Меню</h1>
+
       <div class="timeline-day-title">День {{dayKey}}</div>
 
       <div class="timeline-menu">
@@ -146,6 +148,10 @@ export default {
          font-size: 18px;
          font-weight: bold;
          margin: 0 0 8px 14px;
+      }
+
+      h1 {
+         margin-left: 12px;
       }
    }
 

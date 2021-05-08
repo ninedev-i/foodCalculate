@@ -1,7 +1,7 @@
 <template>
-   <section>
+   <section class="auth-container">
       <h1>{{userEmail ? 'Профиль' : 'Авторизация'}}</h1>
-      <div class="auth_main" v-if="userEmail">{{userEmail}}</div>
+      <div class="auth-email" v-if="userEmail">{{userEmail}}</div>
       <form class="auth-inputs" v-if="!userEmail">
          <Input
             type="text"
@@ -93,7 +93,11 @@ export default {
 @import "../assets/constants.less";
 
 .auth {
-   &_main {
+   &-container {
+      margin: 0 12px;
+   }
+
+   &-email {
       cursor: pointer;
       text-decoration: underline;
       margin-right: 24px;
