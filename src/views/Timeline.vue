@@ -1,38 +1,45 @@
 <template>
-   <section
-      class="timeline-day"
-      v-for="(dayKey) in days"
-      v-bind:key="dayKey"
-   >
+   <section class="timeline-container">
       <h1>Меню</h1>
+      <div
+         class="timeline-day"
+         v-for="(dayKey) in days"
+         v-bind:key="dayKey"
+      >
 
-      <div class="timeline-day-title">День {{dayKey}}</div>
+         <div class="timeline-day-title">День {{dayKey}}</div>
 
-      <div class="timeline-menu">
-         <div
-            class="timeline-menu-dish"
-            v-for="(dish, dishKey) in timetable[dayKey - 1].dishes"
-            v-bind:key="dishKey"
-            @dragover="allowDrop($event, dayKey - 1, dishKey)"
-            @dragleave="removeBorder($event, dayKey - 1, dishKey)"
-         >
-            <div class="timeline-menu-title">{{dish.name}}</div>
+         <div class="timeline-menu">
             <div
-               class="timeline-menu-dishes"
-               @drop="drop($event, dayKey - 1, dishKey)"
-               :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
+               class="timeline-menu-dish"
+               v-for="(dish, dishKey) in timetable[dayKey - 1].dishes"
+               v-bind:key="dishKey"
+               @dragover="allowDrop($event, dayKey - 1, dishKey)"
+               @dragleave="removeBorder($event, dayKey - 1, dishKey)"
             >
-               <div v-for="(dish, menuKey) in dish.menu" :key="menuKey">
-                  <dish
-                     :dish="dish"
-                     :dayKey="dayKey - 1"
-                     :dishKey="dishKey"
-                     @delete-item="deleteDish(dish.id, dayKey - 1, dishKey)"
-                  />
+               <div class="timeline-menu-title">{{dish.name}}</div>
+               <div
+                  class="timeline-menu-dishes"
+                  @drop="drop($event, dayKey - 1, dishKey)"
+                  :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
+               >
+                  <div v-for="(dish, menuKey) in dish.menu" :key="menuKey">
+                     <dish
+                        :dish="dish"
+                        :dayKey="dayKey - 1"
+                        :dishKey="dishKey"
+                        @delete-item="deleteDish(dish.id, dayKey - 1, dishKey)"
+                     />
+                  </div>
                </div>
             </div>
          </div>
       </div>
+      <PlusButton
+         class="timeline-addDay"
+         caption="Добавить день"
+         @click="addDay"
+      />
    </section>
 </template>
 
@@ -40,11 +47,13 @@
 import {computed, ref, onBeforeUpdate} from 'vue';
 import {useStore} from 'vuex';
 import dish from '@/components/Dish.vue';
+import PlusButton from '@/components/common/PlusButton.vue';
 
 export default {
    name: 'Timeline',
    components: {
       dish,
+      PlusButton,
    },
    setup() {
       const store = useStore();
@@ -120,12 +129,14 @@ export default {
             }
          }
       };
+      const addDay = () => store.dispatch('changeDays', store.state.days + 1);
 
       return {
          divs,
          days,
          timetable,
          drop,
+         addDay,
          allowDrop,
          removeBorder,
          addDish,
@@ -141,6 +152,12 @@ export default {
 @import "../assets/constants.less";
 
 .timeline {
+   &-container {
+      h1 {
+         margin-left: 12px;
+      }
+   }
+
    &-day {
       border-bottom: 1px solid #ececec;
 
@@ -148,10 +165,6 @@ export default {
          font-size: 18px;
          font-weight: bold;
          margin: 0 0 8px 14px;
-      }
-
-      h1 {
-         margin-left: 12px;
       }
    }
 
@@ -195,6 +208,10 @@ export default {
          font-weight: bold;
          text-align: center;
       }
+   }
+
+   &-addDay {
+      margin: 12px auto;
    }
 }
 </style>
