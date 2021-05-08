@@ -1,9 +1,9 @@
 <template>
    <div class="config-container">
       <nav class="config-routes">
-         <router-link class="config-link" active-class="config-link-active" to="/">Меню</router-link>
-         <router-link class="config-link" active-class="config-link-active" to="/add">Добавить блюда</router-link>
-         <router-link class="config-link" active-class="config-link-active" to="/summary" :people="{people: +people}">Итого</router-link>
+         <router-link class="config-link" active-class="config-link-active" :to="routes.profile">Профиль</router-link>
+         <router-link class="config-link" active-class="config-link-active" :to="routes.home">Меню</router-link>
+         <router-link class="config-link" active-class="config-link-active" :to="routes.summary" :people="{people: +people}">Итого</router-link>
       </nav>
 
       <div class="config-settings">
@@ -33,7 +33,6 @@
             :label="getDaysCaption(days)"
             @input="changeDays($event.target.value)"
          />
-         <auth />
       </div>
    </div>
 </template>
@@ -41,13 +40,12 @@
 <script>
 import {computed} from 'vue';
 import {useStore} from 'vuex';
-import auth from '@/components/Auth.vue';
 import Input from '@/components/common/Input.vue';
+import {routes} from '@/router';
 
 export default {
    name: 'Config',
    components: {
-      auth,
       Input,
    },
    setup() {
@@ -73,6 +71,7 @@ export default {
 
       return {
          days,
+         routes,
          people,
          changeDays,
          changePeople,
@@ -100,8 +99,21 @@ export default {
    }
 
    &-settings {
-      margin-left: 12px;
       display: flex;
+      background: #a2a6f1;
+      align-self: stretch;
+      align-items: center;
+      padding-right: 6px;
+
+      &:before {
+         padding-right: 12px;
+         display: block;
+         content: '';
+         background: @containerBackground;
+         height: 100%;
+         width: 20px;
+         clip-path: polygon(0 0, 0 48px, 20px 48px, 0px 0px);
+      }
    }
 
    &-label {

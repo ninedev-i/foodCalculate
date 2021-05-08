@@ -1,40 +1,40 @@
 <template>
-   <div>
-      <div class="auth_main" @click="openDropdown()">{{userEmail || 'Вход'}}</div>
-      <div class="auth-dropdown" v-if="isOpenDropdown">
-         <form class="auth-dropdown-inputs" v-if="!userEmail">
-            <Input
-               type="text"
-               class="auth-input"
-               placeholder="Почта"
-               :value="email"
-               @change="(ev) => email = ev.target.value"
-            />
-            <Input
-               type="password"
-               class="auth-input"
-               placeholder="Пароль"
-               :value="password"
-               @change="(ev) => password = ev.target.value"
-            />
-            <Button
-               type="submit"
-               @click="isLogin ? login($event) : register($event)"
-            >
-               {{isLogin ? 'Войти' : 'Зарегистрироваться'}}
-            </Button>
-            <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
-         </form>
-         <div v-else>
-            <Button
-               type="button"
-               @click="logout()"
-            >
-               Выйти
-            </Button>
-         </div>
+   <section>
+      <h1>{{userEmail ? 'Профиль' : 'Авторизация'}}</h1>
+      <div class="auth_main" v-if="userEmail">{{userEmail}}</div>
+      <form class="auth-inputs" v-if="!userEmail">
+         <Input
+            type="text"
+            class="auth-input"
+            placeholder="Почта"
+            :value="email"
+            @change="(ev) => email = ev.target.value"
+         />
+         <Input
+            type="password"
+            class="auth-input"
+            placeholder="Пароль"
+            :value="password"
+            @change="(ev) => password = ev.target.value"
+         />
+         <Button
+            type="submit"
+            @click="isLogin ? login($event) : register($event)"
+         >
+            {{isLogin ? 'Войти' : 'Зарегистрироваться'}}
+         </Button>
+         <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
+      </form>
+      <div v-else>
+         <Button
+            class="auth-logout"
+            type="button"
+            @click="logout()"
+         >
+            Выйти
+         </Button>
       </div>
-   </div>
+   </section>
 </template>
 
 <script>
@@ -56,9 +56,7 @@ export default {
       const email = ref('');
       const password = ref('');
       const isLogin = ref(true);
-      const isOpenDropdown = ref(false);
 
-      const openDropdown = () => isOpenDropdown.value = !isOpenDropdown.value;
       const toggleIsLogin = () => isLogin.value = !isLogin.value;
       const register = (ev) => {
          ev.preventDefault();
@@ -73,8 +71,6 @@ export default {
          store.dispatch('login', {
             email: email.value,
             password: password.value,
-         }).then(() => {
-            isOpenDropdown.value = false;
          });
       };
       const logout = () => store.dispatch('logout');
@@ -84,11 +80,9 @@ export default {
          isLogin,
          password,
          userEmail,
-         isOpenDropdown,
          login,
          logout,
          register,
-         openDropdown,
          toggleIsLogin,
       };
    },
@@ -105,20 +99,14 @@ export default {
       margin-right: 24px;
    }
 
-   &-dropdown {
-      position: absolute;
-      background: #fff;
-      border: 1px solid #ececec;
-      padding: 12px;
-      z-index: 1000;
-      top: 46px;
-      left: 0;
-      box-shadow: 0 2px 8px 0 #04040412;
+   &-inputs {
+      width: 200px
+   }
 
-      &-inputs {
-         display: flex;
-         flex-direction: column;
-      }
+   &-logout {
+      margin-top: 12px;
+      width: 140px !important;
+      display: block;
    }
 
    &-input {
