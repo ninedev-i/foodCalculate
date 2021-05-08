@@ -66,7 +66,7 @@ export default {
             email: email.value,
             password: password.value,
             password_confirmation: password.value,
-         });
+         }).then(() => login(ev));
       };
       const login = (ev) => {
          ev.preventDefault();
