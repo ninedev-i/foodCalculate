@@ -29,6 +29,10 @@ const actions = {
          commit('SET_TIMETABLE', +days);
       }
    },
+   removeDay({commit, state}, dayKey) {
+      commit('SET_DAYS', state.days - 1);
+      this.dispatch('removeDayFromMenu', dayKey);
+   },
 };
 
 const mutations = {

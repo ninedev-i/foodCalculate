@@ -240,6 +240,7 @@ export default {
    &-title {
       margin-bottom: 6px;
       font-weight: bold;
+      .ellipsis();
    }
 }
 </style>

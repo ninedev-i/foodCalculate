@@ -82,6 +82,9 @@ const actions = {
    updateDish({commit}, {dayKey, dishKey, dishId, dishName, ingredients}) {
       commit('UPDATE_DISH', {dayKey, dishKey, dishId, dishName, ingredients});
    },
+   removeDayFromMenu({commit}, dayKey) {
+      commit('REMOVE_DAY_FROM_MENU', {deletedDayKey: dayKey});
+   },
 };
 
 const mutations = {
@@ -155,6 +158,27 @@ const mutations = {
             item.ingredients = ingredients;
          }
       });
+      saveToLocalStorage(state.timetable);
+   },
+   REMOVE_DAY_FROM_MENU(state, {deletedDayKey}) {
+      let updatedTimetable = state.timetable.slice(0);
+      updatedTimetable = state.timetable.filter((day, dayKey) => {
+         if (dayKey + 1 > deletedDayKey) {
+            return day.dishes.map(item => {
+               item.menu.map(dish => {
+                  const ids = dish.id.split('_');
+                  ids[0] = +ids[0] - 1;
+                  dish.id = ids.join('_');
+                  return dish;
+               });
+               return item;
+            });
+         } else if (dayKey + 1 < deletedDayKey) {
+            return day;
+         }
+      });
+
+      state.timetable = updatedTimetable;
       saveToLocalStorage(state.timetable);
    },
 };

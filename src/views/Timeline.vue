@@ -7,7 +7,16 @@
          v-bind:key="dayKey"
       >
 
-         <div class="timeline-day-title">День {{dayKey}}</div>
+         <div class="timeline-day-title">
+            <span>День {{dayKey}}</span>
+            <PlusButton
+               v-if="dayKey !== 1"
+               is-delete
+               class="timeline-day-delete"
+               title="Удалить день"
+               @click="removeDay(dayKey)"
+            />
+         </div>
 
          <div class="timeline-menu">
             <div
@@ -130,6 +139,7 @@ export default {
          }
       };
       const addDay = () => store.dispatch('changeDays', store.state.days + 1);
+      const removeDay = (dayKey) => store.dispatch('removeDay', dayKey);
 
       return {
          divs,
@@ -137,6 +147,7 @@ export default {
          timetable,
          drop,
          addDay,
+         removeDay,
          allowDrop,
          removeBorder,
          addDish,
@@ -160,11 +171,20 @@ export default {
 
    &-day {
       border-bottom: 1px solid #ececec;
+      align-items: end;
+      margin-bottom: 12px;
 
       &-title {
          font-size: 18px;
          font-weight: bold;
          margin: 0 0 8px 14px;
+         display: flex;
+      }
+
+      &-delete {
+         margin-left: 10px;
+         height: 28px;
+         width: 28px;
       }
    }
 
