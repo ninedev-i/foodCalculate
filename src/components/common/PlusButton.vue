@@ -34,6 +34,10 @@ export default {
    display: flex;
    align-items: center;
 
+   @media print {
+      display: none;
+   }
+
    &:hover .plusButton-icon {
       filter: drop-shadow(0 0 4px rgba(4, 4, 4, 0.2));
    }

@@ -20,7 +20,7 @@
             :label="getPeopleCaption(people)"
             @input="changePeople($event.target.value)"
          />
-         <Input
+<!--         <Input
             id="days"
             class="config-input"
             step="1"
@@ -32,7 +32,7 @@
             :value="days"
             :label="getDaysCaption(days)"
             @input="changeDays($event.target.value)"
-         />
+         />-->
       </div>
    </div>
 </template>
@@ -92,6 +92,10 @@ export default {
       box-shadow: @boxShadowHovered;
       justify-content: space-between;
       align-items: baseline;
+
+      @media print {
+         display: none;
+      }
 
       a {
          color: @fontColor;

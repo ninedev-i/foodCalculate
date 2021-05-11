@@ -1,6 +1,10 @@
 <template>
    <section class="timeline-container">
-      <h1>Меню</h1>
+      <div class="timeline-header">
+         <h1>Меню</h1>
+         <PrintButton />
+      </div>
+
       <div
          class="timeline-day"
          v-for="(dayKey) in days"
@@ -57,12 +61,14 @@ import {computed, ref, onBeforeUpdate} from 'vue';
 import {useStore} from 'vuex';
 import dish from '@/components/Dish.vue';
 import PlusButton from '@/components/common/PlusButton.vue';
+import PrintButton from '@/components/common/PrintButton.vue';
 
 export default {
    name: 'Timeline',
    components: {
       dish,
       PlusButton,
+      PrintButton,
    },
    setup() {
       const store = useStore();
@@ -163,9 +169,11 @@ export default {
 @import "../assets/constants.less";
 
 .timeline {
-   &-container {
+   &-header {
+      display: flex;
+
       h1 {
-         margin-left: 12px;
+         margin: 0 12px 0 12px;
       }
    }
 

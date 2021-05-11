@@ -1,6 +1,10 @@
 <template>
    <section class="summary">
-      <h1>Все ингредиенты</h1>
+      <div class="summary-header">
+         <h1>Итого</h1>
+         <PrintButton />
+      </div>
+
       <div class="summary-table">
          <template v-for="dish of summary.keys()" :key="dish">
             <div class="summary-table-title">{{summary.get(dish).title}}</div>
@@ -14,9 +18,13 @@
 <script>
 import {useStore} from 'vuex';
 import {computed} from 'vue';
+import PrintButton from '@/components/common/PrintButton.vue';
 
 export default {
    name: 'Summary',
+   components: {
+      PrintButton,
+   },
    setup() {
       const store = useStore();
       const people = computed(() => store.state.people);
@@ -37,6 +45,14 @@ export default {
 
 .summary {
    margin: 0 12px;
+
+   &-header {
+      display: flex;
+
+      h1 {
+         margin-right: 12px;
+      }
+   }
 
    &-table {
       width: 350px;

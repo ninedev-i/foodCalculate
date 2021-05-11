@@ -111,6 +111,10 @@ h3 {
    padding: 0 6px;
    height: 100vh;
 
+   @media print {
+      display: none;
+   }
+
    &-category {
       font-weight: bold;
       margin: 16px 0 0 6px;

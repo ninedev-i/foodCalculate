@@ -61,6 +61,12 @@ export default {
       height: 100vh;
       overflow-y: scroll;
 
+      @media print {
+         width: 100%;
+         height: 100%;
+         position: relative;
+      }
+
       &:hover {
          &::-webkit-scrollbar-thumb {
             background-color: @borderColor;
@@ -74,6 +80,10 @@ export default {
 
    &-content {
       margin: 68px 12px 0;
+
+      @media print {
+         margin: 12px;
+      }
    }
 
    &-sidebar {
