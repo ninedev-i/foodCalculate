@@ -2,6 +2,10 @@ import {createStore} from 'vuex';
 import userStore from '@/store/user';
 import foodStore from '@/store/food';
 
+const saveToLocalStorage = (days, people) => {
+   localStorage.setItem('settings', JSON.stringify({days, people}));
+};
+
 const modules = {
    user: userStore,
    food: foodStore,
@@ -14,6 +18,13 @@ const state = () => ({
 });
 
 const actions = {
+   setSettingsFromStorage({commit}) {
+      const data = JSON.parse(localStorage.getItem('settings'));
+      if (data) {
+         commit('SET_PEOPLE', data.people);
+         commit('SET_DAYS', data.days);
+      }
+   },
    changeMenuType({commit}, type) {
       commit('CHANGE_MENU_TYPE', type);
    },
@@ -41,9 +52,11 @@ const mutations = {
    },
    SET_PEOPLE(state, value) {
       state.people = value;
+      saveToLocalStorage(state.days, state.people);
    },
    SET_DAYS(state, value) {
       state.days = value;
+      saveToLocalStorage(state.days, state.people);
    },
 };
 

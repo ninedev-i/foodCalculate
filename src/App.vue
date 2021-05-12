@@ -37,6 +37,7 @@ export default {
       const stopLoadingItemsWatcher = watchEffect(() => {
          if (store.state.food.ingredients.length && store.state.food.dishes.length) {
             store.dispatch('setTimetableFromStorage');
+            store.dispatch('setSettingsFromStorage');
          }
       });
       if (store.state.food.ingredients.length && store.state.food.dishes.length) {
