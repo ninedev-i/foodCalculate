@@ -40,5 +40,9 @@ export default {
       background: #fff;
       box-shadow: @boxShadow;
    }
+
+   @media print {
+      display: none;
+   }
 }
 </style>
