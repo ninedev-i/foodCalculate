@@ -71,6 +71,9 @@ export default {
          store.dispatch('login', {
             email: email.value,
             password: password.value,
+         }).then(() => {
+            store.dispatch('getIngredients');
+            store.dispatch('getDishes');
          });
       };
       const logout = () => store.dispatch('logout');

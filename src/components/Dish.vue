@@ -33,9 +33,9 @@
             <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
          </div>
       </div>
-      <Button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</Button>
-
       <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
+
+      <Button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</Button>
 
       <div class="dish-toolbar">
          <div
@@ -178,6 +178,7 @@ export default {
       &-tip {
          color: #d6d6d6;
          font-size: 14px;
+         margin-bottom: 12px;
       }
    }
 
