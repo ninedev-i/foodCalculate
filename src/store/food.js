@@ -11,7 +11,21 @@ const saveToLocalStorage = (timetable) => {
 const state = () => ({
    timetable: [{dishes: getDishFormat()}],
    ingredients: [],
+   ingredientGroups: [
+      {id: 0, name: 'Крупы'},
+      {id: 1, name: 'Мучное'},
+      {id: 2, name: 'Специи и приправы'},
+      {id: 3, name: 'Мясное'},
+      {id: 4, name: 'Овощи и фрукты'},
+      {id: 5, name: 'Другое'},
+   ],
    dishes: [],
+   dishGroups: [
+      {id: 0, name: 'Напитки'},
+      {id: 1, name: 'Каши'},
+      {id: 2, name: 'Второе'},
+      {id: 3, name: 'Супы'},
+   ],
 });
 
 const getters = {
@@ -28,19 +42,34 @@ const getters = {
          .map(item => item.ingredients).flat()
          .forEach((ingredient) => {
             if (ingredient.quantity) {
+               const {title, type, count_caption: countCaption} = getters.ingredientById(ingredient.id);
                output.set(ingredient.id, {
                   ...output.get(ingredient.id),
                   ...{
                      quantity: (output.get(ingredient.id)?.quantity || 0) + ingredient.quantity,
-                     title: getters.ingredientById(ingredient.id).title,
-                     countCaption: getters.ingredientById(ingredient.id).count_caption,
+                     title,
+                     type,
+                     countCaption,
                   },
                });
             }
          });
 
       return output;
-   }
+   },
+   getSummaryGrouped: (state, getters) => () => {
+      const output = state.ingredientGroups.slice(0);
+      output.map((group) => {
+         group.items = [];
+         getters.getSummaryIngredients().forEach((item) => {
+            if (item.type === group.id) {
+               group.items.push(item);
+            }
+         });
+         return group;
+      });
+      return output;
+   },
 };
 
 const actions = {

@@ -53,21 +53,8 @@ export default {
       const ingredients = computed(() => store.state.food.ingredients);
       const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
-      const dishGroups = reactive([
-         {id: 0, name: 'Напитки', expanded: true},
-         {id: 1, name: 'Каши', expanded: true},
-         {id: 2, name: 'Второе', expanded: true},
-         {id: 3, name: 'Супы', expanded: true},
-      ]);
-      const ingredientGroups = reactive([
-         {id: 0, name: 'Крупы', expanded: true},
-         {id: 1, name: 'Мучное', expanded: true},
-         {id: 2, name: 'Специи и приправы', expanded: true},
-         {id: 3, name: 'Мясное', expanded: true},
-         {id: 4, name: 'Овощи и фрукты', expanded: true},
-         {id: 5, name: 'Другое', expanded: true},
-      ]);
-
+      const dishGroups = reactive(store.state.food.dishGroups.map(item => ({...item, ...{expanded: true}})));
+      const ingredientGroups = reactive(store.state.food.ingredientGroups.map(item => ({...item, ...{expanded: true}})));
       const changeMenuType = () => store.dispatch('changeMenuType');
       const dragStart = (ev) => {
          const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
