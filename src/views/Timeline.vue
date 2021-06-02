@@ -2,7 +2,7 @@
    <section class="timeline-container">
       <div class="timeline-header">
          <h1>Меню</h1>
-         <PrintButton />
+         <print-button />
       </div>
 
       <div
@@ -13,13 +13,15 @@
 
          <div class="timeline-day-title">
             <span>День {{dayKey}}</span>
-            <PlusButton
+            <icon-button
                v-if="dayKey !== 1"
-               is-delete
+               size="20px"
                class="timeline-day-delete"
                title="Удалить день"
                @click="removeDay(dayKey)"
-            />
+            >
+               <minus-icon />
+            </icon-button>
          </div>
 
          <div class="timeline-menu">
@@ -48,11 +50,14 @@
             </div>
          </div>
       </div>
-      <PlusButton
+      <icon-button
          class="timeline-addDay"
          caption="Добавить день"
+         size="26px"
          @click="addDay"
-      />
+      >
+         <plus-icon />
+      </icon-button>
    </section>
 </template>
 
@@ -60,14 +65,18 @@
 import {computed, ref, onBeforeUpdate} from 'vue';
 import {useStore} from 'vuex';
 import dish from '@/components/Dish.vue';
-import PlusButton from '@/components/common/PlusButton.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
+import IconButton from '@/components/common/IconButton.vue';
+import MinusIcon from '@/assets/minus.svg?component';
+import PlusIcon from '@/assets/plus.svg?component';
 
 export default {
    name: 'Timeline',
    components: {
       dish,
-      PlusButton,
+      IconButton,
+      MinusIcon,
+      PlusIcon,
       PrintButton,
    },
    setup() {

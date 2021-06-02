@@ -3,36 +3,36 @@
       <h1>{{userEmail ? 'Профиль' : 'Авторизация'}}</h1>
       <div class="auth-email" v-if="userEmail">{{userEmail}}</div>
       <form class="auth-inputs" v-if="!userEmail">
-         <Input
+         <common-input
             type="text"
             class="auth-input"
             placeholder="Почта"
             :value="email"
             @change="(ev) => email = ev.target.value"
          />
-         <Input
+         <common-input
             type="password"
             class="auth-input"
             placeholder="Пароль"
             :value="password"
             @change="(ev) => password = ev.target.value"
          />
-         <Button
+         <common-button
             type="submit"
             @click="isLogin ? login($event) : register($event)"
          >
             {{isLogin ? 'Войти' : 'Зарегистрироваться'}}
-         </Button>
+         </common-button>
          <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
       </form>
       <div v-else>
-         <Button
+         <common-button
             class="auth-logout"
             type="button"
             @click="logout()"
          >
             Выйти
-         </Button>
+         </common-button>
       </div>
    </section>
 </template>
@@ -40,14 +40,14 @@
 <script>
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
-import Input from '@/components/common/Input.vue';
-import Button from '@/components/common/Button.vue';
+import CommonInput from '@/components/common/Input.vue';
+import CommonButton from '@/components/common/Button.vue';
 
 export default {
    name: 'Auth',
    components: {
-      Input,
-      Button,
+      CommonInput,
+      CommonButton,
    },
    setup() {
       const store = useStore();

@@ -1,8 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import Summary from '@/views/Summary.vue';
-import Timeline from '@/views/Timeline.vue';
-import AddDishes from '@/views/AddDishes.vue';
-import Auth from '@/components/Auth.vue';
 
 export const routes = {
    home: '/',
@@ -14,9 +10,8 @@ export const routes = {
 export default createRouter({
    history: createWebHistory(),
    routes: [
-      {path: routes.home, component: Timeline},
-      {path: routes.add, component: AddDishes},
-      {path: routes.profile, component: Auth},
-      {path: routes.summary, component: Summary},
+      {path: routes.home, component: () => import('@/views/Timeline.vue')},
+      {path: routes.profile, component: () => import('@/views/Auth.vue')},
+      {path: routes.summary, component: () => import('@/views/Summary.vue')},
    ],
 });

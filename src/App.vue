@@ -1,15 +1,15 @@
 <template>
-   <Layout>
+   <layout>
       <template #header>
-         <Config />
+         <config />
       </template>
       <template #content>
          <router-view />
       </template>
       <template #sidebar>
-         <FoodMenu />
+         <food-menu />
       </template>
-   </Layout>
+   </layout>
 </template>
 
 <script>

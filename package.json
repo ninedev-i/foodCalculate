@@ -7,8 +7,10 @@
     "build": "vite build"
   },
   "dependencies": {
+    "D": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.10.1",
+    "vite-plugin-vue-svg": "^0.1.0",
     "vue": "^3.0.11",
     "vue-router": "^4.0.6",
     "vuex": "^4.0.0"
@@ -39,7 +41,10 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "indent": ["warn", 3],
+      "indent": [
+        "warn",
+        3
+      ],
       "semi": 1,
       "no-console": 1,
       "no-debugger": 1,

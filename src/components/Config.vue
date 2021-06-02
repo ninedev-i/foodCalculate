@@ -7,7 +7,7 @@
       </nav>
 
       <div class="config-settings">
-         <Input
+         <common-input
             id="people"
             class="config-input"
             min="1"
@@ -27,13 +27,13 @@
 <script>
 import {computed} from 'vue';
 import {useStore} from 'vuex';
-import Input from '@/components/common/Input.vue';
+import CommonInput from '@/components/common/Input.vue';
 import {routes} from '@/router';
 
 export default {
    name: 'Config',
    components: {
-      Input,
+      CommonInput,
    },
    setup() {
       const store = useStore();

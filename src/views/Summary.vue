@@ -2,7 +2,7 @@
    <section class="summary">
       <div class="summary-header">
          <h1>Итого</h1>
-         <PrintButton />
+         <print-button />
       </div>
 
       <template v-for="(group, i) in summaryGrouped" :key="i">

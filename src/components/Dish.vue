@@ -7,7 +7,7 @@
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
    >
       <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
-      <Input
+      <common-input
          v-else
          autofocus
          borderBottom
@@ -19,7 +19,7 @@
       <div v-for="({id, quantity}, key) in dish.ingredients" class="dish-ingredient" :key="key">
          <div v-if="isEdited" class="dish-edited-ingredients">
             <span>{{ingredientById(id).title}}</span>
-            <Input
+            <common-input
                borderBottom
                type="number"
                inputWidth="30px"
@@ -35,18 +35,22 @@
       </div>
       <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
-      <Button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</Button>
+      <common-button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</common-button>
 
       <div class="dish-toolbar">
          <div
             v-if="!isEdited"
             class="dish-toolbar-edit"
             title="Редактировать"
-            @click="editItem">✐</div>
+            @click="editItem">
+            <edit-icon />
+         </div>
          <div
             class="dish-toolbar-delete"
             title="Удалить"
-            @click="deleteItem">✖</div>
+            @click="deleteItem">
+            <cross-icon />
+         </div>
       </div>
    </div>
 </template>
@@ -54,14 +58,18 @@
 <script>
 import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
-import Input from '@/components/common/Input.vue';
-import Button from '@/components/common/Button.vue';
+import CommonInput from '@/components/common/Input.vue';
+import CommonButton from '@/components/common/Button.vue';
+import CrossIcon from '@/assets/cross.svg?component';
+import EditIcon from '@/assets/edit.svg?component';
 
 export default {
    name: 'Dish',
    components: {
-      Input,
-      Button,
+      CommonInput,
+      CommonButton,
+      CrossIcon,
+      EditIcon,
    },
    props: {
       dish: Object,
@@ -213,22 +221,10 @@ export default {
 
       &-delete {
          .toolbarItem();
-         color: #e91e63;
-
-         &:hover {
-            background: @accentColorLight;
-         }
       }
 
       &-edit{
          .toolbarItem();
-         color: #0277bd;
-         font-size: 14px;
-         transform: rotate(180deg);
-
-         &:hover {
-            background: @accentColorLight;
-         }
       }
    }
 

@@ -5,8 +5,8 @@
          <div
             class="food-menu-category"
             @click="toggleGroup(groupId)">
+            <expand-arrow-icon :class="`food-menu-category-spoiler ${!group.expanded ? 'food-menu-category-spoiler-closed' : ''}`"/>
             <span class="food-menu-category-title">{{group.name}}</span>
-            <span :class="`food-menu-category-spoiler ${!group.expanded ? 'food-menu-category-spoiler-closed' : ''}`">></span>
          </div>
 
          <div v-if="group.expanded">
@@ -20,6 +20,8 @@
             >
                {{cutDishName(item.title)}}
             </div>
+            <add-ingredient v-if="menuType === 'ingredients'" />
+
             <div
                v-if="!dishes.length"
                class="item item-skeleton"
@@ -42,9 +44,15 @@
 <script>
 import {computed, reactive} from 'vue';
 import {useStore} from 'vuex';
+import AddIngredient from '@/components/AddIngredient.vue';
+import ExpandArrowIcon from '@/assets/expandArrow.svg?component';
 
 export default {
    name: 'Menu',
+   components: {
+      AddIngredient,
+      ExpandArrowIcon,
+   },
    setup() {
       const store = useStore();
       const menuType = computed(() => store.state.menuType);
@@ -107,18 +115,21 @@ h3 {
       margin: 16px 0 0 6px;
       display: flex;
       cursor: pointer;
+      align-items: center;
 
       &-title {
          margin-right: 10px;
       }
 
       &-spoiler {
-         transform: rotate(90deg);
-         display: flex;
-         justify-content: center;
+         width: 14px;
+         height: 18px;
+         margin-right: 6px;
+         transition: 0.5s;
+         fill: @iconAccentedColor;
 
          &-closed {
-            transform: rotate(270deg);
+            transform: rotate(-90deg);
          }
       }
    }
