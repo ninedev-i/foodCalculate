@@ -59,7 +59,7 @@ export default {
       display: flex;
 
       h1 {
-         margin-right: 12px;
+         margin: 0 12px 0 0;
       }
    }
 
