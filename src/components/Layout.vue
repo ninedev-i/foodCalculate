@@ -11,12 +11,18 @@
       <aside class="layout-sidebar">
          <slot name="sidebar"></slot>
       </aside>
+      <loading-indicator />
    </div>
 </template>
 
 <script>
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
+
 export default {
-   name: 'Layout'
+   name: 'Layout',
+   components: {
+      LoadingIndicator,
+   }
 };
 </script>
 

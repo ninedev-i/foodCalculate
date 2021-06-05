@@ -10,6 +10,7 @@ const saveToLocalStorage = (timetable) => {
 
 const state = () => ({
    timetable: [{dishes: getDishFormat()}],
+   dishes: [],
    ingredients: [],
    ingredientGroups: [
       {id: 0, name: 'Крупы'},
@@ -19,7 +20,6 @@ const state = () => ({
       {id: 4, name: 'Овощи и фрукты'},
       {id: 5, name: 'Другое'},
    ],
-   dishes: [],
    dishGroups: [
       {id: 0, name: 'Напитки'},
       {id: 1, name: 'Каши'},
@@ -73,6 +73,9 @@ const getters = {
 };
 
 const actions = {
+   setTimetable({commit}, data) {
+      commit('SET_TIMETABLE', data);
+   },
    setTimetableFromStorage({commit}) {
       const data = JSON.parse(localStorage.getItem('timetable'));
       if (data) {

@@ -27,7 +27,7 @@
          <div class="timeline-menu">
             <div
                class="timeline-menu-dish"
-               v-for="(dish, dishKey) in timetable[dayKey - 1].dishes"
+               v-for="(dish, dishKey) in timetable[dayKey - 1]?.dishes"
                v-bind:key="dishKey"
                @dragover="allowDrop($event, dayKey - 1, dishKey)"
                @dragleave="removeBorder($event, dayKey - 1, dishKey)"

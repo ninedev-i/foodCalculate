@@ -31,9 +31,14 @@ export default {
       const store = useStore();
       const router = useRouter();
 
-      store.dispatch('getUserInfo');
-      store.dispatch('getIngredients');
-      store.dispatch('getDishes');
+      Promise
+         .allSettled([
+            store.dispatch('getUserInfo'),
+            store.dispatch('getIngredients'),
+            store.dispatch('getDishes'),
+         ])
+         .then(() => store.dispatch('setIsLoading', false));
+
       const stopLoadingItemsWatcher = watchEffect(() => {
          if (store.state.food.ingredients.length && store.state.food.dishes.length) {
             store.dispatch('setTimetableFromStorage');

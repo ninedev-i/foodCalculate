@@ -12,12 +12,16 @@ const modules = {
 };
 
 const state = () => ({
+   isLoading: true,
    menuType: 'dishes',
    people: 1,
    days: 1,
 });
 
 const actions = {
+   setIsLoading({commit, state}, value) {
+      commit('SET_IS_LOADING', value);
+   },
    setSettingsFromStorage({commit}) {
       const data = JSON.parse(localStorage.getItem('settings'));
       if (data) {
@@ -37,7 +41,7 @@ const actions = {
    changeDays({commit}, days) {
       if (days > 0 && days <= 500) {
          commit('SET_DAYS', +days);
-         commit('SET_TIMETABLE', +days);
+         this.dispatch('setTimetable', +days);
       }
    },
    removeDay({commit, state}, dayKey) {
@@ -47,6 +51,9 @@ const actions = {
 };
 
 const mutations = {
+   SET_IS_LOADING(state, value) {
+      state.isLoading = value;
+   },
    CHANGE_MENU_TYPE(state, value) {
       state.menuType = value || (state.menuType === 'dishes' ? 'ingredients' : 'dishes');
    },
