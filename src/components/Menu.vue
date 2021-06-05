@@ -20,7 +20,7 @@
             >
                {{cutDishName(item.title)}}
             </div>
-            <add-ingredient v-if="menuType === 'ingredients'" />
+            <add-ingredient :type="groupId" v-if="menuType === 'ingredients'" />
 
             <div
                v-if="!dishes.length"

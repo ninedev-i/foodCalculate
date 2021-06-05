@@ -1,6 +1,9 @@
 <template>
    <button class="iconButton">
-      <span :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}`" :style="`width: ${size}; height: ${size}`">
+      <span
+         :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}
+         ${rounded ? 'iconButton-icon-rounded' : ''}`"
+         :style="`width: ${size}; height: ${size}`">
          <slot />
       </span>
       <span class="iconButton-caption">{{caption}}</span>
@@ -15,6 +18,10 @@ export default {
          type: String
       },
       filled: {
+         type: Boolean,
+         default: true,
+      },
+      rounded: {
          type: Boolean,
          default: true,
       },
@@ -46,8 +53,11 @@ export default {
    &-icon-filled {
       fill: @iconAccentedColor;
       background: #fff;
-      border-radius: 100%;
       filter: drop-shadow(0 0 10px #04040412);
+   }
+
+   &-icon-rounded {
+      border-radius: 100%;
    }
 
    &-icon-empty {
