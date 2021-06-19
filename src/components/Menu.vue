@@ -2,11 +2,11 @@
    <div class="food-menu">
       <h3>
          <span
-            :class="`${menuType !== 'dishes' ? 'food-menu-title-active' : ''}`"
+            :class="`${menuType !== 'dishes' ? 'food-menu-title-link' : 'food-menu-title-current'}`"
             @click="changeMenuType('dishes')">Блюда</span>
          <span class="food-menu-title-separator">/</span>
          <span
-            :class="`${menuType === 'dishes' ? 'food-menu-title-active' : ''}`"
+            :class="`${menuType === 'dishes' ? 'food-menu-title-link' : 'food-menu-title-current'}`"
             @click="changeMenuType('ingredients')">Ингредиенты</span>
       </h3>
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" v-bind:key="groupId">
@@ -123,13 +123,13 @@ h3 {
          margin: 0 6px;
       }
 
-      &-active {
-         cursor: pointer;
-         border-bottom: 2px dotted;
+      &-current {
+         border-bottom: 2px solid @iconAccentedColor;
 
-         &:hover {
-            color: #44617e;
-         }
+      }
+      &-link:hover {
+         cursor: pointer;
+         color: @iconAccentedColor;
       }
    }
 
