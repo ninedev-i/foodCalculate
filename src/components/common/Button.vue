@@ -1,6 +1,6 @@
 <template>
    <button
-      class="button"
+      :class="`button button-${appearance}`"
       v-bind="$attrs"
       :style="style"
    >
@@ -17,6 +17,10 @@ export default {
       width: {
          type: String,
          default: '100%'
+      },
+      appearance: {
+         type: String,
+         default: 'accented'
       },
    },
    setup(props) {
@@ -35,15 +39,28 @@ export default {
 @import "../../assets/constants.less";
 
 .button {
-   background: @accentColor;
-   border: 0;
    padding: 6px 12px;
    font-weight: bold;
    cursor: pointer;
    border-radius: 4px;
+   font-family: 'Open Sans', sans-serif;
 
-   &:hover {
-      background: @accentColorHovered;
+   &-accented {
+      border: 1px solid @accentColor;
+      background: @accentColor;
+
+      &:hover {
+         background: @accentColorHovered;
+      }
+   }
+
+   &-outlined {
+      border: 1px solid @accentColor;
+      background: none;
+
+      &:hover {
+         background: @accentColorLight;
+      }
    }
 }
 </style>

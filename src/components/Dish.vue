@@ -35,7 +35,21 @@
       </div>
       <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
-      <common-button v-if="isEdited" class="dish-save" @click="editItem">Сохранить</common-button>
+      <common-button
+         v-if="isEdited"
+         class="dish-action"
+         @click="editItem"
+      >
+         Сохранить
+      </common-button>
+      <common-button
+         v-if="isEdited"
+         appearance="outlined"
+         class="dish-action"
+         @click="cancelEdit"
+      >
+         Отменить
+      </common-button>
 
       <div class="dish-toolbar">
          <div
@@ -56,7 +70,7 @@
 </template>
 
 <script>
-import {computed, ref} from 'vue';
+import {computed, ref, watch} from 'vue';
 import {useStore} from 'vuex';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
@@ -81,12 +95,16 @@ export default {
       const isEdited = ref(!props.dish.title);
       const people = computed(() => store.state.people);
       const ingredientById = computed(() => store.getters.ingredientById);
-      const inputs = computed(() => props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {}));
       const dishName = ref('');
 
       if (isEdited.value) {
          store.dispatch('changeMenuType', 'ingredients');
       }
+
+      const generateInputs = () => {
+         return props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {});
+      };
+      const inputs = ref(generateInputs());
 
       const getInputtedIngredients = () => {
          let ingredients = [];
@@ -105,9 +123,10 @@ export default {
             }
             store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
          }
-         isEdited.value = !isEdited.value;
+         cancelEdit();
          store.dispatch('changeMenuType', (isEdited.value ? 'ingredients' : 'dishes'));
       };
+      const cancelEdit = () => isEdited.value = !isEdited.value;
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
          const movedData = props.dish.title ? props.dish : {...props.dish, ...{title: dishName.value, type: 0, ingredients: getInputtedIngredients()}};
@@ -129,6 +148,8 @@ export default {
          store.dispatch('addIngredientToDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey, dishId: props.dish.id});
       };
 
+      watch(() => isEdited.value, () => inputs.value = generateInputs());
+
       return {
          people,
          inputs,
@@ -136,6 +157,7 @@ export default {
          isEdited,
          ingredientById,
          editItem,
+         cancelEdit,
          dragStart,
          deleteItem,
          allowDropIngredient,
@@ -228,10 +250,11 @@ export default {
       }
    }
 
-   &-save {
+   &-action {
       max-width: 100px;
       float: right;
       font-size: 12px;
+      margin: 12px 0 0 12px;
    }
 
    &-title {
