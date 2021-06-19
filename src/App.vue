@@ -4,7 +4,9 @@
          <config />
       </template>
       <template #content>
-         <router-view />
+         <wrapper>
+            <router-view />
+         </wrapper>
       </template>
       <template #sidebar>
          <food-menu />
@@ -16,6 +18,7 @@
 import FoodMenu from '@/components/Menu.vue';
 import Config from '@/components/Config.vue';
 import Layout from '@/components/Layout.vue';
+import Wrapper from '@/components/common/Wrapper.vue';
 import {useStore} from 'vuex';
 import {watchEffect} from 'vue';
 import {useRouter} from 'vue-router';
@@ -26,6 +29,7 @@ export default {
       Config,
       FoodMenu,
       Layout,
+      Wrapper,
    },
    setup() {
       const store = useStore();

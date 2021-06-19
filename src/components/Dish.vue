@@ -35,21 +35,26 @@
       </div>
       <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
-      <common-button
-         v-if="isEdited"
-         class="dish-action"
-         @click="editItem"
-      >
-         Сохранить
-      </common-button>
-      <common-button
-         v-if="isEdited"
-         appearance="outlined"
-         class="dish-action"
-         @click="cancelEdit"
-      >
-         Отменить
-      </common-button>
+      <div class="dish-actions">
+         <common-button
+            v-if="isEdited"
+            width="85px"
+            fontSize="12px"
+            appearance="outlined"
+            @click="cancelEdit"
+         >
+            Отменить
+         </common-button>
+         <common-button
+            v-if="isEdited"
+            width="100px"
+            margin="0 0 0 12px"
+            fontSize="12px"
+            @click="editItem"
+         >
+            Сохранить
+         </common-button>
+      </div>
 
       <div class="dish-toolbar">
          <div
@@ -124,9 +129,12 @@ export default {
             store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
          }
          cancelEdit();
+      };
+      const cancelEdit = () => {
+         isEdited.value = !isEdited.value;
+         store.dispatch('toggleIsShowBackground');
          store.dispatch('changeMenuType', (isEdited.value ? 'ingredients' : 'dishes'));
       };
-      const cancelEdit = () => isEdited.value = !isEdited.value;
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
          const movedData = props.dish.title ? props.dish : {...props.dish, ...{title: dishName.value, type: 0, ingredients: getInputtedIngredients()}};
@@ -220,6 +228,7 @@ export default {
 
    &-edited {
       cursor: default;
+      z-index: 10;
 
       &-ingredients {
          .ellipsis();
@@ -250,11 +259,9 @@ export default {
       }
    }
 
-   &-action {
-      max-width: 100px;
+   &-actions {
+      margin-top: 12px;
       float: right;
-      font-size: 12px;
-      margin: 12px 0 0 12px;
    }
 
    &-title {

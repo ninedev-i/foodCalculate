@@ -22,10 +22,20 @@ export default {
          type: String,
          default: 'accented'
       },
+      margin: {
+         type: String,
+         default: 'auto'
+      },
+      fontSize: {
+         type: String,
+         default: 'inherit'
+      },
    },
    setup(props) {
       const style = ref({
          width: props.width,
+         margin: props.margin,
+         fontSize: props.fontSize,
       });
 
       return {

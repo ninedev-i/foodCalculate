@@ -1,6 +1,6 @@
 <template>
    <div class="layout">
-      <div class="layout-page">
+      <div :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`">
          <header class="layout-header">
             <slot name="header"></slot>
          </header>
@@ -17,11 +17,21 @@
 
 <script>
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import {useStore} from 'vuex';
+import {computed} from 'vue';
 
 export default {
    name: 'Layout',
    components: {
       LoadingIndicator,
+   },
+   setup() {
+      const store = useStore();
+      const isShowBackground = computed(() => store.state.isShowBackground);
+
+      return {
+         isShowBackground
+      };
    }
 };
 </script>
@@ -29,8 +39,10 @@ export default {
 <style lang="less" scoped>
 @import "../assets/constants.less";
 
+@menuWidth: 250px;
+
 .calculateWidth {
-   width: calc(100% - 220px);
+   width: calc(100% - @menuWidth);
 
    @media (min-width: @largeResolution) {
       width: calc(100% - 300px);
@@ -67,6 +79,10 @@ export default {
       height: 100vh;
       overflow-y: scroll;
 
+      &-isEdited {
+         overflow-y: hidden;
+      }
+
       @media print {
          width: 100%;
          height: 100%;
@@ -97,7 +113,7 @@ export default {
       flex-direction: column;
       position: fixed;
       right: 0;
-      width: 220px;
+      width: @menuWidth;
       overflow-y: scroll;
       background: @accentColor;
 

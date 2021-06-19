@@ -38,7 +38,7 @@
                   @drop="drop($event, dayKey - 1, dishKey)"
                   :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
                >
-                  <div v-for="(dish, menuKey) in dish.menu" :key="menuKey">
+                  <div class="timeline-menu-dishes-container" v-for="(dish, menuKey) in dish.menu" :key="menuKey">
                      <dish
                         :dish="dish"
                         :dayKey="dayKey - 1"
@@ -214,6 +214,11 @@ export default {
          margin-bottom: 12px;
          min-height: 120px;
          height: 100%;
+         position: relative;
+
+         &-container {
+            position: inherit;
+         }
 
          @media (min-width: @largeResolution) {
             padding: 18px;

@@ -1,6 +1,14 @@
 <template>
    <div class="food-menu">
-      <h3 @click="changeMenuType()">{{menuType === 'dishes' ? 'Блюда' : 'Ингредиенты'}}</h3>
+      <h3>
+         <span
+            :class="`${menuType !== 'dishes' ? 'food-menu-title-active' : ''}`"
+            @click="changeMenuType('dishes')">Блюда</span>
+         <span class="food-menu-title-separator">/</span>
+         <span
+            :class="`${menuType === 'dishes' ? 'food-menu-title-active' : ''}`"
+            @click="changeMenuType('ingredients')">Ингредиенты</span>
+      </h3>
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" v-bind:key="groupId">
          <div
             class="food-menu-category"
@@ -63,7 +71,7 @@ export default {
       const dishesByGroup = computed(() => store.getters.dishesByGroup);
       const dishGroups = reactive(store.state.food.dishGroups.map(item => ({...item, ...{expanded: true}})));
       const ingredientGroups = reactive(store.state.food.ingredientGroups.map(item => ({...item, ...{expanded: true}})));
-      const changeMenuType = () => store.dispatch('changeMenuType');
+      const changeMenuType = (type) => store.dispatch('changeMenuType', type);
       const dragStart = (ev) => {
          const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
          return ev.dataTransfer.setData(type, ev.target.getAttribute('id'));
@@ -108,6 +116,21 @@ h3 {
 
    @media print {
       display: none;
+   }
+
+   &-title {
+      &-separator {
+         margin: 0 6px;
+      }
+
+      &-active {
+         cursor: pointer;
+         border-bottom: 2px dotted;
+
+         &:hover {
+            color: #44617e;
+         }
+      }
    }
 
    &-category {

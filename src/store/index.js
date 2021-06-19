@@ -13,6 +13,7 @@ const modules = {
 
 const state = () => ({
    isLoading: true,
+   isShowBackground: false,
    menuType: 'dishes',
    people: 1,
    days: 1,
@@ -48,11 +49,17 @@ const actions = {
       commit('SET_DAYS', state.days - 1);
       this.dispatch('removeDayFromMenu', dayKey);
    },
+   toggleIsShowBackground({commit, state}) {
+      commit('SET_IS_SHOW_BACKGROUND', !state.isShowBackground);
+   },
 };
 
 const mutations = {
    SET_IS_LOADING(state, value) {
       state.isLoading = value;
+   },
+   SET_IS_SHOW_BACKGROUND(state, value) {
+      state.isShowBackground = value;
    },
    CHANGE_MENU_TYPE(state, value) {
       state.menuType = value || (state.menuType === 'dishes' ? 'ingredients' : 'dishes');

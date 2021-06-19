@@ -129,6 +129,7 @@ const mutations = {
          }
       }
       state.timetable = timetable;
+      saveToLocalStorage(timetable);
    },
    SET_TIMETABLE_FROM_STORE(state, timetable) {
       state.timetable = timetable;
