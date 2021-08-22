@@ -1,7 +1,7 @@
 <template>
    <div class="userMenu-container">
       <h4>Сохраненные меню</h4>
-      <table class="userMenu-table" cellpadding="6px">
+      <table class="userMenu-table">
          <tr>
             <th>Название</th>
             <th>Обновлено</th>
@@ -17,7 +17,7 @@
                   type="text"
                   inputWidth="200px"
                   :value="inputs[menu.id]"
-                  @input="(ev) => inputs[menu.id] = ev.target.value"
+                  @input="(ev) => handleInput(ev.target.value, menu.id)"
                />
             </td>
             <td>{{getFormattedDate(menu.updated_at)}}</td>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import {computed, reactive, watch} from 'vue';
+import {computed} from 'vue';
 import {useStore} from 'vuex';
 import CommonButton from '@/components/common/Button.vue';
 import CommonInput from '@/components/common/Input.vue';
@@ -79,12 +79,7 @@ export default {
    setup() {
       const store = useStore();
       const menus = computed(() => store.state.user.menus);
-      let inputs = reactive(menus.value.reduce((obj, cur) => ({...obj, [cur.id]: cur.title}), {}));
-
-      // fixme
-      watch(menus, () => {
-         inputs = reactive(menus.value.reduce((obj, cur) => ({...obj, [cur.id]: cur.title}), {}));
-      });
+      const inputs = computed(() => store.state.user.menusForInput);
 
       // TODO поле ввода по клику. по ховеру карандаш
 
@@ -104,6 +99,10 @@ export default {
          return false;
       });
 
+      const handleInput = (value, id) => {
+         store.dispatch('setMenusForInput', {value, id});
+      };
+
       const addMenu = () => {
          const data = {
             title: 'Поход',
@@ -115,11 +114,10 @@ export default {
       const updateItem = (id) => {
          const data = {
             id,
-            title: inputs[id],
+            title: inputs.value[id],
             settings: JSON.stringify({people: store.state.people, days: store.state.days}),
             content: JSON.stringify(store.state.food.timetable),
          };
-         inputs = reactive(menus.value.reduce((obj, cur) => ({...obj, [cur.id]: cur.title}), {}));
          store.dispatch('updateMenu', data);
       };
       const deleteItem = (id) => {
@@ -146,6 +144,7 @@ export default {
          addMenu,
          updateItem,
          inputs,
+         handleInput,
          deleteItem,
          chooseItem,
          isTitleChanged,

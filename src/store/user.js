@@ -3,6 +3,7 @@ import api, {setToken, destroyToken, isAuthenticated} from '@/utils';
 const state = () => ({
    email: null,
    menus: [],
+   menusForInput: []
 });
 
 const actions = {
@@ -43,19 +44,33 @@ const actions = {
    },
    getMenus({commit}) {
       return api.get('menu')
-         .then((response) => {
-            commit('SET_MENU', response.data);
+         .then(({data}) => {
+            commit('SET_MENU', data);
+            commit('SET_MENUS_FOR_INPUT', data.reduce((obj, cur) => {
+               const dataObject = obj ? {[obj.id]: obj.title} : {};
+               return ({...dataObject, [cur.id]: cur.title});
+            }));
          });
+   },
+   setMenusForInput({commit, state}, {value, id}) {
+      const updatedData = {...state.menusForInput};
+      updatedData[id] = value;
+      commit('SET_MENUS_FOR_INPUT', updatedData);
    },
    addMenu({commit}, menuData) {
       return api
          .post('menu', menuData)
          .then(({data}) => {
             commit('SET_MENU', data);
+            commit('SET_MENUS_FOR_INPUT', data.reduce((obj, cur) => {
+               const dataObject = obj ? {[obj.id]: obj.title} : {};
+               return ({...dataObject, [cur.id]: cur.title});
+            }));
          });
    },
    async updateMenu({commit}, menuData) {
-      await api.put(`menu/${menuData.id}`, menuData);
+      const {data} = await api.put(`menu/${menuData.id}`, menuData);
+      commit('SET_MENU', data);
       this.dispatch('setIsTimetableChanged', false);
    },
    chooseMenu({commit}, id) {
@@ -74,6 +89,7 @@ const actions = {
          .delete(`menu/${id}`)
          .then(({data}) => {
             commit('SET_MENU', data);
+            commit('SET_MENUS_FOR_INPUT', data.reduce((obj, cur) => ({...obj, [cur.id]: cur.title}), {}));
          });
    },
 };
@@ -85,11 +101,19 @@ const mutations = {
    SET_MENU(state, data) {
       state.menus = data;
    },
+   SET_MENUS_FOR_INPUT(state, data) {
+      state.menusForInput = data;
+   },
+};
+
+const getters = {
+   currentMenuTitle: state => state.menus.find(item => item.is_current)?.title
 };
 
 const userStore = {
    state,
    actions,
+   getters,
    mutations,
 };
 

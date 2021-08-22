@@ -92,7 +92,7 @@ export default {
 
       const days = computed(() => store.state.days);
       const timetable = computed(() => store.state.food.timetable);
-      const menuName = computed(() => store.state.user.menus.find(item => item.is_current)?.title);
+      const menuName = computed(() => store.getters.currentMenuTitle);
       const isShowBackground = computed(() => store.state.isShowBackground);
 
       const addDish = (id, dayKey, dishKey) => {
