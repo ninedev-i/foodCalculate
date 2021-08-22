@@ -10,7 +10,10 @@
             <div class="summary-table-group-title">{{group.name}}</div>
             <div class="summary-table">
                <template v-for="(item, i) in group.items" :key="i">
-                  <div class="summary-table-title">{{item.title}}</div>
+                  <div class="summary-table-title">
+                     <input type="checkbox" class="summary-checkbox">
+                     {{item.title}}
+                  </div>
                   <div class="summary-table-quantity">{{item.quantity * people}}</div>
                   <div class="summary-table-countCaption">{{item.countCaption}}</div>
                </template>
@@ -24,8 +27,6 @@
 import {useStore} from 'vuex';
 import {computed} from 'vue';
 import PrintButton from '@/components/common/PrintButton.vue';
-
-// TODO: добавить чекбоксы на печати
 
 export default {
    name: 'Summary',
@@ -102,6 +103,14 @@ export default {
       &-countCaption {
          text-align: left;
          padding-left: 0 !important;
+      }
+   }
+
+   &-checkbox {
+      display: none;
+      margin-right: 8px;
+      @media print {
+         display: inline-block;
       }
    }
 }
