@@ -10,6 +10,7 @@ const saveToLocalStorage = (timetable) => {
 
 const state = () => ({
    timetable: [{dishes: getDishFormat()}],
+   isTimetableChanged: false,
    dishes: [],
    ingredients: [],
    ingredientGroups: [
@@ -76,11 +77,14 @@ const actions = {
    setTimetable({commit}, data) {
       commit('SET_TIMETABLE', data);
    },
-   setTimetableFromStorage({commit}) {
-      const data = JSON.parse(localStorage.getItem('timetable'));
+   setTimetableFromStorage({commit}, dataFromBase) {
+      const data = dataFromBase || JSON.parse(localStorage.getItem('timetable'));
       if (data) {
          commit('SET_TIMETABLE_FROM_STORE', data);
       }
+   },
+   setIsTimetableChanged({commit}, value) {
+      commit('SET_IS_TIMETABLE_CHANGED', value);
    },
    getDishes({commit}) {
       api.get('dish').then(({data}) => commit('SET_DISHES', data));
@@ -91,28 +95,36 @@ const actions = {
    saveIngredient({commit}, data) {
       api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENTS', data));
    },
-   saveDish({commit}, data) {
-      api.post('dish', data).then(({data}) => commit('SET_DISHES', data, true));
+   async saveDish({commit}, data) {
+      const dishes = await api.post('dish', data);
+      commit('SET_DISHES', dishes, true);
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    addIngredientToDish({commit}, {ingredientId, dayKey, dishKey, dishId}) {
       commit('ADD_INGREDIENT_TO_DISH', {ingredientId, dayKey, dishKey, dishId});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    addDish({commit}, {addedDish, dayKey, dishKey}) {
       commit('ADD_DISH', {addedDish, dayKey, dishKey});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    moveDish({commit}, {moveFrom, moveTo, movedDish}) {
       const id = movedDish.id;
       commit('DELETE_DISH', {id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey});
       commit('MOVE_DISH', {dish: movedDish, dayKey: moveTo.dayKey, dishKey: moveTo.dishKey});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    sortDish({commit}, {moveFrom, sortNumber, movedDish}) {
       commit('SORT_DISH', {dish: movedDish, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey, sortNumber});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    deleteDish({commit}, {id, dayKey, dishKey}) {
       commit('DELETE_DISH', {id, dayKey, dishKey});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    updateDish({commit}, {dayKey, dishKey, dishId, dishName, ingredients}) {
       commit('UPDATE_DISH', {dayKey, dishKey, dishId, dishName, ingredients});
+      commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    removeDayFromMenu({commit}, dayKey) {
       commit('REMOVE_DAY_FROM_MENU', {deletedDayKey: dayKey});
@@ -133,6 +145,9 @@ const mutations = {
    },
    SET_TIMETABLE_FROM_STORE(state, timetable) {
       state.timetable = timetable;
+   },
+   SET_IS_TIMETABLE_CHANGED(state, value) {
+      state.isTimetableChanged = value;
    },
    SET_DISHES(state, value, isNewDish) {
       state.dishes = value;
@@ -171,7 +186,12 @@ const mutations = {
    },
    DELETE_DISH(state, {id, dayKey, dishKey}) {
       const editedMenu = state.timetable[dayKey].dishes[dishKey].menu.slice(0);
-      state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
+      if (id) {
+         state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
+      } else {
+         // Удалим свое блюдо при отмене редактирования
+         state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => item.title);
+      }
       saveToLocalStorage(state.timetable);
    },
    ADD_INGREDIENT_TO_DISH(state, {ingredientId, dayKey, dishKey, dishId}) {

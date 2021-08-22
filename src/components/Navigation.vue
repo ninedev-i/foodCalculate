@@ -1,15 +1,15 @@
 <template>
-   <div class="config-container">
-      <nav class="config-routes">
-         <router-link class="config-link" active-class="config-link-active" :to="routes.profile">Профиль</router-link>
-         <router-link class="config-link" active-class="config-link-active" :to="routes.home">Меню</router-link>
-         <router-link class="config-link" active-class="config-link-active" :to="routes.summary" :people="{people: +people}">Итого</router-link>
+   <div class="navigation-container">
+      <nav class="navigation-routes">
+         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.profile">Профиль</router-link>
+         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.home">Меню</router-link>
+         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.summary" :people="{people: +people}">Итого</router-link>
       </nav>
 
-      <div class="config-settings">
+      <div class="navigation-settings">
          <common-input
             id="people"
-            class="config-input"
+            class="navigation-input"
             min="1"
             max="500"
             step="1"
@@ -31,7 +31,7 @@ import CommonInput from '@/components/common/Input.vue';
 import {routes} from '@/router';
 
 export default {
-   name: 'Config',
+   name: 'Navigation',
    components: {
       CommonInput,
    },
@@ -62,7 +62,7 @@ export default {
 <style lang="less">
 @import "../assets/constants.less";
 
-.config {
+.navigation {
    &-container {
       display: flex;
       background: @containerBackground;
@@ -94,7 +94,7 @@ export default {
          height: 100%;
          width: 20px;
          clip-path: polygon(1px 48px, 20px 48px, 1px 0);
-         margin-left: -1px;
+         margin-left: -1.3px;
       }
    }
 
@@ -121,7 +121,7 @@ export default {
       &:hover {
          font-weight: bold;
 
-         &.config-link-active {
+         &.navigation-link-active {
             font-weight: normal;
             text-decoration: none;
             cursor: default;

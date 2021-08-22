@@ -1,7 +1,7 @@
 <template>
    <layout>
       <template #header>
-         <config />
+         <navigation />
       </template>
       <template #content>
          <wrapper>
@@ -9,15 +9,15 @@
          </wrapper>
       </template>
       <template #sidebar>
-         <food-menu />
+         <sidebar />
       </template>
    </layout>
 </template>
 
 <script>
-import FoodMenu from '@/components/Menu.vue';
-import Config from '@/components/Config.vue';
-import Layout from '@/components/Layout.vue';
+import Sidebar from '@/components/Sidebar.vue';
+import Navigation from '@/components/Navigation.vue';
+import Layout from '@/components/common/Layout.vue';
 import Wrapper from '@/components/common/Wrapper.vue';
 import {useStore} from 'vuex';
 import {watchEffect} from 'vue';
@@ -26,8 +26,8 @@ import {useRouter} from 'vue-router';
 export default {
    name: 'App',
    components: {
-      Config,
-      FoodMenu,
+      Navigation,
+      Sidebar,
       Layout,
       Wrapper,
    },
@@ -40,6 +40,7 @@ export default {
             store.dispatch('getUserInfo'),
             store.dispatch('getIngredients'),
             store.dispatch('getDishes'),
+            store.dispatch('getMenus'),
          ])
          .then(() => store.dispatch('setIsLoading', false));
 

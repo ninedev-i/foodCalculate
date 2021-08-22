@@ -1,20 +1,20 @@
 <template>
-   <div class="food-menu">
-      <h3>
-         <span
-            :class="`${menuType !== 'dishes' ? 'food-menu-title-link' : 'food-menu-title-current'}`"
-            @click="changeMenuType('dishes')">Блюда</span>
-         <span class="food-menu-title-separator">/</span>
-         <span
-            :class="`${menuType === 'dishes' ? 'food-menu-title-link' : 'food-menu-title-current'}`"
-            @click="changeMenuType('ingredients')">Ингредиенты</span>
-      </h3>
+   <div class="sidebar">
+<!--      <h3>-->
+<!--         <span-->
+<!--            :class="`${menuType !== 'dishes' ? 'sidebar-title-link' : 'sidebar-title-current'}`"-->
+<!--            @click="changeMenuType('dishes')">Блюда</span>-->
+<!--         <span class="sidebar-title-separator">/</span>-->
+<!--         <span-->
+<!--            :class="`${menuType === 'dishes' ? 'sidebar-title-link' : 'sidebar-title-current'}`"-->
+<!--            @click="changeMenuType('ingredients')">Ингредиенты</span>-->
+<!--      </h3>-->
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" v-bind:key="groupId">
          <div
-            class="food-menu-category"
+            class="sidebar-category"
             @click="toggleGroup(groupId)">
-            <expand-arrow-icon :class="`food-menu-category-spoiler ${!group.expanded ? 'food-menu-category-spoiler-closed' : ''}`"/>
-            <span class="food-menu-category-title">{{group.name}}</span>
+            <expand-arrow-icon :class="`sidebar-category-spoiler ${!group.expanded ? 'sidebar-category-spoiler-closed' : ''}`"/>
+            <span class="sidebar-category-title">{{group.name}}</span>
          </div>
 
          <div v-if="group.expanded">
@@ -29,11 +29,6 @@
                {{cutDishName(item.title)}}
             </div>
             <add-ingredient :type="groupId" v-if="menuType === 'ingredients'" />
-
-            <div
-               v-if="!dishes.length"
-               class="item item-skeleton"
-            ></div>
          </div>
       </div>
 
@@ -56,7 +51,7 @@ import AddIngredient from '@/components/AddIngredient.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg?component';
 
 export default {
-   name: 'Menu',
+   name: 'Sidebar',
    components: {
       AddIngredient,
       ExpandArrowIcon,
@@ -110,7 +105,7 @@ h3 {
    margin: 12px;
    text-align: center;
 }
-.food-menu {
+.sidebar {
    padding: 0 6px;
    height: 100vh;
 
@@ -123,19 +118,18 @@ h3 {
          margin: 0 6px;
       }
 
-      &-current {
-         border-bottom: 2px solid @iconAccentedColor;
-
-      }
-      &-link:hover {
-         cursor: pointer;
-         color: @iconAccentedColor;
+      &-link {
+         font-weight: normal;
+         &:hover {
+            cursor: pointer;
+            font-weight: bold;
+         }
       }
    }
 
    &-category {
       font-weight: bold;
-      margin: 16px 0 0 6px;
+      margin: 13px 0 0 6px;
       display: flex;
       cursor: pointer;
       align-items: center;
@@ -145,11 +139,11 @@ h3 {
       }
 
       &-spoiler {
-         width: 14px;
+         width: 10px;
          height: 18px;
          margin-right: 6px;
          transition: 0.5s;
-         fill: @iconAccentedColor;
+         fill: @fontColor;
 
          &-closed {
             transform: rotate(-90deg);
@@ -160,44 +154,29 @@ h3 {
 
 .item {
    background: white;
-   margin: 6px;
-   padding: 6px 12px;
+   margin: 6px 12px;
+   padding: 4px 10px;
    box-shadow: @boxShadow;
    font-weight: bold;
    width: fit-content;
+   font-size: 15px;
 
    &::first-letter {
       text-transform: uppercase;
    }
 
-   &:not(.item-skeleton):hover:not(.item-custom-disabled):hover {
+   &:not(.item-custom-disabled):hover {
       box-shadow: @boxShadowHovered;
-      padding: 6px 12px;
+      padding: 4px 10px;
       cursor: move;
    }
 
    &-custom {
-      margin: 24px 6px 12px;
+      margin: 24px 12px 12px;
 
       &-disabled {
          color: gray;
       }
    }
-
-   &-skeleton {
-      height: 22px;
-      width: 150px;
-      background: linear-gradient(270deg, #e2e2e2, #fff);
-      background-size: 400% 400%;
-      animation: SkeletonAnimation 1s ease infinite;
-   }
-}
-
-@keyframes SkeletonAnimation {
-   0%{background-position: 0 50%}
-   25%{background-position: 25% 50%}
-   50%{background-position: 50% 50%}
-   75%{background-position: 25% 50%}
-   100%{background-position: 0 50%}
 }
 </style>

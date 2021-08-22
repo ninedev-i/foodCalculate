@@ -39,9 +39,8 @@
          <common-button
             v-if="isEdited"
             width="85px"
-            fontSize="12px"
             appearance="outlined"
-            @click="cancelEdit"
+            @click="cancelEdit(id)"
          >
             Отменить
          </common-button>
@@ -49,7 +48,6 @@
             v-if="isEdited"
             width="100px"
             margin="0 0 0 12px"
-            fontSize="12px"
             @click="editItem"
          >
             Сохранить
@@ -65,6 +63,7 @@
             <edit-icon />
          </div>
          <div
+            v-if="!isEdited"
             class="dish-toolbar-delete"
             title="Удалить"
             @click="deleteItem">
@@ -81,6 +80,8 @@ import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
 import CrossIcon from '@/assets/cross.svg?component';
 import EditIcon from '@/assets/edit.svg?component';
+import {scrollToElementIfIsNotVisible} from '@/utils';
+import {useRouter} from 'vue-router';
 
 export default {
    name: 'Dish',
@@ -127,12 +128,25 @@ export default {
                store.dispatch('saveDish', {title: dishName.value, ingredients: JSON.stringify(ingredients)});
             }
             store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
+         } else {
+            // Если не помещается на экран, то скроллим к нему
+            setTimeout(() => {
+               scrollToElementIfIsNotVisible(
+                  document.querySelector('.dish-edited'),
+                  document.querySelector('.layout-page')
+               );
+            }, 100);
          }
          cancelEdit();
       };
-      const cancelEdit = () => {
+      const cancelEdit = (ingredientId, isToggleBackground = true) => {
          isEdited.value = !isEdited.value;
-         store.dispatch('toggleIsShowBackground');
+         if (!ingredientId) {
+            store.dispatch('deleteDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey});
+         }
+         if (isToggleBackground) {
+            store.dispatch('toggleIsShowBackground');
+         }
          store.dispatch('changeMenuType', (isEdited.value ? 'ingredients' : 'dishes'));
       };
       const deleteItem = () => emit('delete-item');
@@ -158,6 +172,14 @@ export default {
 
       watch(() => isEdited.value, () => inputs.value = generateInputs());
 
+      const router = useRouter();
+      router.beforeEach((to, from, next) => {
+         if (isEdited.value) {
+            cancelEdit(null, false);
+         }
+         next();
+      });
+
       return {
          people,
          inputs,
@@ -181,7 +203,7 @@ export default {
 .dish {
    &-container {
       background: @containerBackground;
-      padding: 12px;
+      padding: 12px 12px 8px;
       margin-bottom: 8px;
       position: relative;
       border: 1px solid #ececec;
@@ -229,6 +251,7 @@ export default {
    &-edited {
       cursor: default;
       z-index: 10;
+      padding: 12px;
 
       &-ingredients {
          .ellipsis();

@@ -1,18 +1,32 @@
 <template>
-   <section class="auth-container">
-      <h1>{{userEmail ? 'Профиль' : 'Авторизация'}}</h1>
-      <div class="auth-email" v-if="userEmail">{{userEmail}}</div>
-      <form class="auth-inputs" v-if="!userEmail">
+   <section>
+      <h1 class="profile-title">{{userEmail ? 'Профиль' : 'Авторизация'}}</h1>
+      <div v-if="userEmail" class="profile-container">
+         <h4>Данные профиля</h4>
+         <div class="profile-content">
+            <span>{{userEmail}}</span>
+            <common-button
+               margin="0 0 0 24px"
+               width="100px"
+               @click="logout()"
+            >
+               Выйти
+            </common-button>
+         </div>
+      </div>
+      <form class="profile-inputs" v-if="!userEmail">
          <common-input
             type="text"
-            class="auth-input"
+            class="profile-input"
+            padding="6px 12px"
             placeholder="Почта"
             :value="email"
             @change="(ev) => email = ev.target.value"
          />
          <common-input
             type="password"
-            class="auth-input"
+            class="profile-input"
+            padding="6px 12px"
             placeholder="Пароль"
             :value="password"
             @change="(ev) => password = ev.target.value"
@@ -23,17 +37,10 @@
          >
             {{isLogin ? 'Войти' : 'Зарегистрироваться'}}
          </common-button>
-         <div class="auth-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
+         <div class="profile-toggle" @click="toggleIsLogin()">{{isLogin ? 'Зарегистрироваться' : 'Войти'}}</div>
       </form>
-      <div v-else>
-         <common-button
-            class="auth-logout"
-            type="button"
-            @click="logout()"
-         >
-            Выйти
-         </common-button>
-      </div>
+
+      <user-menu v-if="userEmail" />
    </section>
 </template>
 
@@ -42,12 +49,14 @@ import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
+import UserMenu from '@/components/UserMenu.vue';
 
 export default {
-   name: 'Auth',
+   name: 'Profile',
    components: {
       CommonInput,
       CommonButton,
+      UserMenu,
    },
    setup() {
       const store = useStore();
@@ -71,9 +80,6 @@ export default {
          store.dispatch('login', {
             email: email.value,
             password: password.value,
-         }).then(() => {
-            store.dispatch('getIngredients');
-            store.dispatch('getDishes');
          });
       };
       const logout = () => store.dispatch('logout');
@@ -95,25 +101,26 @@ export default {
 <style lang="less">
 @import "../assets/constants.less";
 
-.auth {
-   &-container {
-      margin: 0 12px;
+.profile {
+   &-title {
+      margin: 0 12px 12px;
    }
 
-   &-email {
-      cursor: pointer;
-      text-decoration: underline;
-      margin-right: 24px;
+   &-content {
+      display: flex;
+      align-items: center;
+      margin: 12px 0;
+   }
+
+   &-container {
+      background: @containerBackground;
+      border: 1px solid @borderColorLight;
+      box-shadow: @boxShadow;
+      padding: 12px;
    }
 
    &-inputs {
       width: 200px
-   }
-
-   &-logout {
-      margin-top: 12px;
-      width: 140px !important;
-      display: block;
    }
 
    &-input {

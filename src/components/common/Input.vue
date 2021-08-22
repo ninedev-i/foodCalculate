@@ -1,8 +1,10 @@
 <template>
    <div class="input-container">
       <input
-         :class="borderBottom ? 'input-borderBottom' : 'input-default'"
+         :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
+         @input="$emit('change', $event.target.value)"
+         :value="value"
          :style="style"
       />
       <label
@@ -22,6 +24,7 @@ export default {
    props: {
       id: String,
       label: String,
+      className: String,
       borderBottom: Boolean,
       inputWidth: {
          type: String,
@@ -35,6 +38,10 @@ export default {
          type: String,
          default: 'inherit'
       },
+      value: {
+         required: true,
+      },
+
    },
    setup(props) {
       const style = ref({

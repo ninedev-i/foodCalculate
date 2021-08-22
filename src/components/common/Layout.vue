@@ -1,6 +1,9 @@
 <template>
    <div class="layout">
-      <div :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`">
+      <div
+         :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`"
+         @click="handleBackgroundClick"
+      >
          <header class="layout-header">
             <slot name="header"></slot>
          </header>
@@ -16,8 +19,9 @@
 </template>
 
 <script>
-import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import LoadingIndicator from '@/components/common/LoadingIndicator.vue';
 import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
 import {computed} from 'vue';
 
 export default {
@@ -29,15 +33,31 @@ export default {
       const store = useStore();
       const isShowBackground = computed(() => store.state.isShowBackground);
 
+      const router = useRouter();
+      router.beforeEach((to, from, next) => {
+         if (isShowBackground.value) {
+            store.dispatch('toggleIsShowBackground');
+         }
+         next();
+      });
+
+      const handleBackgroundClick = () => {
+         if (isShowBackground.value) {
+            // TODO cancel editing
+            // store.dispatch('toggleIsShowBackground');
+         }
+      };
+
       return {
-         isShowBackground
+         isShowBackground,
+         handleBackgroundClick
       };
    }
 };
 </script>
 
 <style lang="less" scoped>
-@import "../assets/constants.less";
+@import "../../assets/constants.less";
 
 @menuWidth: 250px;
 

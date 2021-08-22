@@ -1,7 +1,7 @@
 <template>
    <section class="timeline-container">
       <div class="timeline-header">
-         <h1>Меню</h1>
+         <h1>Меню {{menuName ? `«${menuName}»` : ''}}</h1>
          <print-button />
       </div>
 
@@ -69,6 +69,9 @@ import PrintButton from '@/components/common/PrintButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import MinusIcon from '@/assets/minus.svg?component';
 import PlusIcon from '@/assets/plus.svg?component';
+import {scrollToElementIfIsNotVisible} from '@/utils';
+
+// TODO добавить возможность изменять название дня (например День 1 => Заброска)
 
 export default {
    name: 'Timeline',
@@ -89,6 +92,8 @@ export default {
 
       const days = computed(() => store.state.days);
       const timetable = computed(() => store.state.food.timetable);
+      const menuName = computed(() => store.state.user.menus.find(item => item.is_current)?.title);
+      const isShowBackground = computed(() => store.state.isShowBackground);
 
       const addDish = (id, dayKey, dishKey) => {
          const addedDish = {...store.getters.dishById(+id)};
@@ -105,6 +110,9 @@ export default {
       const deleteDish = (id, dayKey, dishKey) => {
          store.dispatch('deleteDish', {id, dayKey, dishKey});
          store.dispatch('changeMenuType', 'dishes');
+         if (isShowBackground.value) {
+            store.dispatch('toggleIsShowBackground');
+         }
       };
       const allowDrop = (ev, dayKey, dishKey) => {
          ev.preventDefault();
@@ -129,6 +137,16 @@ export default {
          const addedDish = ev.dataTransfer.getData('addDish');
          const movedDish = ev.dataTransfer.getData('moveDish');
          if (addedDish) {
+            if (addedDish === 'null') {
+               // Свое блюдо
+               setTimeout(() => {
+                  scrollToElementIfIsNotVisible(
+                     document.querySelector('.dish-edited'),
+                     document.querySelector('.layout-page')
+                  );
+                  store.dispatch('toggleIsShowBackground');
+               }, 100);
+            }
             addDish(addedDish, dayKey, dishKey);
          } else if (movedDish) {
             const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
@@ -163,6 +181,7 @@ export default {
          drop,
          addDay,
          removeDay,
+         menuName,
          allowDrop,
          removeBorder,
          addDish,
@@ -202,6 +221,8 @@ export default {
          margin-left: 10px;
          height: 28px;
          width: 28px;
+         justify-content: space-evenly;
+         // FIXME попробовать иконку крестик
       }
    }
 

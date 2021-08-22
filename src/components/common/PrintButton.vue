@@ -1,5 +1,6 @@
 <template>
    <icon-button
+      class="print-button"
       size="22px"
       :filled="false"
       @click="printAction"
@@ -28,3 +29,12 @@ export default {
    },
 };
 </script>
+
+<style lang="less">
+@import "../../assets/constants.less";
+
+// FIXME: сделать по ховеру тень такой же темной как и у других кнопок
+.print-button svg {
+   fill: @iconAccentedColor;
+}
+</style>

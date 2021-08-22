@@ -1,6 +1,7 @@
 <template>
    <button
-      :class="`button button-${appearance}`"
+      :disabled="disabled"
+      :class="`button button-${appearance} ${disabled ? 'button-disabled' : ''}`"
       v-bind="$attrs"
       :style="style"
    >
@@ -14,6 +15,10 @@ import {ref} from 'vue';
 export default {
    name: 'Button',
    props: {
+      disabled: {
+         type: Boolean,
+         default: false
+      },
       width: {
          type: String,
          default: '100%'
@@ -28,7 +33,7 @@ export default {
       },
       fontSize: {
          type: String,
-         default: 'inherit'
+         default: '12px'
       },
    },
    setup(props) {
@@ -51,15 +56,24 @@ export default {
 .button {
    padding: 6px 12px;
    font-weight: bold;
-   cursor: pointer;
    border-radius: 4px;
    font-family: 'Open Sans', sans-serif;
+
+   &:focus {
+      box-shadow: 1px 1px 4px @accentColor;
+      outline: none;
+      border: 1px solid #42eab2;
+   }
+
+   &:not(.button-disabled) {
+      cursor: pointer;
+   }
 
    &-accented {
       border: 1px solid @accentColor;
       background: @accentColor;
 
-      &:hover {
+      &:not(.button-disabled):hover {
          background: @accentColorHovered;
       }
    }
@@ -68,7 +82,11 @@ export default {
       border: 1px solid @accentColor;
       background: none;
 
-      &:hover {
+      &.button-disabled {
+         border: 1px solid @borderColor;
+      }
+
+      &:not(.button-disabled):hover {
          background: @accentColorLight;
       }
    }

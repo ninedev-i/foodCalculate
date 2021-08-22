@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "../assets/constants.less";
+@import "../../assets/constants.less";
 
 .loadingIndicator {
    background: @background;

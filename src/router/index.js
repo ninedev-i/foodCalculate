@@ -11,7 +11,7 @@ export default createRouter({
    history: createWebHistory(),
    routes: [
       {path: routes.home, component: () => import('@/views/Timeline.vue')},
-      {path: routes.profile, component: () => import('@/views/Auth.vue')},
+      {path: routes.profile, component: () => import('@/views/Profile.vue')},
       {path: routes.summary, component: () => import('@/views/Summary.vue')},
    ],
 });

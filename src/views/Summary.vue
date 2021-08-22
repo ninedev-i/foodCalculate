@@ -12,7 +12,7 @@
                <template v-for="(item, i) in group.items" :key="i">
                   <div class="summary-table-title">{{item.title}}</div>
                   <div class="summary-table-quantity">{{item.quantity * people}}</div>
-                  <div class="summary-table-countCaption">{{item.countCaption}}.</div>
+                  <div class="summary-table-countCaption">{{item.countCaption}}</div>
                </template>
             </div>
          </div>
@@ -24,6 +24,8 @@
 import {useStore} from 'vuex';
 import {computed} from 'vue';
 import PrintButton from '@/components/common/PrintButton.vue';
+
+// TODO: добавить чекбоксы на печати
 
 export default {
    name: 'Summary',
@@ -69,14 +71,14 @@ export default {
       grid-template-columns: 1fr 50px 30px;
 
       div {
-         padding: 4px 8px;
+         padding: 2px 8px 2px 0;
       }
 
       &-group {
          margin-bottom: 20px;
 
          &-title {
-            margin: 8px;
+            margin: 6px 0;
             font-weight: bold;
          }
       }
@@ -84,13 +86,13 @@ export default {
       &-title:nth-child(odd),
       &-quantity:nth-child(even),
       &-countCaption:nth-child(odd) {
-         background: @accentColorLight;
+         //background: @accentColorLight;
       }
 
       &-title:nth-child(even),
       &-quantity:nth-child(odd),
       &-countCaption:nth-child(even) {
-         background: #f3f3f3;
+         //background: #f3f3f3;
       }
 
       &-quantity {
