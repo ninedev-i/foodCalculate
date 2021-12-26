@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Loader from '@/assets/loader.svg?component';
+import Loader from '@/assets/loader.svg';
 import {useStore} from 'vuex';
 import {computed} from 'vue';
 

@@ -49,7 +49,7 @@ import {useStore} from 'vuex';
 import Input from '@/components/common/Input.vue';
 import Button from '@/components/common/Button.vue';
 import IconButton from '@/components/common/IconButton.vue';
-import PlusIcon from '@/assets/plus.svg?component';
+import PlusIcon from '@/assets/plus.svg';
 
 export default {
    name: 'AddIngredient',

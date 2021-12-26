@@ -8,7 +8,7 @@
 
       <div class="navigation-settings">
          <common-input
-            id="people"
+            labelId="people"
             class="navigation-input"
             min="1"
             max="500"
@@ -18,7 +18,7 @@
             textAlign="center"
             :value="people"
             :label="getPeopleCaption(people)"
-            @input="changePeople($event.target.value)"
+            @changeValue="(value) => changePeople(value)"
          />
       </div>
    </div>

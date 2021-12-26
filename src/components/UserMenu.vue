@@ -17,7 +17,7 @@
                   type="text"
                   inputWidth="200px"
                   :value="inputs[menu.id]"
-                  @input="(ev) => handleInput(ev.target.value, menu.id)"
+                  @changeValue="(value) => handleInput(value, menu.id)"
                />
             </td>
             <td>{{getFormattedDate(menu.updated_at)}}</td>

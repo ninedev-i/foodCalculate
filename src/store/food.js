@@ -96,12 +96,8 @@ const actions = {
       api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENTS', data));
    },
    async saveDish({commit}, data) {
-      const dishes = await api.post('dish', data);
+      const dishes = await api.post('dish', data).then(({data}) => data);
       commit('SET_DISHES', dishes, true);
-      commit('SET_IS_TIMETABLE_CHANGED', true);
-   },
-   addIngredientToDish({commit}, {ingredientId, dayKey, dishKey, dishId}) {
-      commit('ADD_INGREDIENT_TO_DISH', {ingredientId, dayKey, dishKey, dishId});
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
    addDish({commit}, {addedDish, dayKey, dishKey}) {
@@ -192,16 +188,6 @@ const mutations = {
          // Удалим свое блюдо при отмене редактирования
          state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => item.title);
       }
-      saveToLocalStorage(state.timetable);
-   },
-   ADD_INGREDIENT_TO_DISH(state, {ingredientId, dayKey, dishKey, dishId}) {
-      state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
-         if (item.id === dishId && !item.ingredients.map(item => item.id).includes(ingredientId)) {
-            const ingredientsKeys = Object.keys(item.ingredients);
-            const ingredientKey = +ingredientsKeys[ingredientsKeys.length - 1] + 1 || 0;
-            item.ingredients[ingredientKey] = {id: ingredientId, quantity: 0};
-         }
-      });
       saveToLocalStorage(state.timetable);
    },
    UPDATE_DISH(state, {dayKey, dishKey, dishId, dishName, ingredients}) {

@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue';
-import vueSvgPlugin from 'vite-plugin-vue-svg';
+import svgLoader from 'vite-svg-loader';
 import path from 'path';
 
 export default {
@@ -13,6 +13,6 @@ export default {
    },
    plugins: [
       vue(),
-      vueSvgPlugin(),
+      svgLoader(),
    ]
 };

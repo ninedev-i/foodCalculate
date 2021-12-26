@@ -48,7 +48,7 @@
 import {computed, reactive} from 'vue';
 import {useStore} from 'vuex';
 import AddIngredient from '@/components/AddIngredient.vue';
-import ExpandArrowIcon from '@/assets/expandArrow.svg?component';
+import ExpandArrowIcon from '@/assets/expandArrow.svg';
 
 export default {
    name: 'Sidebar',

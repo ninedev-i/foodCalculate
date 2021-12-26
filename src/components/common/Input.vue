@@ -1,15 +1,16 @@
 <template>
    <div class="input-container">
       <input
+         :id="labelId"
          :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
-         @input="$emit('change', $event.target.value)"
+         @input="$emit('changeValue', $event.target.value)"
          :value="value"
          :style="style"
       />
       <label
-         v-if="id && label"
-         :for="id"
+         v-if="labelId && label"
+         :for="labelId"
       >
          {{label}}
       </label>
@@ -22,7 +23,10 @@ import {ref} from 'vue';
 export default {
    name: 'Input',
    props: {
-      id: String,
+      labelId: {
+         type: String,
+         default: null
+      },
       label: String,
       className: String,
       borderBottom: Boolean,
@@ -41,7 +45,6 @@ export default {
       value: {
          required: true,
       },
-
    },
    setup(props) {
       const style = ref({

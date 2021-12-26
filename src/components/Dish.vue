@@ -14,26 +14,29 @@
          class="dish-input-title"
          placeholder="Введите название блюда"
          :value="dishName"
-         @change="(ev) => dishName = ev.target.value"
+         @changeValue="(value) => dishName = value"
       />
-      <div v-for="({id, quantity}, key) in dish.ingredients" class="dish-ingredient" :key="key">
+      <div v-for="({id, quantity}, key) in editedDish.ingredients" class="dish-ingredient" :key="key">
          <div v-if="isEdited" class="dish-edited-ingredients">
             <span>{{ingredientById(id).title}}</span>
             <common-input
                borderBottom
                type="number"
                inputWidth="30px"
-               :value="inputs[id]"
-               @change="(ev) => inputs[id] = ev.target.value"
+               :value="quantity"
+               @changeValue="(value) => changeInputValue(id, value)"
             />
             <span class="dish-ingredient-caption">{{ingredientById(id).count_caption}}/чел.</span>
+            <span class="dish-ingredient-delete" @click="deleteIngredient(id)">
+               <cross-icon />
+            </span>
          </div>
          <div class="dish-ingredients-container" v-else>
             <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
             <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
          </div>
       </div>
-      <div v-if="!dish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
+      <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
       <div class="dish-actions">
          <common-button
@@ -48,7 +51,7 @@
             v-if="isEdited"
             width="100px"
             margin="0 0 0 12px"
-            @click="editItem"
+            @click="saveDish"
          >
             Сохранить
          </common-button>
@@ -74,12 +77,12 @@
 </template>
 
 <script>
-import {computed, ref, watch} from 'vue';
+import {computed, ref} from 'vue';
 import {useStore} from 'vuex';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
-import CrossIcon from '@/assets/cross.svg?component';
-import EditIcon from '@/assets/edit.svg?component';
+import CrossIcon from '@/assets/cross.svg';
+import EditIcon from '@/assets/edit.svg';
 import {scrollToElementIfIsNotVisible} from '@/utils';
 import {useRouter} from 'vue-router';
 
@@ -102,57 +105,61 @@ export default {
       const people = computed(() => store.state.people);
       const ingredientById = computed(() => store.getters.ingredientById);
       const dishName = ref('');
+      const editedDish = ref({...props.dish});
 
       if (isEdited.value) {
          store.dispatch('changeMenuType', 'ingredients');
       }
 
-      const generateInputs = () => {
-         return props.dish.ingredients.reduce((obj, cur) => ({...obj, [cur.id]: cur.quantity}), {});
+      const changeInputValue = (ingredientId, value) => {
+         editedDish.value.ingredients.find(item => item.id === ingredientId).quantity = +value;
       };
-      const inputs = ref(generateInputs());
 
-      const getInputtedIngredients = () => {
-         let ingredients = [];
-         Object.keys(inputs.value).forEach((id) => {
-            ingredients.push({id, quantity: +inputs.value[id]});
-         });
-         return ingredients;
-      };
       const editItem = () => {
-         if (isEdited.value) {
-            const {dayKey, dishKey, dish} = props;
-            let ingredients = getInputtedIngredients();
+         isEdited.value = !isEdited.value;
+         store.dispatch('toggleIsShowBackground');
+         store.dispatch('changeMenuType', 'ingredients');
 
-            if (!props.dish.title) {
-               store.dispatch('saveDish', {title: dishName.value, ingredients: JSON.stringify(ingredients)});
-            }
-            store.dispatch('updateDish', {dayKey, dishKey, dishId: dish.id, dishName: dish.title || dishName.value, ingredients});
-         } else {
-            // Если не помещается на экран, то скроллим к нему
-            setTimeout(() => {
-               scrollToElementIfIsNotVisible(
-                  document.querySelector('.dish-edited'),
-                  document.querySelector('.layout-page')
-               );
-            }, 100);
-         }
-         cancelEdit();
+         // Если не помещается на экран, то скроллим к нему
+         setTimeout(() => {
+            scrollToElementIfIsNotVisible(
+               document.querySelector('.dish-edited'),
+               document.querySelector('.layout-page')
+            );
+         }, 100);
       };
-      const cancelEdit = (ingredientId, isToggleBackground = true) => {
+      const saveDish = () => {
+         const {dayKey, dishKey, dish} = props;
+
+         if (!props.dish.title) {
+            store.dispatch('saveDish', {
+               title: dishName.value,
+               ingredients: JSON.stringify(editedDish.value.ingredients)
+            });
+         }
+         store.dispatch('updateDish', {
+            dayKey,
+            dishKey,
+            dishId: dish.id,
+            dishName: dish.title || dishName.value,
+            ingredients: editedDish.value.ingredients
+         });
+         isEdited.value = false;
+         store.dispatch('toggleIsShowBackground');
+         store.dispatch('changeMenuType', 'dishes');
+      };
+      const cancelEdit = (ingredientId) => {
          isEdited.value = !isEdited.value;
          if (!ingredientId) {
             store.dispatch('deleteDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey});
          }
-         if (isToggleBackground) {
-            store.dispatch('toggleIsShowBackground');
-         }
-         store.dispatch('changeMenuType', (isEdited.value ? 'ingredients' : 'dishes'));
+         store.dispatch('toggleIsShowBackground');
+         store.dispatch('changeMenuType', 'dishes');
+         editedDish.value = {...props.dish};
       };
       const deleteItem = () => emit('delete-item');
       const dragStart = (ev) => {
-         const movedData = props.dish.title ? props.dish : {...props.dish, ...{title: dishName.value, type: 0, ingredients: getInputtedIngredients()}};
-         ev.dataTransfer.setData('moveDish', JSON.stringify(movedData));
+         ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
          ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
       };
       const allowDropIngredient = (ev) => {
@@ -167,10 +174,19 @@ export default {
             return;
          }
          const ingredientId = +ev.dataTransfer.getData('addIngredient');
-         store.dispatch('addIngredientToDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey, dishId: props.dish.id});
+         const ingredients = editedDish.value.ingredients.slice(0);
+         ingredients.push({ id: String(ingredientId), quantity: 0 });
+         editedDish.value = {
+            ...editedDish.value,
+            ...{ ingredients }
+         };
       };
-
-      watch(() => isEdited.value, () => inputs.value = generateInputs());
+      const deleteIngredient = (id) => {
+         editedDish.value = {
+            ...editedDish.value,
+            ...{ ingredients: editedDish.value.ingredients.filter(item => item.id !== String(id)) }
+         };
+      };
 
       const router = useRouter();
       router.beforeEach((to, from, next) => {
@@ -182,16 +198,19 @@ export default {
 
       return {
          people,
-         inputs,
          dishName,
          isEdited,
          ingredientById,
+         editedDish,
+         changeInputValue,
          editItem,
+         saveDish,
          cancelEdit,
          dragStart,
          deleteItem,
          allowDropIngredient,
          dropIngredient,
+         deleteIngredient,
       };
    },
 };
@@ -239,6 +258,11 @@ export default {
          color: #d6d6d6;
          font-size: 14px;
          margin-bottom: 12px;
+      }
+
+      &-delete {
+         .toolbarItem();
+         margin-left: 12px;
       }
    }
 

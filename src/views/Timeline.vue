@@ -67,8 +67,8 @@ import {useStore} from 'vuex';
 import dish from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
-import MinusIcon from '@/assets/minus.svg?component';
-import PlusIcon from '@/assets/plus.svg?component';
+import MinusIcon from '@/assets/minus.svg';
+import PlusIcon from '@/assets/plus.svg';
 import {scrollToElementIfIsNotVisible} from '@/utils';
 
 // TODO добавить возможность изменять название дня (например День 1 => Заброска)

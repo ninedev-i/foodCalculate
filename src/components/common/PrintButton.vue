@@ -12,7 +12,7 @@
 
 <script>
 import IconButton from '@/components/common/IconButton.vue';
-import PrintIcon from '@/assets/print.svg?component';
+import PrintIcon from '@/assets/print.svg';
 
 export default {
    name: 'PrintButton',

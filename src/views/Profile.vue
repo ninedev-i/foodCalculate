@@ -21,7 +21,7 @@
             padding="6px 12px"
             placeholder="Почта"
             :value="email"
-            @change="(ev) => email = ev.target.value"
+            @changeValue="(value) => email = value"
          />
          <common-input
             type="password"
@@ -29,7 +29,7 @@
             padding="6px 12px"
             placeholder="Пароль"
             :value="password"
-            @change="(ev) => password = ev.target.value"
+            @changeValue="(value) => password = value"
          />
          <common-button
             type="submit"
