@@ -37,7 +37,7 @@ Promise
       store.dispatch('getDishes'),
       store.dispatch('getMenus'),
    ])
-   .then(() => store.dispatch('setIsLoading', true));
+   .then(() => store.dispatch('setIsLoading', false));
 
 const stopLoadingItemsWatcher = watchEffect(() => {
    if (store.state.food.ingredients.length && store.state.food.dishes.length) {
