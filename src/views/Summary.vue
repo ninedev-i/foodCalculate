@@ -6,16 +6,16 @@
       </div>
 
       <template v-for="(group, i) in summaryGrouped" :key="i">
-         <div class="summary-table-group" v-if="group.items.length">
-            <div class="summary-table-group-title">{{group.name}}</div>
+         <div v-if="group.items.length" class="summary-table-group">
+            <div class="summary-table-group-title">{{ group.name }}</div>
             <div class="summary-table">
-               <template v-for="(item, i) in group.items" :key="i">
+               <template v-for="(item, key) in group.items" :key="key">
                   <div class="summary-table-title">
                      <input type="checkbox" class="summary-checkbox">
-                     {{item.title}}
+                     {{ item.title }}
                   </div>
-                  <div class="summary-table-quantity">{{item.quantity * people}}</div>
-                  <div class="summary-table-countCaption">{{item.countCaption}}</div>
+                  <div class="summary-table-quantity">{{ item.quantity * people }}</div>
+                  <div class="summary-table-countCaption">{{ item.countCaption }}</div>
                </template>
             </div>
          </div>
@@ -23,33 +23,18 @@
    </section>
 </template>
 
-<script>
-import {useStore} from 'vuex';
-import {computed} from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
 import PrintButton from '@/components/common/PrintButton.vue';
 
-export default {
+defineComponent({
    name: 'Summary',
-   components: {
-      PrintButton,
-   },
-   setup() {
-      const store = useStore();
-      const people = computed(() => store.state.people);
-      const ingredientById = computed(() => store.getters.ingredientById);
-      const ingredientGroups = computed(() => store.state.food.ingredientGroups);
-      const summary = computed(() => store.getters.getSummaryIngredients());
-      const summaryGrouped = computed(() => store.getters.getSummaryGrouped());
+});
 
-      return {
-         people,
-         summary,
-         ingredientById,
-         ingredientGroups,
-         summaryGrouped,
-      };
-   }
-};
+const store = useStore();
+const people = computed(() => store.state.people);
+const summaryGrouped = computed(() => store.getters.getSummaryGrouped());
 </script>
 
 <style lang="less">

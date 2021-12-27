@@ -1,18 +1,17 @@
 <template>
    <section class="timeline-container">
       <div class="timeline-header">
-         <h1>Меню {{menuName ? `«${menuName}»` : ''}}</h1>
+         <h1>Меню {{ menuName ? `«${menuName}»` : '' }}</h1>
          <print-button />
       </div>
 
       <div
-         class="timeline-day"
          v-for="(dayKey) in days"
-         v-bind:key="dayKey"
+         :key="dayKey"
+         class="timeline-day"
       >
-
          <div class="timeline-day-title">
-            <span>День {{dayKey}}</span>
+            <span>День {{ dayKey }}</span>
             <icon-button
                v-if="dayKey !== 1"
                size="20px"
@@ -26,23 +25,23 @@
 
          <div class="timeline-menu">
             <div
-               class="timeline-menu-dish"
                v-for="(dish, dishKey) in timetable[dayKey - 1]?.dishes"
-               v-bind:key="dishKey"
+               :key="dishKey"
+               class="timeline-menu-dish"
                @dragover="allowDrop($event, dayKey - 1, dishKey)"
                @dragleave="removeBorder($event, dayKey - 1, dishKey)"
             >
-               <div class="timeline-menu-title">{{dish.name}}</div>
+               <div class="timeline-menu-title">{{ dish.name }}</div>
                <div
+                  :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
                   class="timeline-menu-dishes"
                   @drop="drop($event, dayKey - 1, dishKey)"
-                  :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
                >
-                  <div class="timeline-menu-dishes-container" v-for="(dish, menuKey) in dish.menu" :key="menuKey">
+                  <div v-for="(dish, menuKey) in dish.menu" :key="menuKey" class="timeline-menu-dishes-container">
                      <dish
                         :dish="dish"
-                        :dayKey="dayKey - 1"
-                        :dishKey="dishKey"
+                        :day-key="dayKey - 1"
+                        :dish-key="dishKey"
                         @delete-item="deleteDish(dish.id, dayKey - 1, dishKey)"
                      />
                   </div>
@@ -61,136 +60,122 @@
    </section>
 </template>
 
-<script>
-import {computed, ref, onBeforeUpdate} from 'vue';
-import {useStore} from 'vuex';
-import dish from '@/components/Dish.vue';
+<script lang="ts" setup>
+import { computed, defineComponent, ref, onBeforeUpdate, Ref } from 'vue';
+import { useStore } from 'vuex';
+import Dish from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
-import {scrollToElementIfIsNotVisible} from '@/utils';
+import { scrollToElementIfIsNotVisible } from '@/utils';
+
+defineComponent({
+   name: 'Timeline',
+});
 
 // TODO добавить возможность изменять название дня (например День 1 => Заброска)
 
-export default {
-   name: 'Timeline',
-   components: {
-      dish,
-      IconButton,
-      MinusIcon,
-      PlusIcon,
-      PrintButton,
-   },
-   setup() {
-      const store = useStore();
-      const divs = ref([]);
+const store = useStore();
+const divs: Ref<{ [key: string]: HTMLElement }> = ref({});
 
-      onBeforeUpdate(() => {
-         divs.value = [];
-      });
+onBeforeUpdate(() => {
+   divs.value = {};
+});
 
-      const days = computed(() => store.state.days);
-      const timetable = computed(() => store.state.food.timetable);
-      const menuName = computed(() => store.getters.currentMenuTitle);
-      const isShowBackground = computed(() => store.state.isShowBackground);
+const days = computed(() => store.state.days);
+const timetable = computed(() => store.state.food.timetable);
+const menuName = computed(() => store.getters.currentMenuTitle);
+const isShowBackground = computed(() => store.state.isShowBackground);
 
-      const addDish = (id, dayKey, dishKey) => {
-         const addedDish = {...store.getters.dishById(+id)};
-         store.dispatch('addDish', {addedDish, dayKey, dishKey});
-      };
-      const moveDish = (dishJSON, moveFrom, moveTo) => {
-         const movedDish = JSON.parse(dishJSON);
-         store.dispatch('moveDish', {movedDish, moveFrom, moveTo});
-      };
-      const sortDish = (dishJSON, moveFrom, sortNumber) => {
-         const movedDish = JSON.parse(dishJSON);
-         store.dispatch('sortDish', {movedDish, moveFrom, sortNumber});
-      };
-      const deleteDish = (id, dayKey, dishKey) => {
-         store.dispatch('deleteDish', {id, dayKey, dishKey});
-         store.dispatch('changeMenuType', 'dishes');
-         if (isShowBackground.value) {
-            store.dispatch('toggleIsShowBackground');
-         }
-      };
-      const allowDrop = (ev, dayKey, dishKey) => {
-         ev.preventDefault();
-         if (ev.dataTransfer.types[0] !== 'adddish') {
-            return;
-         }
-         divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
-      };
-      const removeBorder = (ev, dayKey, dishKey) => {
-         ev.preventDefault();
-         if (!ev.target.classList.contains('timeline-menu-dishes-hovered')
-            && !ev.target.classList.contains('timeline-menu-dish')
-            && !ev.target.classList.contains('dish-container')
-            && !ev.target.classList.contains('dish-ingredients-container')
-            && !ev.target.parentNode.classList.contains('dish-container')
-            && !ev.target.parentNode.classList.contains('dish-ingredients-container')) {
-            divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
-         }
-      };
-      const drop = (ev, dayKey, dishKey) => {
-         ev.preventDefault();
-         const addedDish = ev.dataTransfer.getData('addDish');
-         const movedDish = ev.dataTransfer.getData('moveDish');
-         if (addedDish) {
-            if (addedDish === 'null') {
-               // Свое блюдо
-               setTimeout(() => {
-                  scrollToElementIfIsNotVisible(
-                     document.querySelector('.dish-edited'),
-                     document.querySelector('.layout-page')
-                  );
-                  store.dispatch('toggleIsShowBackground');
-               }, 100);
-            }
-            addDish(addedDish, dayKey, dishKey);
-         } else if (movedDish) {
-            const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
-
-            if (moveFrom.dayKey === dayKey && moveFrom.dishKey === dishKey) {
-               const sortNumber = ev.target.getAttribute('data-dish-number')
-                  ? +ev.target.getAttribute('data-dish-number').split('_')[2]
-                  : null;
-               if (sortNumber) {
-                  sortDish(movedDish, moveFrom, sortNumber);
-               }
-            } else {
-               moveDish(movedDish, moveFrom,{dayKey, dishKey});
-            }
-         }
-         for (let component in divs.value) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (divs.value.hasOwnProperty(component)) {
-               if (divs.value[component].classList.contains('timeline-menu-dishes-hovered')) {
-                  divs.value[component].classList.remove('timeline-menu-dishes-hovered');
-               }
-            }
-         }
-      };
-      const addDay = () => store.dispatch('changeDays', store.state.days + 1);
-      const removeDay = (dayKey) => store.dispatch('removeDay', dayKey);
-
-      return {
-         divs,
-         days,
-         timetable,
-         drop,
-         addDay,
-         removeDay,
-         menuName,
-         allowDrop,
-         removeBorder,
-         addDish,
-         moveDish,
-         sortDish,
-         deleteDish,
-      };
-   },
+const addDish = (id: string, dayKey: number, dishKey: number): void => {
+   const addedDish = { ...store.getters.dishById(+id) };
+   store.dispatch('addDish', { addedDish, dayKey, dishKey });
 };
+
+const moveDish = (dishJSON: string, moveFrom: number, moveTo: { dayKey: number; dishKey: number }): void => {
+   const movedDish = JSON.parse(dishJSON);
+   store.dispatch('moveDish', { movedDish, moveFrom, moveTo });
+};
+
+const sortDish = (dishJSON: string, moveFrom: number, sortNumber: number): void => {
+   const movedDish = JSON.parse(dishJSON);
+   store.dispatch('sortDish', { movedDish, moveFrom, sortNumber });
+};
+
+const deleteDish = (id: number, dayKey: number, dishKey: number): void => {
+   store.dispatch('deleteDish', { id, dayKey, dishKey });
+   store.dispatch('changeMenuType', 'dishes');
+   if (isShowBackground.value) {
+      store.dispatch('toggleIsShowBackground');
+   }
+};
+
+const allowDrop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+   ev.preventDefault();
+   if (ev.dataTransfer.types[0] !== 'adddish') {
+      return;
+   }
+   divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
+};
+
+const removeBorder = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+   ev.preventDefault();
+   const target = ev.target as Element;
+   const targetParent = target.parentNode as Element;
+   if (!target.classList.contains('timeline-menu-dishes-hovered')
+      && !target.classList.contains('timeline-menu-dish')
+      && !target.classList.contains('dish-container')
+      && !target.classList.contains('dish-ingredients-container')
+      && !targetParent.classList.contains('dish-container')
+      && !targetParent.classList.contains('dish-ingredients-container')) {
+      divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
+   }
+};
+
+const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+   ev.preventDefault();
+   const addedDish = ev.dataTransfer.getData('addDish');
+   const movedDish = ev.dataTransfer.getData('moveDish');
+   if (addedDish) {
+      if (addedDish === 'null') {
+         // Свое блюдо
+         setTimeout(() => {
+            scrollToElementIfIsNotVisible(
+               document.querySelector('.dish-edited'),
+               document.querySelector('.layout-page')
+            );
+            store.dispatch('toggleIsShowBackground');
+         }, 100);
+      }
+      addDish(addedDish, dayKey, dishKey);
+   } else if (movedDish) {
+      const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
+
+      if (moveFrom.dayKey === dayKey && moveFrom.dishKey === dishKey) {
+         const sortNumber = JSON.parse(movedDish).id
+            ? +JSON.parse(movedDish).id.split('_')[2]
+            : null;
+         if (sortNumber) {
+            sortDish(movedDish, moveFrom, sortNumber);
+         }
+      } else {
+         moveDish(movedDish, moveFrom, { dayKey, dishKey });
+      }
+   }
+   for (let component in divs.value) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (divs.value.hasOwnProperty(component)) {
+         if (divs.value[component].classList.contains('timeline-menu-dishes-hovered')) {
+            divs.value[component].classList.remove('timeline-menu-dishes-hovered');
+         }
+      }
+   }
+};
+
+const addDay = (): Promise<void> => store.dispatch('changeDays', store.state.days + 1);
+
+const removeDay = (dayKey: number): Promise<void> => store.dispatch('removeDay', dayKey);
 </script>
 
 <style lang="less">

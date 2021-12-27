@@ -10,12 +10,12 @@
       >
          <PlusIcon />
       </IconButton>
-      <div class="addIngredient-form" v-else>
+      <div v-else class="addIngredient-form">
          <Input
             class="addIngredient-input"
             autofocus
             type="text"
-            inputWidth="110px"
+            input-width="110px"
             placeholder="Ингредиент"
             padding="4px"
             :value="ingredientCaption"
@@ -24,7 +24,7 @@
          <Input
             class="addIngredient-input"
             type="text"
-            inputWidth="20px"
+            input-width="20px"
             placeholder="ед. измерения"
             padding="4px"
             :value="countCaption"
@@ -43,53 +43,42 @@
    </section>
 </template>
 
-<script>
-import {computed, ref} from 'vue';
-import {useStore} from 'vuex';
-import Input from '@/components/common/Input.vue';
-import Button from '@/components/common/Button.vue';
-import IconButton from '@/components/common/IconButton.vue';
+<script lang="ts" setup>
+import { computed, defineComponent, ref } from 'vue';
+import { useStore } from 'vuex';
 import PlusIcon from '@/assets/plus.svg';
+import Input from '@/components/common/Input.vue';
+import IconButton from '@/components/common/IconButton.vue';
 
-export default {
+defineComponent({
    name: 'AddIngredient',
-   props: {
-      type: {
-         type: Number,
-      }
-   },
-   components: {
-      Input,
-      Button,
-      IconButton,
-      PlusIcon,
-   },
-   setup(props) {
-      const store = useStore();
+});
 
-      const ingredients = computed(() => store.state.food.ingredients);
-      const isAuthenticated = computed(() => !!store.state.user.email);
-      const isEdited = ref(false);
-      const ingredientCaption = ref('');
-      const countCaption = ref('г');
+const props = defineProps({
+   type: {
+      type: Number,
+   }
+});
 
-      const toggleIsEdited = () => isEdited.value = !isEdited.value;
-      const saveIngredient = () => {
-         isEdited.value = false;
-         store.dispatch('saveIngredient', {title: ingredientCaption.value, count_caption: countCaption.value, type: props.type});
-         ingredientCaption.value = '';
-      };
+const store = useStore();
 
-      return {
-         isEdited,
-         toggleIsEdited,
-         ingredients,
-         isAuthenticated,
-         ingredientCaption,
-         countCaption,
-         saveIngredient,
-      };
-   },
+const isAuthenticated = computed(() => !!store.state.user.email);
+const isEdited = ref(false);
+const ingredientCaption = ref('');
+const countCaption = ref('г');
+
+const toggleIsEdited = (): void => {
+   isEdited.value = !isEdited.value;
+};
+
+const saveIngredient = (): void => {
+   isEdited.value = false;
+   store.dispatch('saveIngredient', {
+      title: ingredientCaption.value,
+      count_caption: countCaption.value,
+      type: props.type
+   });
+   ingredientCaption.value = '';
 };
 </script>
 

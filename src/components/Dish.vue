@@ -2,38 +2,38 @@
    <div
       :class="`dish-container ${isEdited ? 'dish-edited' : ''}`"
       :draggable="!isEdited"
-      v-on:dragstart="dragStart"
+      @dragstart="dragStart"
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
    >
-      <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{dish.title}}</div>
+      <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
       <common-input
          v-else
          autofocus
-         borderBottom
+         border-bottom
          class="dish-input-title"
          placeholder="Введите название блюда"
          :value="dishName"
          @changeValue="(value) => dishName = value"
       />
-      <div v-for="({id, quantity}, key) in editedDish.ingredients" class="dish-ingredient" :key="key">
+      <div v-for="({id, quantity}, key) in editedDish.ingredients" :key="key" class="dish-ingredient">
          <div v-if="isEdited" class="dish-edited-ingredients">
-            <span>{{ingredientById(id).title}}</span>
+            <span>{{ ingredientById(id).title }}</span>
             <common-input
-               borderBottom
+               border-bottom
                type="number"
-               inputWidth="30px"
+               input-width="30px"
                :value="quantity"
                @changeValue="(value) => changeInputValue(id, value)"
             />
-            <span class="dish-ingredient-caption">{{ingredientById(id).count_caption}}/чел.</span>
+            <span class="dish-ingredient-caption">{{ ingredientById(id).count_caption }}/чел.</span>
             <span class="dish-ingredient-delete" @click="deleteIngredient(id)">
                <cross-icon />
             </span>
          </div>
-         <div class="dish-ingredients-container" v-else>
-            <span class="dish-ingredient-caption">{{ingredientById(id).title}}</span>
-            <span>, {{quantity * people}} {{ingredientById(id).count_caption}}.</span>
+         <div v-else class="dish-ingredients-container">
+            <span class="dish-ingredient-caption">{{ ingredientById(id).title }}</span>
+            <span>, {{ quantity * people }} {{ ingredientById(id).count_caption }}.</span>
          </div>
       </div>
       <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
@@ -62,158 +62,151 @@
             v-if="!isEdited"
             class="dish-toolbar-edit"
             title="Редактировать"
-            @click="editItem">
+            @click="editItem"
+         >
             <edit-icon />
          </div>
          <div
             v-if="!isEdited"
             class="dish-toolbar-delete"
             title="Удалить"
-            @click="deleteItem">
+            @click="deleteItem"
+         >
             <cross-icon />
          </div>
       </div>
    </div>
 </template>
 
-<script>
-import {computed, ref} from 'vue';
-import {useStore} from 'vuex';
+<script lang="ts" setup>
+import { computed, defineComponent, ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
 import CrossIcon from '@/assets/cross.svg';
 import EditIcon from '@/assets/edit.svg';
-import {scrollToElementIfIsNotVisible} from '@/utils';
-import {useRouter} from 'vue-router';
+import { Ingredient } from '@/store/modules/food/types';
+import { scrollToElementIfIsNotVisible } from '@/utils';
 
-export default {
+defineComponent({
    name: 'Dish',
-   components: {
-      CommonInput,
-      CommonButton,
-      CrossIcon,
-      EditIcon,
+});
+
+const props = defineProps({
+   dish: {
+      type: Object,
+      required: true,
    },
-   props: {
-      dish: Object,
-      dayKey: Number,
-      dishKey: Number,
-   },
-   setup(props, {emit}) {
-      const store = useStore();
-      const isEdited = ref(!props.dish.title);
-      const people = computed(() => store.state.people);
-      const ingredientById = computed(() => store.getters.ingredientById);
-      const dishName = ref('');
-      const editedDish = ref({...props.dish});
+   dayKey: Number,
+   dishKey: Number,
+});
 
-      if (isEdited.value) {
-         store.dispatch('changeMenuType', 'ingredients');
-      }
+const store = useStore();
+const emit = defineEmits(['delete-item']);
+const isEdited = ref(!props.dish.title);
+const people = computed(() => store.state.people);
+const ingredientById = computed(() => store.getters.ingredientById);
+const dishName = ref('');
+const editedDish = ref({ ...props.dish });
 
-      const changeInputValue = (ingredientId, value) => {
-         editedDish.value.ingredients.find(item => item.id === ingredientId).quantity = +value;
-      };
+if (isEdited.value) {
+   store.dispatch('changeMenuType', 'ingredients');
+}
 
-      const editItem = () => {
-         isEdited.value = !isEdited.value;
-         store.dispatch('toggleIsShowBackground');
-         store.dispatch('changeMenuType', 'ingredients');
-
-         // Если не помещается на экран, то скроллим к нему
-         setTimeout(() => {
-            scrollToElementIfIsNotVisible(
-               document.querySelector('.dish-edited'),
-               document.querySelector('.layout-page')
-            );
-         }, 100);
-      };
-      const saveDish = () => {
-         const {dayKey, dishKey, dish} = props;
-
-         if (!props.dish.title) {
-            store.dispatch('saveDish', {
-               title: dishName.value,
-               ingredients: JSON.stringify(editedDish.value.ingredients)
-            });
-         }
-         store.dispatch('updateDish', {
-            dayKey,
-            dishKey,
-            dishId: dish.id,
-            dishName: dish.title || dishName.value,
-            ingredients: editedDish.value.ingredients
-         });
-         isEdited.value = false;
-         store.dispatch('toggleIsShowBackground');
-         store.dispatch('changeMenuType', 'dishes');
-      };
-      const cancelEdit = (ingredientId) => {
-         isEdited.value = !isEdited.value;
-         if (!ingredientId) {
-            store.dispatch('deleteDish', {ingredientId, dayKey: props.dayKey, dishKey: props.dishKey});
-         }
-         store.dispatch('toggleIsShowBackground');
-         store.dispatch('changeMenuType', 'dishes');
-         editedDish.value = {...props.dish};
-      };
-      const deleteItem = () => emit('delete-item');
-      const dragStart = (ev) => {
-         ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
-         ev.dataTransfer.setData('moveSettings', JSON.stringify({dayKey: props.dayKey, dishKey: props.dishKey}));
-      };
-      const allowDropIngredient = (ev) => {
-         ev.preventDefault();
-         if (ev.dataTransfer.types[0] !== 'addingredient') {
-            // return;
-         }
-         // TODO: подсветка границы
-      };
-      const dropIngredient = (ev) => {
-         if (ev.dataTransfer.types[0] !== 'addingredient') {
-            return;
-         }
-         const ingredientId = +ev.dataTransfer.getData('addIngredient');
-         const ingredients = editedDish.value.ingredients.slice(0);
-         ingredients.push({ id: String(ingredientId), quantity: 0 });
-         editedDish.value = {
-            ...editedDish.value,
-            ...{ ingredients }
-         };
-      };
-      const deleteIngredient = (id) => {
-         editedDish.value = {
-            ...editedDish.value,
-            ...{ ingredients: editedDish.value.ingredients.filter(item => item.id !== String(id)) }
-         };
-      };
-
-      const router = useRouter();
-      router.beforeEach((to, from, next) => {
-         if (isEdited.value) {
-            cancelEdit(null, false);
-         }
-         next();
-      });
-
-      return {
-         people,
-         dishName,
-         isEdited,
-         ingredientById,
-         editedDish,
-         changeInputValue,
-         editItem,
-         saveDish,
-         cancelEdit,
-         dragStart,
-         deleteItem,
-         allowDropIngredient,
-         dropIngredient,
-         deleteIngredient,
-      };
-   },
+const changeInputValue = (ingredientId: number, value: string): void => {
+   editedDish.value.ingredients.find((item: Ingredient) => item.id === ingredientId).quantity = +value;
 };
+
+const editItem = (): void => {
+   isEdited.value = !isEdited.value;
+   store.dispatch('toggleIsShowBackground');
+   store.dispatch('changeMenuType', 'ingredients');
+
+   // Если не помещается на экран, то скроллим к нему
+   setTimeout(() => {
+      scrollToElementIfIsNotVisible(
+         document.querySelector('.dish-edited'),
+         document.querySelector('.layout-page')
+      );
+   }, 100);
+};
+
+const saveDish = (): void => {
+   const { dayKey, dishKey, dish } = props;
+
+   if (!props.dish.title) {
+      store.dispatch('saveDish', {
+         title: dishName.value,
+         ingredients: JSON.stringify(editedDish.value.ingredients)
+      });
+   }
+   store.dispatch('updateDish', {
+      dayKey,
+      dishKey,
+      dishId: dish.id,
+      dishName: dish.title || dishName.value,
+      ingredients: editedDish.value.ingredients
+   });
+   isEdited.value = false;
+   store.dispatch('toggleIsShowBackground');
+   store.dispatch('changeMenuType', 'dishes');
+};
+
+const cancelEdit = (ingredientId: number | null): void => {
+   isEdited.value = !isEdited.value;
+   if (!ingredientId) {
+      store.dispatch('deleteDish', { ingredientId, dayKey: props.dayKey, dishKey: props.dishKey });
+   }
+   store.dispatch('toggleIsShowBackground');
+   store.dispatch('changeMenuType', 'dishes');
+   editedDish.value = { ...props.dish };
+};
+
+const deleteItem = (): void => emit('delete-item');
+
+const dragStart = (ev: DragEvent): void => {
+   ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
+   ev.dataTransfer.setData('moveSettings', JSON.stringify({ dayKey: props.dayKey, dishKey: props.dishKey }));
+};
+
+const allowDropIngredient = (ev: DragEvent): void => {
+   ev.preventDefault();
+   const { dataTransfer } = ev;
+   if (dataTransfer!.types[0] !== 'addingredient') {
+      // return;
+   }
+   // TODO: подсветка границы
+};
+
+const dropIngredient = (ev: DragEvent ): void => {
+   if (ev.dataTransfer.types[0] !== 'addingredient') {
+      return;
+   }
+   const ingredientId = +ev.dataTransfer.getData('addIngredient');
+   const ingredients = editedDish.value.ingredients.slice(0);
+   ingredients.push({ id: String(ingredientId), quantity: 0 });
+   editedDish.value = {
+      ...editedDish.value,
+      ...{ ingredients }
+   };
+};
+
+const deleteIngredient = (id: number): void => {
+   editedDish.value = {
+      ...editedDish.value,
+      ...{ ingredients: editedDish.value.ingredients.filter((item: Ingredient) => item.id !== String(id)) }
+   };
+};
+
+const router = useRouter();
+router.beforeEach((to, from, next) => {
+   if (isEdited.value) {
+      cancelEdit(null);
+   }
+   next();
+});
+
 </script>
 
 <style lang="less">

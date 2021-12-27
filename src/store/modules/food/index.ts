@@ -1,40 +1,42 @@
+import { ActionTree, GetterTree, Module, MutationTree } from 'vuex';
 import api from '@/utils';
+import { DayMenu, Dish, DishMenu, FoodState, GroupItem } from './types';
 
-const getDishFormat = () => [
-   {name: 'Завтрак', menu: []}, {name: 'Обед', menu: []}, {name: 'Ужин', menu: []}
+const getDishFormat = (): Dish[] => [
+   { name: 'Завтрак', menu: [] }, { name: 'Обед', menu: [] }, { name: 'Ужин', menu: [] }
 ];
 
-const saveToLocalStorage = (timetable) => {
+const saveToLocalStorage = (timetable: DayMenu[]): void => {
    localStorage.setItem('timetable', JSON.stringify(timetable));
 };
 
-const state = () => ({
-   timetable: [{dishes: getDishFormat()}],
-   isTimetableChanged: false,
+const state = (): FoodState => ({
+   timetable: [{ dishes: getDishFormat() }],
    dishes: [],
    ingredients: [],
+   isTimetableChanged: false,
    ingredientGroups: [
-      {id: 0, name: 'Крупы'},
-      {id: 1, name: 'Мучное'},
-      {id: 2, name: 'Специи и приправы'},
-      {id: 3, name: 'Мясное'},
-      {id: 4, name: 'Овощи и фрукты'},
-      {id: 5, name: 'Другое'},
+      { id: 0, name: 'Крупы' },
+      { id: 1, name: 'Мучное' },
+      { id: 2, name: 'Специи и приправы' },
+      { id: 3, name: 'Мясное' },
+      { id: 4, name: 'Овощи и фрукты' },
+      { id: 5, name: 'Другое' },
    ],
    dishGroups: [
-      {id: 0, name: 'Напитки'},
-      {id: 1, name: 'Каши'},
-      {id: 2, name: 'Второе'},
-      {id: 3, name: 'Супы'},
+      { id: 0, name: 'Напитки' },
+      { id: 1, name: 'Каши' },
+      { id: 2, name: 'Второе' },
+      { id: 3, name: 'Супы' },
    ],
 });
 
-const getters = {
-   dishById: state => (id) => state.dishes.find(item => item.id === id),
+const getters: GetterTree<FoodState, any> = {
+   dishById: state => (id: string) => state.dishes.find(item => item.id === id),
    // FIXME: ошибка когда добавляется новое блюдо без типа
-   dishesByGroup: state => (groupId) => state.dishes.filter(item => item.type === groupId),
-   ingredientById: state => (id) => state.ingredients.find(item => +item.id === +id),
-   ingredientsByGroup: state => (groupId) => state.ingredients.filter(item => item.type === groupId),
+   dishesByGroup: state => (groupId: number) => state.dishes.filter(item => item.type === groupId),
+   ingredientById: state => (id: number) => state.ingredients.find(item => +item.id === +id),
+   ingredientsByGroup: state => (groupId: number) => state.ingredients.filter(item => item.type === groupId),
    getSummaryIngredients: (state, getters) => () => {
       const output = new Map();
       state.timetable
@@ -43,7 +45,7 @@ const getters = {
          .map(item => item.ingredients).flat()
          .forEach((ingredient) => {
             if (ingredient.quantity) {
-               const {title, type, count_caption: countCaption} = getters.ingredientById(ingredient.id);
+               const { title, type, count_caption: countCaption } = getters.ingredientById(ingredient.id);
                output.set(ingredient.id, {
                   ...output.get(ingredient.id),
                   ...{
@@ -62,7 +64,7 @@ const getters = {
       const output = state.ingredientGroups.slice(0);
       output.map((group) => {
          group.items = [];
-         getters.getSummaryIngredients().forEach((item) => {
+         getters.getSummaryIngredients().forEach((item: GroupItem) => {
             if (item.type === group.id) {
                group.items.push(item);
             }
@@ -73,67 +75,67 @@ const getters = {
    },
 };
 
-const actions = {
-   setTimetable({commit}, data) {
+const actions: ActionTree<FoodState, any> = {
+   setTimetable({ commit }, data) {
       commit('SET_TIMETABLE', data);
    },
-   setTimetableFromStorage({commit}, dataFromBase) {
+   setTimetableFromStorage({ commit }, dataFromBase) {
       const data = dataFromBase || JSON.parse(localStorage.getItem('timetable'));
       if (data) {
          commit('SET_TIMETABLE_FROM_STORE', data);
       }
    },
-   setIsTimetableChanged({commit}, value) {
+   setIsTimetableChanged({ commit }, value) {
       commit('SET_IS_TIMETABLE_CHANGED', value);
    },
-   getDishes({commit}) {
-      api.get('dish').then(({data}) => commit('SET_DISHES', data));
+   getDishes({ commit }) {
+      api.get('dish').then(({ data }) => commit('SET_DISHES', { dishes: data, isNewDish: false }));
    },
-   getIngredients({commit}) {
-      api.get('ingredient').then(({data}) => commit('SET_INGREDIENTS', data));
+   getIngredients({ commit }) {
+      api.get('ingredient').then(({ data }) => commit('SET_INGREDIENTS', data));
    },
-   saveIngredient({commit}, data) {
-      api.post('ingredient', data).then(({data}) => commit('SET_INGREDIENTS', data));
+   saveIngredient({ commit }, data) {
+      api.post('ingredient', data).then(({ data }) => commit('SET_INGREDIENTS', data));
    },
-   async saveDish({commit}, data) {
-      const dishes = await api.post('dish', data).then(({data}) => data);
-      commit('SET_DISHES', dishes, true);
+   async saveDish({ commit }, data) {
+      const dishes = await api.post('dish', data).then(({ data }) => data);
+      commit('SET_DISHES', { dishes, isNewDish: true });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   addDish({commit}, {addedDish, dayKey, dishKey}) {
-      commit('ADD_DISH', {addedDish, dayKey, dishKey});
+   addDish({ commit }, { addedDish, dayKey, dishKey }) {
+      commit('ADD_DISH', { addedDish, dayKey, dishKey });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   moveDish({commit}, {moveFrom, moveTo, movedDish}) {
+   moveDish({ commit }, { moveFrom, moveTo, movedDish }) {
       const id = movedDish.id;
-      commit('DELETE_DISH', {id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey});
-      commit('MOVE_DISH', {dish: movedDish, dayKey: moveTo.dayKey, dishKey: moveTo.dishKey});
+      commit('DELETE_DISH', { id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey });
+      commit('MOVE_DISH', { dish: movedDish, dayKey: moveTo.dayKey, dishKey: moveTo.dishKey });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   sortDish({commit}, {moveFrom, sortNumber, movedDish}) {
-      commit('SORT_DISH', {dish: movedDish, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey, sortNumber});
+   sortDish({ commit }, { moveFrom, sortNumber, movedDish }) {
+      commit('SORT_DISH', { dish: movedDish, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey, sortNumber });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   deleteDish({commit}, {id, dayKey, dishKey}) {
-      commit('DELETE_DISH', {id, dayKey, dishKey});
+   deleteDish({ commit }, { id, dayKey, dishKey }) {
+      commit('DELETE_DISH', { id, dayKey, dishKey });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   updateDish({commit}, {dayKey, dishKey, dishId, dishName, ingredients}) {
-      commit('UPDATE_DISH', {dayKey, dishKey, dishId, dishName, ingredients});
+   updateDish({ commit }, { dayKey, dishKey, dishId, dishName, ingredients }) {
+      commit('UPDATE_DISH', { dayKey, dishKey, dishId, dishName, ingredients });
       commit('SET_IS_TIMETABLE_CHANGED', true);
    },
-   removeDayFromMenu({commit}, dayKey) {
-      commit('REMOVE_DAY_FROM_MENU', {deletedDayKey: dayKey});
+   removeDayFromMenu({ commit }, dayKey) {
+      commit('REMOVE_DAY_FROM_MENU', { deletedDayKey: dayKey });
    },
 };
 
-const mutations = {
+const mutations: MutationTree<FoodState> = {
    SET_TIMETABLE(state, value) {
       const timetable = state.timetable.slice(0);
       const difference = value - timetable.length;
       if (difference > 0) {
          for (let i = 0; i < difference; i++) {
-            timetable.push({dishes: getDishFormat()});
+            timetable.push({ dishes: getDishFormat() });
          }
       }
       state.timetable = timetable;
@@ -145,8 +147,8 @@ const mutations = {
    SET_IS_TIMETABLE_CHANGED(state, value) {
       state.isTimetableChanged = value;
    },
-   SET_DISHES(state, value, isNewDish) {
-      state.dishes = value;
+   SET_DISHES(state: FoodState, { dishes, isNewDish }: {dishes: DishMenu[]; isNewDish: boolean}) {
+      state.dishes = dishes;
       if (isNewDish) {
          saveToLocalStorage(state.timetable);
       }
@@ -154,7 +156,7 @@ const mutations = {
    SET_INGREDIENTS(state, value) {
       state.ingredients = value;
    },
-   ADD_DISH(state, {addedDish, dayKey, dishKey}) {
+   ADD_DISH(state, { addedDish, dayKey, dishKey }) {
       const timetable = state.timetable.slice(0);
       timetable[dayKey].dishes[dishKey].menu.push(addedDish);
       timetable[dayKey].dishes[dishKey].menu.map((item, i) => {
@@ -170,17 +172,17 @@ const mutations = {
          saveToLocalStorage(timetable);
       }
    },
-   MOVE_DISH(state, {dish, dayKey, dishKey}) {
+   MOVE_DISH(state, { dish, dayKey, dishKey }) {
       state.timetable[dayKey].dishes[dishKey].menu.push(dish);
       saveToLocalStorage(state.timetable);
    },
-   SORT_DISH(state, {dish, dayKey, dishKey, sortNumber}) {
-      const indexNumber = state.timetable[dayKey].dishes[dishKey].menu.indexNumber(dish);
+   SORT_DISH(state, { dish, dayKey, dishKey, sortNumber }) {
+      const indexNumber = state.timetable[dayKey].dishes[dishKey].menu.map(item => item.id).indexOf(dish.id);
       state.timetable[dayKey].dishes[dishKey].menu.splice(indexNumber, 1);
       state.timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, dish);
       saveToLocalStorage(state.timetable);
    },
-   DELETE_DISH(state, {id, dayKey, dishKey}) {
+   DELETE_DISH(state, { id, dayKey, dishKey }) {
       const editedMenu = state.timetable[dayKey].dishes[dishKey].menu.slice(0);
       if (id) {
          state.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
@@ -190,7 +192,7 @@ const mutations = {
       }
       saveToLocalStorage(state.timetable);
    },
-   UPDATE_DISH(state, {dayKey, dishKey, dishId, dishName, ingredients}) {
+   UPDATE_DISH(state, { dayKey, dishKey, dishId, dishName, ingredients }) {
       state.timetable[dayKey].dishes[dishKey].menu.map((item) => {
          if (item.id === dishId) {
             item.title = dishName;
@@ -199,14 +201,14 @@ const mutations = {
       });
       saveToLocalStorage(state.timetable);
    },
-   REMOVE_DAY_FROM_MENU(state, {deletedDayKey}) {
+   REMOVE_DAY_FROM_MENU(state, { deletedDayKey }) {
       let updatedTimetable = state.timetable.slice(0);
-      updatedTimetable = state.timetable.filter((day, dayKey) => {
+      updatedTimetable = state.timetable.filter((day: DayMenu, dayKey: number) => {
          if (dayKey + 1 > deletedDayKey) {
             return day.dishes.map(item => {
                item.menu.map(dish => {
                   const ids = dish.id.split('_');
-                  ids[0] = +ids[0] - 1;
+                  ids[0] = String(+ids[0] - 1);
                   dish.id = ids.join('_');
                   return dish;
                });
@@ -214,6 +216,8 @@ const mutations = {
             });
          } else if (dayKey + 1 < deletedDayKey) {
             return day;
+         } else {
+            return false;
          }
       });
 
@@ -222,11 +226,9 @@ const mutations = {
    },
 };
 
-const foodStore = {
+export default (): Module<FoodState, any> => ({
    state,
    getters,
    actions,
    mutations
-};
-
-export default foodStore;
+});

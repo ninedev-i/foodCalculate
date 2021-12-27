@@ -14,43 +14,21 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "@babel/eslint-parser": "^7.16.5",
     "@vitejs/plugin-vue": "^2.0.1",
     "@vue/cli-plugin-babel": "~5.0.0-beta.1",
     "@vue/cli-plugin-eslint": "~5.0.0-beta.1",
     "@vue/cli-service": "~5.0.0-beta.3",
     "@vue/compiler-sfc": "^3.2.26",
-    "eslint": "^8.5.0",
-    "eslint-plugin-vue": "^8.2.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^7.20.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
+    "typescript": "^4.5.4",
     "vite": "2.7.7",
     "vite-svg-loader": "^3.1.1"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {
-      "indent": [
-        "warn",
-        3
-      ],
-      "semi": 1,
-      "no-console": 1,
-      "no-debugger": 1,
-      "no-unused-vars": 0,
-      "vue/no-unused-components": 0,
-      "vue/multi-word-component-names": 0
-    }
   },
   "browserslist": [
     "> 1%",

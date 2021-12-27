@@ -18,40 +18,31 @@
    </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import LoadingIndicator from '@/components/common/LoadingIndicator.vue';
-import {useStore} from 'vuex';
-import {useRouter} from 'vue-router';
-import {computed} from 'vue';
 
-export default {
+defineComponent({
    name: 'Layout',
-   components: {
-      LoadingIndicator,
-   },
-   setup() {
-      const store = useStore();
-      const isShowBackground = computed(() => store.state.isShowBackground);
+});
 
-      const router = useRouter();
-      router.beforeEach((to, from, next) => {
-         if (isShowBackground.value) {
-            store.dispatch('toggleIsShowBackground');
-         }
-         next();
-      });
+const store = useStore();
+const isShowBackground = computed(() => store.state.isShowBackground);
 
-      const handleBackgroundClick = () => {
-         if (isShowBackground.value) {
-            // TODO cancel editing
-            // store.dispatch('toggleIsShowBackground');
-         }
-      };
+const router = useRouter();
+router.beforeEach((to, from, next) => {
+   if (isShowBackground.value) {
+      store.dispatch('toggleIsShowBackground');
+   }
+   next();
+});
 
-      return {
-         isShowBackground,
-         handleBackgroundClick
-      };
+const handleBackgroundClick = (): void => {
+   if (isShowBackground.value) {
+      // TODO cancel editing
+      // store.dispatch('toggleIsShowBackground');
    }
 };
 </script>

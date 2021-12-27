@@ -3,31 +3,23 @@
       class="print-button"
       size="22px"
       :filled="false"
-      @click="printAction"
       title="Распечатать"
+      @click="printAction"
    >
       <print-icon />
    </icon-button>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { defineComponent } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
 import PrintIcon from '@/assets/print.svg';
 
-export default {
+defineComponent({
    name: 'PrintButton',
-   components: {
-      IconButton,
-      PrintIcon,
-   },
-   setup() {
-      const printAction = () => window.print();
+});
 
-      return {
-         printAction
-      };
-   },
-};
+const printAction = (): void => window.print();
 </script>
 
 <style lang="less">

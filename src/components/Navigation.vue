@@ -8,14 +8,14 @@
 
       <div class="navigation-settings">
          <common-input
-            labelId="people"
+            label-id="people"
             class="navigation-input"
             min="1"
             max="500"
             step="1"
             type="number"
-            inputWidth="30px"
-            textAlign="center"
+            input-width="30px"
+            text-align="center"
             :value="people"
             :label="getPeopleCaption(people)"
             @changeValue="(value) => changePeople(value)"
@@ -24,38 +24,26 @@
    </div>
 </template>
 
-<script>
-import {computed} from 'vue';
-import {useStore} from 'vuex';
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
 import CommonInput from '@/components/common/Input.vue';
-import {routes} from '@/router';
+import { routes } from '@/router';
 
-export default {
+defineComponent({
    name: 'Navigation',
-   components: {
-      CommonInput,
-   },
-   setup() {
-      const store = useStore();
+});
 
-      const people = computed(() => store.state.people);
+const store = useStore();
+const people = computed(() => store.state.people);
 
-      const changePeople = (val) => store.dispatch('changePeople', val);
-      const getPeopleCaption = (val) => {
-         let cases = [2, 0, 1, 1, 1, 2];
-         return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
-            ? 2
-            : cases[(val % 10 < 5) ? val % 10 :5]];
-      };
+const changePeople = (val: number): Promise<void> => store.dispatch('changePeople', val);
 
-
-      return {
-         routes,
-         people,
-         changePeople,
-         getPeopleCaption,
-      };
-   },
+const getPeopleCaption = (val: number): string => {
+   let cases = [2, 0, 1, 1, 1, 2];
+   return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
+      ? 2
+      : cases[(val % 10 < 5) ? val % 10 :5]];
 };
 </script>
 

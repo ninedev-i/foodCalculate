@@ -2,34 +2,27 @@
    <div v-if="isLoading" class="loadingIndicator">
       <div class="loadingIndicator-wrapper">
          <loader />
-         <span class="loadingIndicator-text">{{loadingTexts[randomizer()]}}</span>
+         <span class="loadingIndicator-text">{{ loadingTexts[randomizer()] }}</span>
       </div>
    </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
 import Loader from '@/assets/loader.svg';
-import {useStore} from 'vuex';
-import {computed} from 'vue';
 
-export default {
+defineComponent({
    name: 'LoadingIndicator',
-   components: {
-      Loader,
-   },
-   setup() {
-      const store = useStore();
-      const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
-      const randomizer = ()  => Math.floor(Math.random() * (Math.ceil(loadingTexts.length - 1) - Math.floor(0) + 1));
-      const isLoading = computed(() => store.state.isLoading);
+});
 
-      return {
-         isLoading,
-         loadingTexts,
-         randomizer,
-      };
-   }
-};
+// TODO: fixme sbg crop
+
+const store = useStore();
+const isLoading = computed(() => store.state.isLoading);
+const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
+
+const randomizer = (): number => Math.floor(Math.random() * (Math.ceil(loadingTexts.length - 1) - Math.floor(0) + 1));
 </script>
 
 <style lang="less" scoped>

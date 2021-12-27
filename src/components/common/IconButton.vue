@@ -3,33 +3,37 @@
       <span
          :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}
          ${rounded ? 'iconButton-icon-rounded' : ''}`"
-         :style="`width: ${size}; height: ${size}`">
+         :style="`width: ${size}; height: ${size}`"
+>
          <slot />
       </span>
-      <span class="iconButton-caption">{{caption}}</span>
+      <span class="iconButton-caption">{{ caption }}</span>
    </button>
 </template>
 
-<script>
-export default {
+<script lang="ts" setup>
+import { defineComponent } from 'vue';
+
+defineComponent({
    name: 'IconButton',
-   props: {
-      size: {
-         type: String
-      },
-      filled: {
-         type: Boolean,
-         default: true,
-      },
-      rounded: {
-         type: Boolean,
-         default: true,
-      },
-      caption: {
-         type: String,
-      },
+});
+
+defineProps({
+   size: {
+      type: String
    },
-};
+   filled: {
+      type: Boolean,
+      default: true,
+   },
+   rounded: {
+      type: Boolean,
+      default: true,
+   },
+   caption: {
+      type: String,
+   },
+});
 </script>
 
 <style lang="less">

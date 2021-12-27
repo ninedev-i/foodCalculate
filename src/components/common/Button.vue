@@ -9,45 +9,41 @@
    </button>
 </template>
 
-<script>
-import {ref} from 'vue';
+<script lang="ts" setup>
+import { defineComponent, ref } from 'vue';
 
-export default {
+defineComponent({
    name: 'Button',
-   props: {
-      disabled: {
-         type: Boolean,
-         default: false
-      },
-      width: {
-         type: String,
-         default: '100%'
-      },
-      appearance: {
-         type: String,
-         default: 'accented'
-      },
-      margin: {
-         type: String,
-         default: 'auto'
-      },
-      fontSize: {
-         type: String,
-         default: '12px'
-      },
-   },
-   setup(props) {
-      const style = ref({
-         width: props.width,
-         margin: props.margin,
-         fontSize: props.fontSize,
-      });
+});
 
-      return {
-         style,
-      };
+const props = defineProps({
+   disabled: {
+      type: Boolean,
+      default: false
    },
-};
+   width: {
+      type: String,
+      default: '100%'
+   },
+   appearance: {
+      type: String,
+      default: 'accented'
+   },
+   margin: {
+      type: String,
+      default: 'auto'
+   },
+   fontSize: {
+      type: String,
+      default: '12px'
+   },
+});
+
+const style = ref({
+   width: props.width,
+   margin: props.margin,
+   fontSize: props.fontSize,
+});
 </script>
 
 <style lang="less" scoped>

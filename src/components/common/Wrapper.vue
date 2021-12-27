@@ -5,21 +5,16 @@
    </div>
 </template>
 
-<script>
-import {useStore} from 'vuex';
-import {computed} from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
 
-export default {
+defineComponent({
    name: 'Wrapper',
-   setup() {
-      const store = useStore();
-      const isShowBackground = computed(() => store.state.isShowBackground);
+});
 
-      return {
-         isShowBackground,
-      };
-   }
-};
+const store = useStore();
+const isShowBackground = computed(() => store.state.isShowBackground);
 </script>
 
 <style lang="less" scoped>

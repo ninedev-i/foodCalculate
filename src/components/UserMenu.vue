@@ -8,19 +8,19 @@
          </tr>
          <tr v-for="(menu, i) in menus" :key="i">
             <td>
-               <span v-if="!menu.is_current">{{menu.title}}</span>
+               <span v-if="!menu.is_current">{{ menu.title }}</span>
 
                <common-input
                   v-if="menu.is_current && inputs[menu.id]"
-                  :className="`${menu.is_current ? 'userMenu-table-currentItem' : ''}`"
-                  borderBottom
+                  :class-name="`${menu.is_current ? 'userMenu-table-currentItem' : ''}`"
+                  border-bottom
                   type="text"
-                  inputWidth="200px"
+                  input-width="200px"
                   :value="inputs[menu.id]"
                   @changeValue="(value) => handleInput(value, menu.id)"
                />
             </td>
-            <td>{{getFormattedDate(menu.updated_at)}}</td>
+            <td>{{ getFormattedDate(menu.updated_at) }}</td>
             <td width="200px">
                <div class="userMenu-table-actions">
                   <common-button
@@ -64,94 +64,79 @@
    </div>
 </template>
 
-<script>
-import {computed} from 'vue';
-import {useStore} from 'vuex';
+<script lang="ts" setup>
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
 import CommonButton from '@/components/common/Button.vue';
 import CommonInput from '@/components/common/Input.vue';
+import { SavedMenu } from '@/store/modules/user/types';
 
-export default {
+defineComponent({
    name: 'UserMenu',
-   components: {
-      CommonButton,
-      CommonInput,
-   },
-   setup() {
-      const store = useStore();
-      const menus = computed(() => store.state.user.menus);
-      const inputs = computed(() => store.state.user.menusForInput);
+});
 
-      // TODO поле ввода по клику. по ховеру карандаш
+const store = useStore();
+const menus = computed(() => store.state.user.menus);
+const inputs = computed(() => store.state.user.menusForInput);
+// TODO поле ввода по клику. по ховеру карандаш
 
-      const isTitleChanged = computed(() => {
-         const current = store.state.user.menus.find(item => item.is_current);
-         return current.title !== inputs[current.id];
-      });
-      const isDataChanged = computed(() => {
-         const current = store.state.user.menus.find(item => item.is_current);
-         if (current) {
-            const isMenuChanged = store.state.food.isTimetableChanged;
-            const isDaysChanged = current.settings.days !== store.state.days;
-            const isPeopleChanged = current.settings.people !== store.state.people;
+const isTitleChanged = computed(() => {
+   const current = store.state.user.menus.find((item: SavedMenu) => item.is_current);
+   return current.title !== inputs.value[current.id];
+});
 
-            return isMenuChanged || isDaysChanged || isPeopleChanged;
-         }
-         return false;
-      });
+const isDataChanged = computed(() => {
+   const current = store.state.user.menus.find((item: SavedMenu) => item.is_current);
+   if (current) {
+      const isMenuChanged = store.state.food.isTimetableChanged;
+      const isDaysChanged = current.settings.days !== store.state.days;
+      const isPeopleChanged = current.settings.people !== store.state.people;
 
-      const handleInput = (value, id) => {
-         store.dispatch('setMenusForInput', {value, id});
-      };
-
-      const addMenu = () => {
-         const data = {
-            title: 'Поход',
-            settings: JSON.stringify({people: store.state.people, days: store.state.days}),
-            content: JSON.stringify(store.state.food.timetable),
-         };
-         store.dispatch('addMenu', data);
-      };
-      const updateItem = (id) => {
-         const data = {
-            id,
-            title: inputs.value[id],
-            settings: JSON.stringify({people: store.state.people, days: store.state.days}),
-            content: JSON.stringify(store.state.food.timetable),
-         };
-         store.dispatch('updateMenu', data);
-      };
-      const deleteItem = (id) => {
-         store.dispatch('deleteMenu', id);
-      };
-      const chooseItem = (id) => {
-         store.dispatch('chooseMenu', id);
-      };
-      const getFormattedDate = (date) => {
-         const currentDate = new Date(date);
-
-         return currentDate.toLocaleString('ru', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            timezone: 'UTC',
-            hour: 'numeric',
-            minute: 'numeric',
-         });
-      };
-
-      return {
-         menus,
-         addMenu,
-         updateItem,
-         inputs,
-         handleInput,
-         deleteItem,
-         chooseItem,
-         isTitleChanged,
-         isDataChanged,
-         getFormattedDate,
-      };
+      return isMenuChanged || isDaysChanged || isPeopleChanged;
    }
+   return false;
+});
+
+const handleInput = (value: string, id: number) => {
+   store.dispatch('setMenusForInput', { value, id });
+};
+
+const addMenu = () => {
+   const data = {
+      title: 'Поход',
+      settings: JSON.stringify({ people: store.state.people, days: store.state.days }),
+      content: JSON.stringify(store.state.food.timetable),
+   };
+   store.dispatch('addMenu', data);
+};
+
+const updateItem = (id: number) => {
+   const data = {
+      id,
+      title: inputs.value[id],
+      settings: JSON.stringify({ people: store.state.people, days: store.state.days }),
+      content: JSON.stringify(store.state.food.timetable),
+   };
+   store.dispatch('updateMenu', data);
+};
+
+const deleteItem = (id: number) => {
+   store.dispatch('deleteMenu', id);
+};
+
+const chooseItem = (id: number) => {
+   store.dispatch('chooseMenu', id);
+};
+
+const getFormattedDate = (date: string) => {
+   const currentDate = new Date(date);
+   return currentDate.toLocaleString('ru', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+   });
 };
 </script>
 
