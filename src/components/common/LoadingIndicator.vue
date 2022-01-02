@@ -16,8 +16,6 @@ defineComponent({
    name: 'LoadingIndicator',
 });
 
-// TODO: fixme sbg crop
-
 const store = useStore();
 const isLoading = computed(() => store.state.isLoading);
 const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
