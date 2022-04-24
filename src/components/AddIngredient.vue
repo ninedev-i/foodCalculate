@@ -45,10 +45,11 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
 import PlusIcon from '@/assets/plus.svg';
 import Input from '@/components/common/Input.vue';
 import IconButton from '@/components/common/IconButton.vue';
+import { useUserStore } from '@/stores/user';
+import { useFoodStore } from '@/stores/food';
 
 defineComponent({
    name: 'AddIngredient',
@@ -60,9 +61,10 @@ const props = defineProps({
    }
 });
 
-const store = useStore();
+const userStore = useUserStore();
+const foodStore = useFoodStore();
 
-const isAuthenticated = computed(() => !!store.state.user.email);
+const isAuthenticated = computed(() => !!userStore.email);
 const isEdited = ref(false);
 const ingredientCaption = ref('');
 const countCaption = ref('г');
@@ -73,7 +75,7 @@ const toggleIsEdited = (): void => {
 
 const saveIngredient = (): void => {
    isEdited.value = false;
-   store.dispatch('saveIngredient', {
+   foodStore.saveIngredient({
       title: ingredientCaption.value,
       count_caption: countCaption.value,
       type: props.type

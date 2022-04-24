@@ -25,16 +25,18 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
 import PrintButton from '@/components/common/PrintButton.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { useFoodStore } from '@/stores/food';
 
 defineComponent({
    name: 'Summary',
 });
 
-const store = useStore();
-const people = computed(() => store.state.people);
-const summaryGrouped = computed(() => store.getters.getSummaryGrouped());
+const settingsStore = useSettingsStore();
+const foodStore = useFoodStore();
+const people = computed(() => settingsStore.people);
+const summaryGrouped = computed(() => foodStore.getSummaryGrouped());
 </script>
 
 <style lang="less">

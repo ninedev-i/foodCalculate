@@ -12,11 +12,6 @@ export interface Group {
    items?: GroupItem[];
 }
 
-export interface Ingredient {
-   id: number | string;
-   quantity: number;
-}
-
 export interface DishMenu {
    id: string;
    type: number;
@@ -29,6 +24,11 @@ export interface Dish {
    menu: DishMenu[];
 }
 
+export interface SaveDish {
+   title: string;
+   ingredients: string;
+}
+
 export interface DayMenu {
    dishes: Dish[];
 }
@@ -37,8 +37,11 @@ export interface Ingredient {
    id: string | number;
    title: string;
    type: number;
+   quantity?: number;
    count_caption: string;
 }
+
+export type SaveIngredient = Omit<Ingredient, 'id'>;
 
 export interface FoodState {
    timetable: DayMenu[];
@@ -47,4 +50,9 @@ export interface FoodState {
    isTimetableChanged: boolean;
    ingredientGroups: Group[];
    dishGroups: Group[];
+}
+
+export interface MovedDish {
+   dayKey: number;
+   dishKey: number;
 }

@@ -38,22 +38,26 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, reactive } from 'vue';
-import { useStore } from 'vuex';
 import AddIngredient from '@/components/AddIngredient.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
-import { Group } from '@/store/modules/food/types';
+import { Group } from '@/stores/food/types';
+import { useFoodStore } from '@/stores/food';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 
 defineComponent({
    name: 'Sidebar',
 });
 
-const store = useStore();
-const menuType = computed(() => store.state.menuType);
-const isAuthenticated = computed(() => !!store.state.user.email);
-const ingredientsByGroup = computed(() => store.getters.ingredientsByGroup);
-const dishesByGroup = computed(() => store.getters.dishesByGroup);
-const dishGroups = reactive(store.state.food.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
-const ingredientGroups = reactive(store.state.food.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
+const foodStore = useFoodStore();
+const userStore = useUserStore();
+const settingsStore = useSettingsStore();
+const menuType = computed(() => settingsStore.menuType);
+const isAuthenticated = computed(() => !!userStore.email);
+const ingredientsByGroup = computed(() => foodStore.ingredientsByGroup);
+const dishesByGroup = computed(() => foodStore.dishesByGroup);
+const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
+const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 
 const dragStart = (ev: DragEvent): void => {
    const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';

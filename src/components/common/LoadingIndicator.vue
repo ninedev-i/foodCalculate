@@ -9,15 +9,15 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
 import Loader from '@/assets/loader.svg';
+import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'LoadingIndicator',
 });
 
-const store = useStore();
-const isLoading = computed(() => store.state.isLoading);
+const settingsStore = useSettingsStore();
+const isLoading = computed(() => settingsStore.isLoading);
 const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
 
 const randomizer = (): number => Math.floor(Math.random() * (Math.ceil(loadingTexts.length - 1) - Math.floor(0) + 1));

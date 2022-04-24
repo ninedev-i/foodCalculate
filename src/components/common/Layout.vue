@@ -21,20 +21,20 @@
 <script lang="ts" setup>
 import { computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import LoadingIndicator from '@/components/common/LoadingIndicator.vue';
+import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'Layout',
 });
 
-const store = useStore();
-const isShowBackground = computed(() => store.state.isShowBackground);
+const settingsStore = useSettingsStore();
+const isShowBackground = computed(() => settingsStore.isShowBackground);
 
 const router = useRouter();
 router.beforeEach((to, from, next) => {
    if (isShowBackground.value) {
-      store.dispatch('toggleIsShowBackground');
+      settingsStore.toggleIsShowBackground();
    }
    next();
 });
@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
 const handleBackgroundClick = (): void => {
    if (isShowBackground.value) {
       // TODO cancel editing
-      // store.dispatch('toggleIsShowBackground');
+      // settingsStore.toggleIsShowBackground();
    }
 };
 </script>

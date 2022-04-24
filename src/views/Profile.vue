@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
+import { useUserStore } from '@/stores/user';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
 import UserMenu from '@/components/UserMenu.vue';
@@ -55,8 +55,8 @@ defineComponent({
    name: 'Profile',
 });
 
-const store = useStore();
-const userEmail = computed(() => store.state.user.email);
+const userStore = useUserStore();
+const userEmail = computed(() => userStore.email);
 
 const email = ref('');
 const password = ref('');
@@ -66,7 +66,7 @@ const toggleIsLogin = () => isLogin.value = !isLogin.value;
 
 const register = (ev: Event) => {
    ev.preventDefault();
-   store.dispatch('register', {
+   userStore.register({
       email: email.value,
       password: password.value,
       password_confirmation: password.value,
@@ -75,13 +75,13 @@ const register = (ev: Event) => {
 
 const login = (ev: Event) => {
    ev.preventDefault();
-   store.dispatch('login', {
+   userStore.login({
       email: email.value,
       password: password.value,
    });
 };
 
-const logout = () => store.dispatch('logout');
+const logout = () => userStore.logout();
 </script>
 
 <style lang="less">

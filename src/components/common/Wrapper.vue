@@ -7,14 +7,14 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
+import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'Wrapper',
 });
 
-const store = useStore();
-const isShowBackground = computed(() => store.state.isShowBackground);
+const settingsStore = useSettingsStore();
+const isShowBackground = computed(() => settingsStore.isShowBackground);
 </script>
 
 <style lang="less" scoped>

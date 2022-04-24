@@ -26,18 +26,18 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
 import CommonInput from '@/components/common/Input.vue';
 import { routes } from '@/router';
+import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'Navigation',
 });
 
-const store = useStore();
-const people = computed(() => store.state.people);
+const settingsStore = useSettingsStore();
+const people = computed(() => settingsStore.people);
 
-const changePeople = (val: number): Promise<void> => store.dispatch('changePeople', val);
+const changePeople = (val: number): void => settingsStore.changePeople(val);
 
 const getPeopleCaption = (val: number): string => {
    let cases = [2, 0, 1, 1, 1, 2];
@@ -101,11 +101,9 @@ const getPeopleCaption = (val: number): string => {
    &-link {
       height: 100%;
       padding: 12px 12px 10px 12px;
-      display: flex;
       align-items: center;
       .ellipsis();
 
-      // TODO: Нижнее подчеркивание должно различаться у активного элемента и фокусированного
       &:hover {
          font-weight: bold;
 

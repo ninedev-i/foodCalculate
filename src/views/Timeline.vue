@@ -38,7 +38,7 @@
                   @drop="drop($event, dayKey - 1, dishKey)"
                >
                   <div v-for="(dish, menuKey) in dish.menu" :key="menuKey" class="timeline-menu-dishes-container">
-                     <dish
+                     <dish-item
                         :dish="dish"
                         :day-key="dayKey - 1"
                         :dish-key="dishKey"
@@ -62,13 +62,16 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, ref, onBeforeUpdate, Ref } from 'vue';
-import { useStore } from 'vuex';
-import Dish from '@/components/Dish.vue';
+import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
 import { scrollToElementIfIsNotVisible } from '@/utils';
+import { useSettingsStore } from '@/stores/settings';
+import { useFoodStore } from '@/stores/food';
+import { useUserStore } from '@/stores/user';
+import { MovedDish } from '@/stores/food/types';
 
 defineComponent({
    name: 'Timeline',
@@ -76,38 +79,40 @@ defineComponent({
 
 // TODO добавить возможность изменять название дня (например День 1 => Заброска)
 
-const store = useStore();
+const settingsStore = useSettingsStore();
+const foodStore = useFoodStore();
+const userStore = useUserStore();
 const divs: Ref<{ [key: string]: HTMLElement }> = ref({});
 
 onBeforeUpdate(() => {
    divs.value = {};
 });
 
-const days = computed(() => store.state.days);
-const timetable = computed(() => store.state.food.timetable);
-const menuName = computed(() => store.getters.currentMenuTitle);
-const isShowBackground = computed(() => store.state.isShowBackground);
+const days = computed(() => settingsStore.days);
+const timetable = computed(() => foodStore.timetable);
+const menuName = computed(() => userStore.currentMenuTitle);
+const isShowBackground = computed(() => settingsStore.isShowBackground);
 
 const addDish = (id: string, dayKey: number, dishKey: number): void => {
-   const addedDish = { ...store.getters.dishById(+id) };
-   store.dispatch('addDish', { addedDish, dayKey, dishKey });
+   const addedDish = { ...foodStore.dishById(+id) };
+   foodStore.addDish({ addedDish, dayKey, dishKey });
 };
 
-const moveDish = (dishJSON: string, moveFrom: number, moveTo: { dayKey: number; dishKey: number }): void => {
+const moveDish = (dishJSON: string, moveFrom: MovedDish, moveTo: { dayKey: number; dishKey: number }): void => {
    const movedDish = JSON.parse(dishJSON);
-   store.dispatch('moveDish', { movedDish, moveFrom, moveTo });
+   foodStore.moveDish({ movedDish, moveFrom, moveTo });
 };
 
-const sortDish = (dishJSON: string, moveFrom: number, sortNumber: number): void => {
+const sortDish = (dishJSON: string, moveFrom: MovedDish, sortNumber: number): void => {
    const movedDish = JSON.parse(dishJSON);
-   store.dispatch('sortDish', { movedDish, moveFrom, sortNumber });
+   foodStore.sortDish({ movedDish, moveFrom, sortNumber });
 };
 
-const deleteDish = (id: number, dayKey: number, dishKey: number): void => {
-   store.dispatch('deleteDish', { id, dayKey, dishKey });
-   store.dispatch('changeMenuType', 'dishes');
+const deleteDish = (id: string, dayKey: number, dishKey: number): void => {
+   foodStore.deleteDish({ id, dayKey, dishKey });
+   settingsStore.changeMenuType('dishes');
    if (isShowBackground.value) {
-      store.dispatch('toggleIsShowBackground');
+      settingsStore.toggleIsShowBackground();
    }
 };
 
@@ -145,7 +150,7 @@ const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
                document.querySelector('.dish-edited'),
                document.querySelector('.layout-page')
             );
-            store.dispatch('toggleIsShowBackground');
+            settingsStore.toggleIsShowBackground();
          }, 100);
       }
       addDish(addedDish, dayKey, dishKey);
@@ -173,9 +178,9 @@ const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    }
 };
 
-const addDay = (): Promise<void> => store.dispatch('changeDays', store.state.days + 1);
+const addDay = (): void => settingsStore.changeDays(settingsStore.days + 1);
 
-const removeDay = (dayKey: number): Promise<void> => store.dispatch('removeDay', dayKey);
+const removeDay = (dayKey: number): void => settingsStore.removeDay(dayKey);
 </script>
 
 <style lang="less">

@@ -1,4 +1,13 @@
-import { DayMenu } from '@/store/modules/food/types';
+import { DayMenu } from '@/stores/food/types';
+
+export interface LoginData {
+   email: string;
+   password: string;
+}
+
+export interface RegisterData extends LoginData {
+   password_confirmation: string;
+}
 
 export interface SavedMenu {
    id: number;
@@ -20,4 +29,11 @@ export interface UserState {
    email: string;
    menus: SavedMenu[];
    menusForInput: MenusForInput;
+}
+
+export interface MenuData {
+   content: string;
+   id?: number;
+   settings: string;
+   title: string;
 }

@@ -80,14 +80,15 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
 import CrossIcon from '@/assets/cross.svg';
 import EditIcon from '@/assets/edit.svg';
-import { Ingredient } from '@/store/modules/food/types';
+import { Ingredient } from '@/stores/food/types';
 import { scrollToElementIfIsNotVisible } from '@/utils';
+import { useSettingsStore } from '@/stores/settings';
+import { useFoodStore } from '@/stores/food';
 
 defineComponent({
    name: 'Dish',
@@ -102,16 +103,17 @@ const props = defineProps({
    dishKey: Number,
 });
 
-const store = useStore();
+const settingsStore = useSettingsStore();
+const foodStore = useFoodStore();
 const emit = defineEmits(['delete-item']);
 const isEdited = ref(!props.dish.title);
-const people = computed(() => store.state.people);
-const ingredientById = computed(() => store.getters.ingredientById);
+const people = computed(() => settingsStore.people);
+const ingredientById = computed(() => foodStore.ingredientById);
 const dishName = ref('');
 const editedDish = ref({ ...props.dish });
 
 if (isEdited.value) {
-   store.dispatch('changeMenuType', 'ingredients');
+   settingsStore.changeMenuType('ingredients');
 }
 
 const changeInputValue = (ingredientId: number, value: string): void => {
@@ -120,8 +122,9 @@ const changeInputValue = (ingredientId: number, value: string): void => {
 
 const editItem = (): void => {
    isEdited.value = !isEdited.value;
-   store.dispatch('toggleIsShowBackground');
-   store.dispatch('changeMenuType', 'ingredients');
+   settingsStore.toggleIsShowBackground();
+   settingsStore.toggleIsShowBackground();
+   settingsStore.changeMenuType('ingredients');
 
    // Если не помещается на экран, то скроллим к нему
    setTimeout(() => {
@@ -136,12 +139,12 @@ const saveDish = (): void => {
    const { dayKey, dishKey, dish } = props;
 
    if (!props.dish.title) {
-      store.dispatch('saveDish', {
+      foodStore.saveDish({
          title: dishName.value,
          ingredients: JSON.stringify(editedDish.value.ingredients)
       });
    }
-   store.dispatch('updateDish', {
+   foodStore.updateDish({
       dayKey,
       dishKey,
       dishId: dish.id,
@@ -149,17 +152,17 @@ const saveDish = (): void => {
       ingredients: editedDish.value.ingredients
    });
    isEdited.value = false;
-   store.dispatch('toggleIsShowBackground');
-   store.dispatch('changeMenuType', 'dishes');
+   settingsStore.toggleIsShowBackground();
+   settingsStore.changeMenuType('dishes');
 };
 
-const cancelEdit = (ingredientId: number | null): void => {
+const cancelEdit = (id: string | null): void => {
    isEdited.value = !isEdited.value;
-   if (!ingredientId) {
-      store.dispatch('deleteDish', { ingredientId, dayKey: props.dayKey, dishKey: props.dishKey });
+   if (!id) {
+      foodStore.deleteDish({ id, dayKey: props.dayKey, dishKey: props.dishKey });
    }
-   store.dispatch('toggleIsShowBackground');
-   store.dispatch('changeMenuType', 'dishes');
+   settingsStore.toggleIsShowBackground();
+   settingsStore.changeMenuType('dishes');
    editedDish.value = { ...props.dish };
 };
 
@@ -173,7 +176,7 @@ const dragStart = (ev: DragEvent): void => {
 const allowDropIngredient = (ev: DragEvent): void => {
    ev.preventDefault();
    const { dataTransfer } = ev;
-   if (dataTransfer!.types[0] !== 'addingredient') {
+   if (dataTransfer?.types[0] !== 'addingredient') {
       // return;
    }
    // TODO: подсветка границы

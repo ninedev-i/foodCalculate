@@ -17,41 +17,45 @@
 <script lang="ts" setup>
 import { defineComponent, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import Layout from '@/components/common/Layout.vue';
 import Navigation from '@/components/Navigation.vue';
 import Sidebar from '@/components/Sidebar.vue';
 import Wrapper from '@/components/common/Wrapper.vue';
+import { useUserStore } from '@/stores/user';
+import { useFoodStore } from '@/stores/food';
+import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'App',
 });
 
-const store = useStore();
+const userStore = useUserStore();
+const foodStore = useFoodStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 
 Promise
    .allSettled([
-      store.dispatch('getUserInfo'),
-      store.dispatch('getIngredients'),
-      store.dispatch('getDishes'),
-      store.dispatch('getMenus'),
+      userStore.getUserInfo(),
+      foodStore.getIngredients(),
+      foodStore.getDishes(),
+      userStore.getMenus()
    ])
-   .then(() => store.dispatch('setIsLoading', false));
+   .then(() => settingsStore.setIsLoading(false));
 
 const stopLoadingItemsWatcher = watchEffect(() => {
-   if (store.state.food.ingredients.length && store.state.food.dishes.length) {
-      store.dispatch('setTimetableFromStorage');
-      store.dispatch('setSettingsFromStorage');
+   if (foodStore.ingredients.length && foodStore.dishes.length) {
+      foodStore.setTimetableFromStorage();
+      settingsStore.setSettingsFromStorage();
    }
 });
-if (store.state.food.ingredients.length && store.state.food.dishes.length) {
+if (foodStore.ingredients.length && foodStore.dishes.length) {
    stopLoadingItemsWatcher();
 }
 
 router.afterEach(({ path }) => {
    const menuType = path === '/add' ? 'ingredients' : 'dishes';
-   store.dispatch('changeMenuType', menuType);
+   settingsStore.changeMenuType(menuType);
 });
 </script>
 
