@@ -1,10 +1,11 @@
 <template>
    <div
-      :class="`dish-container ${isEdited ? 'dish-edited' : ''}`"
+      :class="`dish-container ${isEdited ? 'dish-edited' : ''} ${isMoved ? 'dish-moved' : ''}`"
       :draggable="!isEdited"
       @dragstart="dragStart"
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
+      @dragend="dragEnd"
    >
       <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
       <common-input
@@ -107,6 +108,7 @@ const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const emit = defineEmits(['delete-item']);
 const isEdited = ref(!props.dish.title);
+const isMoved = ref(false);
 const people = computed(() => settingsStore.people);
 const ingredientById = computed(() => foodStore.ingredientById);
 const dishName = ref('');
@@ -172,9 +174,12 @@ const cancelEdit = (id: string | null): void => {
 const deleteItem = (): void => emit('delete-item');
 
 const dragStart = (ev: DragEvent): void => {
+   isMoved.value = true;
    ev.dataTransfer.setData('moveDish', JSON.stringify(props.dish));
    ev.dataTransfer.setData('moveSettings', JSON.stringify({ dayKey: props.dayKey, dishKey: props.dishKey }));
 };
+
+const dragEnd = () => isMoved.value = false;
 
 const allowDropIngredient = (ev: DragEvent): void => {
    ev.preventDefault();
@@ -225,7 +230,6 @@ router.beforeEach((to, from, next) => {
    &-container {
       background: @containerBackground;
       padding: 12px 12px 8px;
-      margin-bottom: 8px;
       position: relative;
       border: 1px solid #ececec;
       box-shadow: @boxShadow;
@@ -246,6 +250,10 @@ router.beforeEach((to, from, next) => {
             flex-direction: row;
          }
       }
+   }
+
+   &-moved {
+      opacity: 0.3;
    }
 
    &-ingredient {

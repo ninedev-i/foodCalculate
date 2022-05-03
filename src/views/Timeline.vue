@@ -38,12 +38,27 @@
                   @drop="drop($event, dayKey - 1, dishKey)"
                >
                   <div v-for="(dish, menuKey) in dish.menu" :key="menuKey" class="timeline-menu-dishes-container">
+                     <div
+                        v-if="menuKey === 0"
+                        class="timeline-menu-dish-sortZone"
+                        :data-index="menuKey"
+                        @dragover="drawSortZone($event, dish)"
+                        @dragleave="removeSortZone($event)"
+                        @drop="sortDish($event, menuKey)"
+                     ></div>
                      <dish-item
                         :dish="dish"
                         :day-key="dayKey - 1"
                         :dish-key="dishKey"
                         @delete-item="deleteDish(dish.id, dayKey - 1, dishKey)"
                      />
+                     <div
+                        class="timeline-menu-dish-sortZone"
+                        :data-index="menuKey + 1"
+                        @dragover="drawSortZone($event)"
+                        @dragleave="removeSortZone($event)"
+                        @drop="sortDish($event, menuKey + 1)"
+                     ></div>
                   </div>
                </div>
             </div>
@@ -93,19 +108,14 @@ const timetable = computed(() => foodStore.timetable);
 const menuName = computed(() => userStore.currentMenuTitle);
 const isShowBackground = computed(() => settingsStore.isShowBackground);
 
-const addDish = (id: string, dayKey: number, dishKey: number): void => {
+const addDish = (id: string, dayKey: number, dishKey: number, sortNumber: number): void => {
    const addedDish = { ...foodStore.dishById(+id) };
-   foodStore.addDish({ addedDish, dayKey, dishKey });
+   foodStore.addDish({ addedDish, dayKey, dishKey, sortNumber });
 };
 
-const moveDish = (dishJSON: string, moveFrom: MovedDish, moveTo: { dayKey: number; dishKey: number }): void => {
+const moveDish = (dishJSON: string, moveFrom: MovedDish, moveTo: { dayKey: number; dishKey: number }, sortNumber: number ): void => {
    const movedDish = JSON.parse(dishJSON);
-   foodStore.moveDish({ movedDish, moveFrom, moveTo });
-};
-
-const sortDish = (dishJSON: string, moveFrom: MovedDish, sortNumber: number): void => {
-   const movedDish = JSON.parse(dishJSON);
-   foodStore.sortDish({ movedDish, moveFrom, sortNumber });
+   foodStore.moveDish({ movedDish, moveFrom, moveTo, sortNumber });
 };
 
 const deleteDish = (id: string, dayKey: number, dishKey: number): void => {
@@ -118,30 +128,23 @@ const deleteDish = (id: string, dayKey: number, dishKey: number): void => {
 
 const allowDrop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    ev.preventDefault();
-   if (ev.dataTransfer.types[0] !== 'adddish') {
-      return;
-   }
    divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
 };
 
 const removeBorder = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    ev.preventDefault();
-   const target = ev.target as Element;
-   const targetParent = target.parentNode as Element;
-   if (!target.classList.contains('timeline-menu-dishes-hovered')
-      && !target.classList.contains('timeline-menu-dish')
-      && !target.classList.contains('dish-container')
-      && !target.classList.contains('dish-ingredients-container')
-      && !targetParent.classList.contains('dish-container')
-      && !targetParent.classList.contains('dish-ingredients-container')) {
-      divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
+   if ((ev.currentTarget as HTMLElement).contains(ev.relatedTarget as Node)) {
+      return;
    }
+   divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
 };
 
 const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    ev.preventDefault();
    const addedDish = ev.dataTransfer.getData('addDish');
    const movedDish = ev.dataTransfer.getData('moveDish');
+   const sortNumber = +(ev.target as HTMLElement).dataset.index || foodStore.timetable[dayKey].dishes[dishKey].menu.length;
+
    if (addedDish) {
       if (addedDish === 'null') {
          // Свое блюдо
@@ -153,21 +156,14 @@ const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
             settingsStore.toggleIsShowBackground();
          }, 100);
       }
-      addDish(addedDish, dayKey, dishKey);
+      addDish(addedDish, dayKey, dishKey, sortNumber);
    } else if (movedDish) {
       const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
-
-      if (moveFrom.dayKey === dayKey && moveFrom.dishKey === dishKey) {
-         const sortNumber = JSON.parse(movedDish).id
-            ? +JSON.parse(movedDish).id.split('_')[2]
-            : null;
-         if (sortNumber) {
-            sortDish(movedDish, moveFrom, sortNumber);
-         }
-      } else {
-         moveDish(movedDish, moveFrom, { dayKey, dishKey });
+      if (moveFrom.dayKey !== dayKey || moveFrom.dishKey !== dishKey) {
+         moveDish(movedDish, moveFrom, { dayKey, dishKey }, sortNumber);
       }
    }
+
    for (let component in divs.value) {
       // eslint-disable-next-line no-prototype-builtins
       if (divs.value.hasOwnProperty(component)) {
@@ -181,6 +177,29 @@ const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
 const addDay = (): void => settingsStore.changeDays(settingsStore.days + 1);
 
 const removeDay = (dayKey: number): void => settingsStore.removeDay(dayKey);
+
+const drawSortZone = (ev: DragEvent): void => {
+   ev.preventDefault();
+   (ev.target as HTMLElement).classList.add('underHover');
+};
+
+const removeSortZone = (ev: DragEvent): void => (ev.target as HTMLElement).classList.remove('underHover');
+
+const sortDish = (ev: DragEvent, sortNumber: number): void => {
+   (ev.target as HTMLElement).classList.remove('underHover');
+   const addedDish = ev.dataTransfer.getData('addDish');
+   if (addedDish) {
+      return;
+   }
+
+   const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
+   const movedDish = JSON.parse(ev.dataTransfer.getData('moveDish'));
+   const currentNumber = foodStore.timetable[moveFrom.dayKey].dishes[moveFrom.dishKey].menu.map(item => item.id).indexOf(movedDish.id);
+
+   if (Math.abs(currentNumber - sortNumber) !== 0 && sortNumber - currentNumber !== 1) {
+      foodStore.sortDish({ movedDish, moveFrom, sortNumber });
+   }
+};
 </script>
 
 <style lang="less">
@@ -222,10 +241,10 @@ const removeDay = (dayKey: number): void => settingsStore.removeDay(dayKey);
 
       &-dishes {
          padding: 12px;
-         margin-bottom: 12px;
          min-height: 120px;
          height: 100%;
          position: relative;
+         margin: 4px;
 
          &-container {
             position: inherit;
@@ -236,10 +255,7 @@ const removeDay = (dayKey: number): void => settingsStore.removeDay(dayKey);
          }
 
          &-hovered {
-            border-style: dashed;
-            border-color: #9d9d9d;
-            border-width: 1.7px;
-            margin: 4.3px;
+            outline: #9d9d9d dashed 1px;
          }
       }
 
@@ -254,6 +270,14 @@ const removeDay = (dayKey: number): void => settingsStore.removeDay(dayKey);
 
          &:last-of-type {
             border-right: 0;
+         }
+
+         &-sortZone {
+            height: 10px;
+
+            &.underHover {
+               height: 30px;
+            }
          }
       }
 
