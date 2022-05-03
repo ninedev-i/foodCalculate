@@ -123,7 +123,6 @@ const changeInputValue = (ingredientId: number, value: string): void => {
 const editItem = (): void => {
    isEdited.value = !isEdited.value;
    settingsStore.toggleIsShowBackground();
-   settingsStore.toggleIsShowBackground();
    settingsStore.changeMenuType('ingredients');
 
    // Если не помещается на экран, то скроллим к нему
