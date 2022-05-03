@@ -79,7 +79,7 @@ const handleBackgroundClick = (): void => {
    &-header {
       .calculateWidth();
       position: fixed;
-      z-index: 100;
+      z-index: 10;
    }
 
    &-page {

@@ -30,14 +30,17 @@ export const useFoodStore = defineStore('food', {
          { id: 2, name: 'Второе' },
          { id: 3, name: 'Супы' },
       ],
+      editedDishIngredients: []
    }),
    getters: {
       dishById: state => (id: string|number) => state.dishes.find(item => item.id === id),
       // FIXME: ошибка когда добавляется новое блюдо без типа
       dishesByGroup: state => (groupId: number) => state.dishes.filter(item => item.type === groupId),
-      ingredientById: state => (id: number) => state.ingredients.find(item => +item.id === +id),
-      ingredientsByGroup: state => (groupId: number) => state.ingredients.filter(item => item.type === groupId),
-      getSummaryIngredients: (state) => () => {
+      ingredientById: state => (id: number): Ingredient => state.ingredients.find(item => +item.id === +id),
+      ingredientsByGroup: state => (groupId: number) => state.ingredients.filter(item => {
+         return item.type === groupId && !state.editedDishIngredients.includes(item.id as number);
+      }),
+      getSummaryIngredients: (state) => {
          const output = new Map();
          state.timetable
             .map(item => item.dishes).flat()
@@ -60,11 +63,11 @@ export const useFoodStore = defineStore('food', {
 
          return output;
       },
-      getSummaryGrouped: (state) => () => {
+      getSummaryGrouped: (state) => {
          const output = state.ingredientGroups.slice(0);
          output.map((group) => {
             group.items = [];
-            state.getSummaryIngredients().forEach((item: GroupItem) => {
+            state.getSummaryIngredients.forEach((item: GroupItem) => {
                if (item.type === group.id) {
                   group.items.push(item);
                }
@@ -182,6 +185,9 @@ export const useFoodStore = defineStore('food', {
 
          this.timetable = updatedTimetable;
          saveToLocalStorage(this.timetable);
+      },
+      setEditedDishIngredients(ids: number[]) {
+         this.editedDishIngredients = ids;
       },
 
       _removeDish({ id, dayKey, dishKey }: { id: string; dayKey: number; dishKey: number }) {

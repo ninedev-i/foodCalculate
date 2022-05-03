@@ -121,9 +121,11 @@ const changeInputValue = (ingredientId: number, value: string): void => {
 };
 
 const editItem = (): void => {
+   const existedIngredients = editedDish.value.ingredients.map((item: { id: string }) => +item.id);
    isEdited.value = !isEdited.value;
    settingsStore.toggleIsShowBackground();
    settingsStore.changeMenuType('ingredients');
+   foodStore.setEditedDishIngredients(existedIngredients);
 
    // Если не помещается на экран, то скроллим к нему
    setTimeout(() => {
@@ -153,6 +155,7 @@ const saveDish = (): void => {
    isEdited.value = false;
    settingsStore.toggleIsShowBackground();
    settingsStore.changeMenuType('dishes');
+   foodStore.setEditedDishIngredients([]);
 };
 
 const cancelEdit = (id: string | null): void => {
@@ -163,6 +166,7 @@ const cancelEdit = (id: string | null): void => {
    settingsStore.toggleIsShowBackground();
    settingsStore.changeMenuType('dishes');
    editedDish.value = { ...props.dish };
+   foodStore.setEditedDishIngredients([]);
 };
 
 const deleteItem = (): void => emit('delete-item');
@@ -192,6 +196,7 @@ const dropIngredient = (ev: DragEvent ): void => {
       ...editedDish.value,
       ...{ ingredients }
    };
+   foodStore.setEditedDishIngredients([...foodStore.editedDishIngredients, ingredientId]);
 };
 
 const deleteIngredient = (id: number): void => {
@@ -199,6 +204,8 @@ const deleteIngredient = (id: number): void => {
       ...editedDish.value,
       ...{ ingredients: editedDish.value.ingredients.filter((item: Ingredient) => item.id !== String(id)) }
    };
+   const existedIngredients = foodStore.editedDishIngredients.filter(ingredient => ingredient === id);
+   foodStore.setEditedDishIngredients(existedIngredients);
 };
 
 const router = useRouter();
@@ -269,7 +276,7 @@ router.beforeEach((to, from, next) => {
 
    &-edited {
       cursor: default;
-      z-index: 10;
+      z-index: 12;
       padding: 12px;
 
       &-ingredients {

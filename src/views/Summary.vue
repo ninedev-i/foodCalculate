@@ -36,7 +36,7 @@ defineComponent({
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const people = computed(() => settingsStore.people);
-const summaryGrouped = computed(() => foodStore.getSummaryGrouped());
+const summaryGrouped = computed(() => foodStore.getSummaryGrouped);
 </script>
 
 <style lang="less">

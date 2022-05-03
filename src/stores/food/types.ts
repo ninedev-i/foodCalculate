@@ -50,6 +50,11 @@ export interface FoodState {
    isTimetableChanged: boolean;
    ingredientGroups: Group[];
    dishGroups: Group[];
+   editedDishIngredients: number[];
+
+   // Getters
+   ingredientById?: (id: number|string) => Ingredient;
+   getSummaryIngredients?: Map<string, GroupItem>;
 }
 
 export interface MovedDish {
