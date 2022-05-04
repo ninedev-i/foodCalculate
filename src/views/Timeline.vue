@@ -128,12 +128,15 @@ const deleteDish = (id: string, dayKey: number, dishKey: number): void => {
 
 const allowDrop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    ev.preventDefault();
+   if (ev.dataTransfer.types.includes('addingredient')) {
+      return;
+   }
    divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
 };
 
 const removeBorder = (ev: DragEvent, dayKey: number, dishKey: number): void => {
    ev.preventDefault();
-   if ((ev.currentTarget as HTMLElement).contains(ev.relatedTarget as Node)) {
+   if ((ev.currentTarget as HTMLElement).contains(ev.relatedTarget as Node) || ev.dataTransfer.types.includes('addingredient')) {
       return;
    }
    divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
