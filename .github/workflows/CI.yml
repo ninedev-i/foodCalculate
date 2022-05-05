@@ -20,17 +20,16 @@ jobs:
         with:
           node-version: '10.x'
 
-      - name: Install npm dependencies
-        run: npm install
-
       - name: Create env file
         run: |
           touch .env
           echo VITE_SERVICE_URL=${{ secrets.SERVICE_URL }} >> .env
           cat .env
 
-      - name: Run build task
-        run: npm run build --if-present
+      - name: Install and build
+        run: |
+          npm install
+          npm run build
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
