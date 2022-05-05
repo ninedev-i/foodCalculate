@@ -3,6 +3,7 @@ import svgLoader from 'vite-svg-loader';
 import path from 'path';
 
 export default {
+   base: './',
    build: {
       sourcemap: true,
    },
