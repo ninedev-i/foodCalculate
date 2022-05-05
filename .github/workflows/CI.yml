@@ -12,8 +12,16 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Install npm dependencies
+        run: npm install
 
       - name: Create env file
         run: |
@@ -21,19 +29,45 @@ jobs:
           echo VITE_SERVICE_URL=${{ secrets.SERVICE_URL }} >> .env
           cat .env
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
-      - name: Install and build
-        run: |
-          npm install
-          npm run build
+      - name: Run build task
+        run: npm run build --if-present
 
-      - name: Deploy
-        uses: s0/git-publish-subdir-action@develop
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
         env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: dist
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+          EXCLUDE: "/dist/, /node_modules/"
+
+#    steps:
+#      - uses: actions/checkout@master
+#
+#      - name: Create env file
+#        run: |
+#          touch .env
+#          echo VITE_SERVICE_URL=${{ secrets.SERVICE_URL }} >> .env
+#          cat .env
+#
+#      - name: Use Node.js
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 16.x
+#      - name: Install and build
+#        run: |
+#          npm install
+#          npm run build
+#
+#      - name: Deploy
+#        uses: s0/git-publish-subdir-action@develop
+#        env:
+#          REPO: self
+#          BRANCH: gh-pages
+#          FOLDER: dist
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
