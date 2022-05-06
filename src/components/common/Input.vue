@@ -2,6 +2,7 @@
    <div class="input-container">
       <input
          :id="labelId"
+         :name="name"
          :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
          :value="value"
@@ -25,6 +26,7 @@ defineComponent({
 });
 
 const props = defineProps({
+   name: String,
    labelId: {
       type: String,
       default: null
@@ -44,6 +46,10 @@ const props = defineProps({
       type: String,
       default: 'inherit'
    },
+   margin: {
+      type: String,
+      default: 'inherit'
+   },
    value: {
       required: true,
    },
@@ -53,6 +59,7 @@ const style = ref({
    width: props.inputWidth,
    textAlign: props.textAlign,
    padding: props.padding,
+   margin: props.margin,
 });
 </script>
 
