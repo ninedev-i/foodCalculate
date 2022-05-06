@@ -45,6 +45,7 @@ module.exports = {
       'no-unused-vars': 0,
       'object-curly-spacing': ['warn', 'always'],
       'vue/singleline-html-element-content-newline': 0,
+      'vue/no-mutating-props': 1,
       'no-trailing-spaces': ['error', {}],
       'spaced-comment': ['warn'],
       'no-multi-spaces': ['warn'],

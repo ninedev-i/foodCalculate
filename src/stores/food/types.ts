@@ -26,6 +26,7 @@ export interface Dish {
 
 export interface SaveDish {
    title: string;
+   type: number;
    ingredients: string;
 }
 

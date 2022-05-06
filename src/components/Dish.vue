@@ -4,7 +4,6 @@
       :draggable="!isEdited"
       @dragstart="dragStart"
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
-      @dragover="allowDropIngredient($event, dayKey - 1, dishKey)"
       @dragend="dragEnd"
    >
       <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
@@ -16,6 +15,12 @@
          placeholder="Введите название блюда"
          :value="dishName"
          @changeValue="(value) => dishName = value"
+      />
+      <common-select
+         v-if="!dish.title"
+         :items="dishGroups"
+         :value="dishType"
+         @changeValue="(val) => dishType = val"
       />
       <div v-for="({id, quantity}, key) in editedDish.ingredients" :key="key" class="dish-ingredient">
          <div v-if="isEdited" class="dish-edited-ingredients">
@@ -32,9 +37,8 @@
                <cross-icon />
             </span>
          </div>
-         <div v-else class="dish-ingredients-container">
-            <span class="dish-ingredient-caption">{{ ingredientById(id).title }}</span>
-            <span>, {{ quantity * people }} {{ ingredientById(id).count_caption }}.</span>
+         <div v-else class="dish-ingredient-caption">
+            {{ ingredientById(id).title }}, {{ quantity * people }} {{ ingredientById(id).count_caption }}
          </div>
       </div>
       <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
@@ -84,6 +88,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
+import CommonSelect from '@/components/common/Select.vue';
 import CrossIcon from '@/assets/cross.svg';
 import EditIcon from '@/assets/edit.svg';
 import { Ingredient } from '@/stores/food/types';
@@ -111,7 +116,9 @@ const isEdited = ref(!props.dish.title);
 const isMoved = ref(false);
 const people = computed(() => settingsStore.people);
 const ingredientById = computed(() => foodStore.ingredientById);
+const dishGroups = computed(() => foodStore.dishGroups);
 const dishName = ref('');
+const dishType = ref(0);
 const editedDish = ref({ ...props.dish });
 
 if (isEdited.value) {
@@ -144,6 +151,7 @@ const saveDish = (): void => {
    if (!props.dish.title) {
       foodStore.saveDish({
          title: dishName.value,
+         type: dishType.value,
          ingredients: JSON.stringify(editedDish.value.ingredients)
       });
    }
@@ -181,15 +189,6 @@ const dragStart = (ev: DragEvent): void => {
 
 const dragEnd = () => isMoved.value = false;
 
-const allowDropIngredient = (ev: DragEvent): void => {
-   ev.preventDefault();
-   const { dataTransfer } = ev;
-   if (dataTransfer?.types[0] !== 'addingredient') {
-      // return;
-   }
-   // TODO: подсветка границы
-};
-
 const dropIngredient = (ev: DragEvent ): void => {
    if (ev.dataTransfer.types[0] !== 'addingredient') {
       return;
@@ -199,7 +198,7 @@ const dropIngredient = (ev: DragEvent ): void => {
    ingredients.push({ id: String(ingredientId), quantity: 0 });
    editedDish.value = {
       ...editedDish.value,
-      ...{ ingredients }
+      ingredients
    };
    foodStore.setEditedDishIngredients([...foodStore.editedDishIngredients, ingredientId]);
 };
@@ -262,12 +261,15 @@ router.beforeEach((to, from, next) => {
 
       &-caption {
          .ellipsis();
+         @media print {
+            white-space: break-spaces;
+         }
       }
 
       &-tip {
          color: #d6d6d6;
          font-size: 14px;
-         margin-bottom: 12px;
+         margin: 6px 0 12px;
       }
 
       &-delete {
@@ -325,6 +327,10 @@ router.beforeEach((to, from, next) => {
       margin-bottom: 6px;
       font-weight: bold;
       .ellipsis();
+
+      @media print {
+         white-space: break-spaces;
+      }
    }
 }
 </style>
