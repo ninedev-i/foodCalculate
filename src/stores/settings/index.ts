@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
-import { MenuType, SettingsState } from './types';
 import { useFoodStore } from '@/stores/food';
+import { useUserStore } from '@/stores/user';
+import { SavedMenu } from '@/stores/user/types';
+import { MenuType, SettingsState } from './types';
 
 const saveToLocalStorage = (days: number, people: number): void => {
    localStorage.setItem('settings', JSON.stringify({ days, people }));
@@ -14,6 +16,18 @@ export const useSettingsStore = defineStore('settings', {
       people: 1,
       days: 1,
    }),
+   getters: {
+      isDataChanged: (state) => {
+         const userStore = useUserStore();
+         const foodStore = useFoodStore();
+
+         const current = userStore.menus.find((item: SavedMenu) => item.is_current);
+         const isMenuChanged = foodStore.isTimetableChanged;
+         const isDaysChanged = current?.settings.days !== state.days;
+         const isPeopleChanged = current?.settings.people !== state.people;
+         return isMenuChanged || isDaysChanged || isPeopleChanged;
+      }
+   },
    actions: {
       setIsLoading(value: boolean) {
          this.isLoading = value;

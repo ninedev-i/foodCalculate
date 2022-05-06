@@ -80,6 +80,7 @@ defineComponent({
 const userStore = useUserStore();
 const foodStore = useFoodStore();
 const settingsStore = useSettingsStore();
+const isDataChanged = computed(() => settingsStore.isDataChanged);
 const menus = computed(() => userStore.menus);
 const inputs = computed(() => userStore.menusForInput);
 // TODO поле ввода по клику. по ховеру карандаш
@@ -87,18 +88,6 @@ const inputs = computed(() => userStore.menusForInput);
 const isTitleChanged = computed(() => {
    const current = userStore.menus.find((item: SavedMenu) => item.is_current);
    return current.title !== inputs.value[current.id];
-});
-
-const isDataChanged = computed(() => {
-   const current = userStore.menus.find((item: SavedMenu) => item.is_current);
-   if (current) {
-      const isMenuChanged = foodStore.isTimetableChanged;
-      const isDaysChanged = current.settings.days !== settingsStore.days;
-      const isPeopleChanged = current.settings.people !== settingsStore.people;
-
-      return isMenuChanged || isDaysChanged || isPeopleChanged;
-   }
-   return false;
 });
 
 const handleInput = (value: string, id: number) => {

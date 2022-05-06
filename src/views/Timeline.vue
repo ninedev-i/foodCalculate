@@ -1,8 +1,9 @@
 <template>
    <section class="timeline-container">
       <div class="timeline-header">
-         <h1>Меню {{ menuName ? `«${menuName}»` : '' }}</h1>
+         <h1>Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
          <print-button />
+         <save-button />
       </div>
 
       <div
@@ -79,6 +80,7 @@
 import { computed, defineComponent, ref, onBeforeUpdate, Ref } from 'vue';
 import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
+import SaveButton from '@/components/common/SaveButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
@@ -105,7 +107,7 @@ onBeforeUpdate(() => {
 
 const days = computed(() => settingsStore.days);
 const timetable = computed(() => foodStore.timetable);
-const menuName = computed(() => userStore.currentMenuTitle);
+const currentMenu = computed(() => userStore.currentMenu);
 const isShowBackground = computed(() => settingsStore.isShowBackground);
 
 const addDish = (id: string, dayKey: number, dishKey: number, sortNumber: number): void => {

@@ -1,5 +1,5 @@
 <template>
-   <button class="iconButton">
+   <button class="iconButton" :disabled="disabled">
       <span
          :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}
          ${rounded ? 'iconButton-icon-rounded' : ''}`"
@@ -12,15 +12,19 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 defineComponent({
    name: 'IconButton',
 });
 
-defineProps({
+const props = defineProps({
    size: {
       type: String
+   },
+   disabled: {
+      type: Boolean,
+      default: false
    },
    filled: {
       type: Boolean,
@@ -34,6 +38,9 @@ defineProps({
       type: String,
    },
 });
+
+const backgroundColor = computed(() => props.disabled ? 'none' : '#fff');
+const boxShadow = computed(() => props.disabled ? 'none' : '0 2px 8px 0 #04040412');
 </script>
 
 <style lang="less">
@@ -71,8 +78,8 @@ defineProps({
 
       &:hover {
          cursor: pointer;
-         background: #fff !important;
-         box-shadow: @boxShadow;
+         background: v-bind(backgroundColor) !important;
+         box-shadow: v-bind(boxShadow);
          fill: @iconAccentedColor;
       }
    }

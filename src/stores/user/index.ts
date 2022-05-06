@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
       menusForInput: []
    }),
    getters: {
-      currentMenuTitle: (state) => state.menus.find(item => item.is_current)?.title
+      currentMenu: (state) => state.menus.find(item => item.is_current)
    },
    actions: {
       async register(payload: RegisterData) {
