@@ -28,7 +28,7 @@
                      appearance="outlined"
                      width="80px"
                      margin="0 0 0 12px"
-                     @click="deleteItem(menu.id)"
+                     @click="deleteMenuNumber = menu.id"
                   >
                      Удалить
                   </common-button>
@@ -62,12 +62,22 @@
          Добавить
       </common-button>
    </div>
+
+   <common-dialog
+      :is-opened="deleteMenuNumber !== null"
+      heading="Удаление меню"
+      @close="deleteMenuNumber = null"
+      @accept="userStore.deleteMenu(deleteMenuNumber)"
+   >
+      Вы действительно хотите удалить это меню?
+   </common-dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
 import CommonInput from '@/components/common/Input.vue';
+import CommonDialog from '@/components/common/Dialog.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
@@ -83,6 +93,7 @@ const settingsStore = useSettingsStore();
 const isDataChanged = computed(() => settingsStore.isDataChanged);
 const menus = computed(() => userStore.menus);
 const inputs = computed(() => userStore.menusForInput);
+const deleteMenuNumber = ref(null);
 // TODO поле ввода по клику. по ховеру карандаш
 
 const isTitleChanged = computed(() => {
@@ -113,13 +124,7 @@ const updateItem = (id: number) => {
    userStore.updateMenu(data);
 };
 
-const deleteItem = (id: number) => {
-   userStore.deleteMenu(id);
-};
-
-const chooseItem = (id: number) => {
-   userStore.chooseMenu(id);
-};
+const chooseItem = (id: number) => userStore.chooseMenu(id);
 
 const getFormattedDate = (date: string) => {
    const currentDate = new Date(date);
