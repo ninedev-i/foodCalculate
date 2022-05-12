@@ -11,9 +11,6 @@
             <slot name="content"></slot>
          </main>
       </div>
-      <aside class="layout-sidebar">
-         <slot name="sidebar"></slot>
-      </aside>
       <loading-indicator />
    </div>
 </template>
@@ -28,15 +25,15 @@ defineComponent({
    name: 'Layout',
 });
 
+const router = useRouter();
 const settingsStore = useSettingsStore();
 const isShowBackground = computed(() => settingsStore.isShowBackground);
+const pageWidth = computed(() => router.currentRoute.value.meta.isWithSidebar ? 'calc(100% - 262px)' : '100%');
 
-const router = useRouter();
-router.beforeEach((to, from, next) => {
+router.afterEach(() => {
    if (isShowBackground.value) {
       settingsStore.toggleIsShowBackground();
    }
-   next();
 });
 
 const handleBackgroundClick = (): void => {
@@ -50,19 +47,8 @@ const handleBackgroundClick = (): void => {
 <style lang="less" scoped>
 @import "../../assets/constants.less";
 
-@menuWidth: 250px;
-
-.calculateWidth {
-   width: calc(100% - @menuWidth);
-
-   @media (min-width: @largeResolution) {
-      width: calc(100% - 300px);
-   }
-}
-
 .layout {
    display: flex;
-   width: 100%;
 
    ::-webkit-scrollbar {
       -webkit-appearance: none;
@@ -77,13 +63,13 @@ const handleBackgroundClick = (): void => {
    }
 
    &-header {
-      .calculateWidth();
+      width: v-bind(pageWidth);
       position: fixed;
       z-index: 10;
    }
 
    &-page {
-      .calculateWidth();
+      width: v-bind(pageWidth);
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -116,30 +102,6 @@ const handleBackgroundClick = (): void => {
 
       @media print {
          margin: 12px;
-      }
-   }
-
-   &-sidebar {
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      right: 0;
-      width: @menuWidth;
-      overflow-y: scroll;
-      background: @accentColor;
-
-      &:hover {
-         &::-webkit-scrollbar-thumb {
-            background-color: #40d9a6;
-         }
-      }
-
-      &::-webkit-scrollbar-thumb {
-         background-color: @accentColor;
-      }
-
-      @media (min-width: @largeResolution) {
-         width: 300px;
       }
    }
 }

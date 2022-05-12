@@ -74,10 +74,13 @@
          <plus-icon />
       </icon-button>
    </section>
+
+   <sidebar />
 </template>
 
 <script lang="ts" setup>
 import { computed, defineComponent, ref, onBeforeUpdate, Ref } from 'vue';
+import Sidebar from '@/components/Sidebar.vue';
 import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import SaveButton from '@/components/common/SaveButton.vue';
@@ -158,6 +161,7 @@ const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
                document.querySelector('.dish-edited'),
                document.querySelector('.layout-page')
             );
+            settingsStore.changeMenuType('ingredients');
             settingsStore.toggleIsShowBackground();
          }, 100);
       }

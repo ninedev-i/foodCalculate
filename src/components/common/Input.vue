@@ -2,6 +2,7 @@
    <div class="input-container">
       <input
          :id="labelId"
+         :autofocus="autofocus"
          :name="name"
          :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
@@ -31,6 +32,7 @@ const props = defineProps({
       type: String,
       default: null
    },
+   autofocus: Boolean,
    label: String,
    className: String,
    borderBottom: Boolean,

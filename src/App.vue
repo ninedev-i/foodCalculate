@@ -8,9 +8,6 @@
             <router-view />
          </wrapper>
       </template>
-      <template #sidebar>
-         <sidebar />
-      </template>
    </layout>
 </template>
 
@@ -19,7 +16,6 @@ import { defineComponent, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import Layout from '@/components/common/Layout.vue';
 import Navigation from '@/components/Navigation.vue';
-import Sidebar from '@/components/Sidebar.vue';
 import Wrapper from '@/components/common/Wrapper.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';

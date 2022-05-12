@@ -28,6 +28,7 @@
             <common-input
                border-bottom
                type="number"
+               autofocus
                input-width="30px"
                :value="quantity"
                @changeValue="(value) => changeInputValue(id, value)"
@@ -106,6 +107,7 @@ const props = defineProps({
       required: true,
    },
    dayKey: Number,
+   title: String,
    dishKey: Number,
 });
 

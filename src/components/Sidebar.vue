@@ -1,5 +1,5 @@
 <template>
-   <div class="sidebar">
+   <aside class="sidebar">
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" :key="groupId">
          <div
             class="sidebar-category"
@@ -33,7 +33,7 @@
       >
          Свое блюдо
       </div>
-   </div>
+   </aside>
 </template>
 
 <script lang="ts" setup>
@@ -84,8 +84,27 @@ h3 {
    text-align: center;
 }
 .sidebar {
+   display: flex;
+   flex-direction: column;
+   position: fixed;
+   right: 0;
+   width: 250px;
+   overflow-y: scroll;
+   background: @accentColor;
    padding: 0 6px;
    height: 100vh;
+   top: 0;
+   z-index: 12;
+
+   &:hover {
+      &::-webkit-scrollbar-thumb {
+         background-color: #40d9a6;
+      }
+   }
+
+   &::-webkit-scrollbar-thumb {
+      background-color: @accentColor;
+   }
 
    @media print {
       display: none;
