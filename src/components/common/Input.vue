@@ -7,6 +7,7 @@
          :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
          :value="value"
+         required="required"
          :style="style"
          @input="$emit('changeValue', $event.target.value)"
       />

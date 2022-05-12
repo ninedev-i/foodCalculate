@@ -10,7 +10,7 @@
       >
          <PlusIcon />
       </IconButton>
-      <div v-else class="addIngredient-form">
+      <form v-else class="addIngredient-form" @submit.prevent="saveIngredient">
          <Input
             class="addIngredient-input"
             autofocus
@@ -35,11 +35,10 @@
             title="Добавить"
             size="26px"
             :rounded="false"
-            @click="saveIngredient()"
          >
             <PlusIcon />
          </IconButton>
-      </div>
+      </form>
    </section>
 </template>
 
@@ -74,6 +73,9 @@ const toggleIsEdited = (): void => {
 };
 
 const saveIngredient = (): void => {
+   if (!ingredientCaption.value || !countCaption.value) {
+      return;
+   }
    isEdited.value = false;
    foodStore.saveIngredient({
       title: ingredientCaption.value,

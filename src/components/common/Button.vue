@@ -4,6 +4,7 @@
       :class="`button button-${appearance} ${disabled ? 'button-disabled' : ''}`"
       v-bind="$attrs"
       :style="style"
+      :type="type"
    >
       <slot />
    </button>
@@ -20,6 +21,10 @@ const props = defineProps({
    disabled: {
       type: Boolean,
       default: false
+   },
+   type: {
+      type: String,
+      default: 'button'
    },
    width: {
       type: String,

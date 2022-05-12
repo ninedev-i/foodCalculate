@@ -14,7 +14,7 @@
             </common-button>
          </div>
       </div>
-      <form v-if="!userEmail" class="profile-form">
+      <form v-if="!userEmail" class="profile-form" @submit.prevent="isLogin ? login() : register()">
          <h4 class="profile-subTitle">{{ isLogin ? 'Войти' : 'Зарегистрироваться' }}</h4>
          <div class="profile-authWrapper">
             <div class="profile-inputs">
@@ -40,7 +40,6 @@
                />
                <common-button
                   type="submit"
-                  @click="isLogin ? login($event) : register($event)"
                >
                   {{ isLogin ? 'Войти' : 'Зарегистрироваться' }}
                </common-button>
@@ -85,17 +84,21 @@ const isLogin = ref(true);
 
 const toggleIsLogin = () => isLogin.value = !isLogin.value;
 
-const register = (ev: Event) => {
-   ev.preventDefault();
+const register = () => {
+   if (!email.value || !password.value) {
+      return;
+   }
    userStore.register({
       email: email.value,
       password: password.value,
       password_confirmation: password.value,
-   }).then(() => login(ev));
+   }).then(() => login());
 };
 
-const login = (ev: Event) => {
-   ev.preventDefault();
+const login = () => {
+   if (!email.value || !password.value) {
+      return;
+   }
    userStore.login({
       email: email.value,
       password: password.value,

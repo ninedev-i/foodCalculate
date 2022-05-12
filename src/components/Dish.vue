@@ -6,62 +6,65 @@
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragend="dragEnd"
    >
-      <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
-      <common-input
-         v-else
-         autofocus
-         border-bottom
-         class="dish-input-title"
-         placeholder="Введите название блюда"
-         :value="dishName"
-         @changeValue="(value) => dishName = value"
-      />
-      <common-select
-         v-if="!dish.title"
-         :items="dishGroups"
-         :value="dishType"
-         @changeValue="(val) => dishType = val"
-      />
-      <div v-for="({id, quantity}, key) in editedDish.ingredients" :key="key" class="dish-ingredient">
-         <div v-if="isEdited" class="dish-edited-ingredients">
-            <span>{{ ingredientById(id).title }}</span>
-            <common-input
-               border-bottom
-               type="number"
-               autofocus
-               input-width="30px"
-               :value="quantity"
-               @changeValue="(value) => changeInputValue(id, value)"
-            />
-            <span class="dish-ingredient-caption">{{ ingredientById(id).count_caption }}/чел.</span>
-            <span class="dish-ingredient-delete" @click="deleteIngredient(id)">
-               <cross-icon />
-            </span>
+      <form>
+         <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
+         <common-input
+            v-else
+            autofocus
+            border-bottom
+            class="dish-input-title"
+            placeholder="Введите название блюда"
+            :value="dishName"
+            @changeValue="(value) => dishName = value"
+         />
+         <common-select
+            v-if="!dish.title"
+            :items="dishGroups"
+            :value="dishType"
+            @changeValue="(val) => dishType = val"
+         />
+         <div v-for="({id, quantity}, key) in editedDish.ingredients" :key="key" class="dish-ingredient">
+            <div v-if="isEdited" class="dish-edited-ingredients">
+               <span>{{ ingredientById(id).title }}</span>
+               <common-input
+                  border-bottom
+                  type="number"
+                  autofocus
+                  input-width="30px"
+                  :value="quantity"
+                  @changeValue="(value) => changeInputValue(id, value)"
+               />
+               <span class="dish-ingredient-caption">{{ ingredientById(id).count_caption }}/чел.</span>
+               <span class="dish-ingredient-delete" @click="deleteIngredient(id)">
+                  <cross-icon />
+               </span>
+            </div>
+            <div v-else class="dish-ingredient-caption">
+               {{ ingredientById(id).title }}, {{ quantity * people }} {{ ingredientById(id).count_caption }}
+            </div>
          </div>
-         <div v-else class="dish-ingredient-caption">
-            {{ ingredientById(id).title }}, {{ quantity * people }} {{ ingredientById(id).count_caption }}
-         </div>
-      </div>
-      <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
+         <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
 
-      <div class="dish-actions">
-         <common-button
-            v-if="isEdited"
-            width="85px"
-            appearance="outlined"
-            @click="cancelEdit(id)"
-         >
-            Отменить
-         </common-button>
-         <common-button
-            v-if="isEdited"
-            width="100px"
-            margin="0 0 0 12px"
-            @click="saveDish"
-         >
-            Сохранить
-         </common-button>
-      </div>
+         <div class="dish-actions">
+            <common-button
+               v-if="isEdited"
+               width="85px"
+               appearance="outlined"
+               @click="cancelEdit(id)"
+            >
+               Отменить
+            </common-button>
+            <common-button
+               v-if="isEdited"
+               width="100px"
+               margin="0 0 0 12px"
+               type="submit"
+               @click="saveDish"
+            >
+               Сохранить
+            </common-button>
+         </div>
+      </form>
 
       <div class="dish-toolbar">
          <div
@@ -151,6 +154,9 @@ const saveDish = (): void => {
    const { dayKey, dishKey, dish } = props;
 
    if (!props.dish.title) {
+      if (!dishName.value) {
+         return;
+      }
       foodStore.saveDish({
          title: dishName.value,
          type: dishType.value,
