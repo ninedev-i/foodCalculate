@@ -37,5 +37,6 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
           strip_components: 1
+          target: /
           rm: true
           source: "dist/"
