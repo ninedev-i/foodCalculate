@@ -33,7 +33,7 @@ jobs:
       - name: Clear current folder
         uses: fifsky/ssh-action@master
         with:
-          command: rm -r /*
+          command: rm -r `ls`
           host: ${{ secrets.REMOTE_HOST }}
           user: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
