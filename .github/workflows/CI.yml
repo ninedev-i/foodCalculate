@@ -30,15 +30,6 @@ jobs:
           npm install
           npm run build
 
-      - name: Clear current folder
-        uses: fifsky/ssh-action@master
-        with:
-          command: rm -r `ls`
-          host: ${{ secrets.REMOTE_HOST }}
-          user: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          pass: ${{ secrets.REMOTE_PASSWORD }}
-
       - name: Deploy to Server
         uses: appleboy/scp-action@master
         with:
@@ -46,4 +37,5 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
           strip_components: 1
+          rm: true
           source: "dist/"
