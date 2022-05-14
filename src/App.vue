@@ -38,15 +38,11 @@ Promise
       foodStore.getDishes(),
       userStore.getMenus()
    ])
-   .then(() => settingsStore.setIsLoading(false));
-
-foodStore.$subscribe((mutation) => {
-   const events = mutation.events as DebuggerEventExtraInfo;
-   if (events && events.key === 'ingredients' && !events.oldValue.length && events.newValue.length) {
+   .then(() => {
       foodStore.setTimetableFromStorage();
       settingsStore.setSettingsFromStorage();
-   }
-});
+      settingsStore.setIsLoading(false);
+   });
 
 router.afterEach(({ path }) => {
    const menuType = path === '/add' ? 'ingredients' : 'dishes';

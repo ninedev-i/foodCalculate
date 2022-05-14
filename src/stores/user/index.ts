@@ -35,14 +35,17 @@ export const useUserStore = defineStore('user', {
                destroyToken();
             });
       },
-      async getUserInfo() {
-         if (!isAuthenticated()) {
-            return;
-         }
-         api.get('user')
-            .then((response) => {
-               this.email = response.data.email;
-            });
+      async getUserInfo(): Promise<void> {
+         return new Promise((resolve) => {
+            if (!isAuthenticated()) {
+               return resolve();
+            }
+            api.get('user')
+               .then((response) => {
+                  this.email = response.data.email;
+                  resolve();
+               });
+         });
       },
       async getSiteData() {
          const foodStore = useFoodStore();

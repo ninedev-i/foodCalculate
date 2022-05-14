@@ -99,12 +99,12 @@ export const useFoodStore = defineStore('food', {
          this.isTimetableChanged = value;
       },
       async getDishes() {
-         api.get('dish').then(({ data }) => {
+         return api.get('dish').then(({ data }) => {
             this.dishes = data;
          });
       },
       getIngredients() {
-         api.get('ingredient').then(({ data }) => {
+         return api.get('ingredient').then(({ data }) => {
             this.ingredients = data;
          });
       },
