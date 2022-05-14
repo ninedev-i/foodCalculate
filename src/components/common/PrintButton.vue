@@ -27,7 +27,13 @@ const printAction = (): void => window.print();
 @import "../../assets/constants.less";
 
 // FIXME: сделать по ховеру тень такой же темной как и у других кнопок
-.print-button svg {
-   fill: @iconAccentedColor;
+.print-button {
+   svg {
+      fill: @iconAccentedColor;
+   }
+
+   @media (max-width: @mobileResolution)  {
+      display: none;
+   }
 }
 </style>

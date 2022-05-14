@@ -45,7 +45,15 @@ const saveAction = (): void => {
 </script>
 
 <style lang="less">
-.save-button svg {
-   fill: v-bind(iconColor);
+@import "../../assets/constants.less";
+
+.save-button {
+   svg {
+      fill: v-bind(iconColor);
+   }
+
+   @media (max-width: @mobileResolution)  {
+      display: none;
+   }
 }
 </style>

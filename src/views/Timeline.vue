@@ -298,6 +298,10 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
 
    &-addDay {
       margin: 12px auto;
+
+      @media (max-width: @mobileResolution)  {
+         display: none;
+      }
    }
 }
 </style>

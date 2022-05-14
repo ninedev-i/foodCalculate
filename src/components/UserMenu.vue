@@ -24,7 +24,7 @@
             <td width="200px">
                <div class="userMenu-table-actions">
                   <common-button
-                     class="userMenu-table-action"
+                     class="userMenu-table-action userMenu-table-action-delete"
                      appearance="outlined"
                      width="80px"
                      margin="0 0 0 12px"
@@ -44,6 +44,7 @@
                   </common-button>
                   <common-button
                      v-if="menu.is_current && (isDataChanged || isTitleChanged)"
+                     class="userMenu-table-action-update"
                      width="85px"
                      margin="0 0 0 12px"
                      @click="updateItem(menu.id)"
@@ -163,6 +164,22 @@ const getFormattedDate = (date: string) => {
 
       &-action {
          display: none;
+
+         @media (max-width: @mobileResolution)  {
+            display: block;
+         }
+
+         &-update {
+            @media (max-width: @mobileResolution)  {
+               display: none !important;
+            }
+         }
+
+         &-delete {
+            @media (max-width: @mobileResolution)  {
+               display: none !important;
+            }
+         }
       }
 
       &-currentItem {

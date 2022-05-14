@@ -84,6 +84,10 @@ const getPeopleCaption = (val: number): string => {
          clip-path: polygon(1px 48px, 20px 48px, 1px 0);
          margin-left: -1.3px;
       }
+
+      @media (max-width: @mobileResolution)  {
+         display: none;
+      }
    }
 
    &-label {

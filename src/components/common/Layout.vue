@@ -66,6 +66,10 @@ const handleBackgroundClick = (): void => {
       width: v-bind(pageWidth);
       position: fixed;
       z-index: 10;
+
+      @media (max-width: @mobileResolution)  {
+         width: 100%;
+      }
    }
 
    &-page {
@@ -78,6 +82,10 @@ const handleBackgroundClick = (): void => {
 
       &-isEdited {
          overflow-y: hidden;
+      }
+
+      @media (max-width: @mobileResolution)  {
+         width: 100%;
       }
 
       @media print {

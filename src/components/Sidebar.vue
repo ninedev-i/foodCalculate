@@ -129,6 +129,10 @@ h3 {
    top: 0;
    z-index: 12;
 
+   @media (max-width: @mobileResolution)  {
+      display: none;
+   }
+
    &:hover {
       &::-webkit-scrollbar-thumb {
          background-color: #40d9a6;

@@ -139,7 +139,11 @@ const logout = () => userStore.logout();
 
    &-authWrapper {
       display: flex;
-      gap: 30px
+      gap: 30px;
+
+      @media (max-width: @mobileResolution)  {
+         flex-direction: column;
+      }
    }
 
    &-form {
