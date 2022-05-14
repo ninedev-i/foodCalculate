@@ -1,6 +1,6 @@
 <template>
    <section class="addIngredient">
-      <IconButton
+      <icon-button
          v-if="!isEdited"
          caption="Добавить"
          size="26px"
@@ -8,11 +8,12 @@
          :disabled="!isAuthenticated"
          @click="toggleIsEdited"
       >
-         <PlusIcon />
-      </IconButton>
+         <plus-icon />
+      </icon-button>
       <form v-else class="addIngredient-form" @submit.prevent="saveIngredient">
-         <Input
+         <common-input
             class="addIngredient-input"
+            label-id="add-ingredient"
             autofocus
             type="text"
             input-width="110px"
@@ -21,7 +22,7 @@
             :value="ingredientCaption"
             @change="(ev) => ingredientCaption = ev.target.value"
          />
-         <Input
+         <common-input
             class="addIngredient-input"
             type="text"
             input-width="20px"
@@ -31,13 +32,13 @@
             @change="(ev) => countCaption = ev.target.value"
          />
 
-         <IconButton
+         <icon-button
             title="Добавить"
             size="26px"
             :rounded="false"
          >
-            <PlusIcon />
-         </IconButton>
+            <plus-icon />
+         </icon-button>
       </form>
    </section>
 </template>
@@ -45,7 +46,7 @@
 <script lang="ts" setup>
 import { computed, defineComponent, ref } from 'vue';
 import PlusIcon from '@/assets/plus.svg';
-import Input from '@/components/common/Input.vue';
+import CommonInput from '@/components/common/Input.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';

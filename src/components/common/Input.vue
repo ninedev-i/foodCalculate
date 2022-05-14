@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 defineComponent({
    name: 'Input',
@@ -35,7 +35,10 @@ const props = defineProps({
    },
    autofocus: Boolean,
    label: String,
-   className: String,
+   className: {
+      type: String,
+      default: ''
+   },
    borderBottom: Boolean,
    inputWidth: {
       type: String,
@@ -56,6 +59,12 @@ const props = defineProps({
    value: {
       required: true,
    },
+});
+
+onMounted(() => {
+   if (props.autofocus && props.labelId) {
+      document.getElementById(props.labelId)?.focus();
+   }
 });
 
 const style = ref({

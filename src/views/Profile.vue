@@ -23,9 +23,10 @@
                   type="text"
                   class="profile-input"
                   padding="6px 12px"
-                  margin="0 0 12px"
+                  margin="0 0 6px"
                   placeholder="Почта"
                   :value="email"
+                  :autofocus="true"
                   @changeValue="(value) => email = value"
                />
                <common-input
@@ -133,10 +134,7 @@ const logout = () => userStore.logout();
    }
 
    &-container {
-      background: @containerBackground;
-      border: 1px solid @borderColorLight;
-      box-shadow: @boxShadow;
-      padding: 12px;
+      .container();
    }
 
    &-authWrapper {
@@ -145,10 +143,7 @@ const logout = () => userStore.logout();
    }
 
    &-form {
-      background: @containerBackground;
-      border: 1px solid @borderColorLight;
-      box-shadow: @boxShadow;
-      padding: 12px;
+      .container();
    }
 
    &-inputs {
