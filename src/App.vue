@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, watchEffect } from 'vue';
+import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import Layout from '@/components/common/Layout.vue';
 import Navigation from '@/components/Navigation.vue';
@@ -20,6 +20,7 @@ import Wrapper from '@/components/common/Wrapper.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
+import { DebuggerEventExtraInfo } from '@vue/reactivity';
 
 defineComponent({
    name: 'App',
@@ -39,15 +40,13 @@ Promise
    ])
    .then(() => settingsStore.setIsLoading(false));
 
-const stopLoadingItemsWatcher = watchEffect(() => {
-   if (foodStore.ingredients.length && foodStore.dishes.length) {
+foodStore.$subscribe((mutation) => {
+   const events = mutation.events as DebuggerEventExtraInfo;
+   if (events.key === 'ingredients' && !events.oldValue.length && events.newValue.length) {
       foodStore.setTimetableFromStorage();
       settingsStore.setSettingsFromStorage();
    }
 });
-if (foodStore.ingredients.length && foodStore.dishes.length) {
-   stopLoadingItemsWatcher();
-}
 
 router.afterEach(({ path }) => {
    const menuType = path === '/add' ? 'ingredients' : 'dishes';
