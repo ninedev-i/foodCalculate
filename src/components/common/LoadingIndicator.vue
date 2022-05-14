@@ -1,5 +1,5 @@
 <template>
-   <div v-if="isLoading" class="loadingIndicator">
+   <div class="loadingIndicator">
       <div class="loadingIndicator-wrapper">
          <loader />
          <span class="loadingIndicator-text">{{ loadingTexts[randomizer()] }}</span>
@@ -8,16 +8,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import Loader from '@/assets/loader.svg';
-import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'LoadingIndicator',
 });
 
-const settingsStore = useSettingsStore();
-const isLoading = computed(() => settingsStore.isLoading);
 const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
 
 const randomizer = (): number => Math.floor(Math.random() * (Math.ceil(loadingTexts.length - 1) - Math.floor(0) + 1));

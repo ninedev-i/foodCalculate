@@ -11,7 +11,7 @@
             <slot name="content"></slot>
          </main>
       </div>
-      <loading-indicator />
+      <loading-indicator v-if="settingsStore.isLoading" />
    </div>
 </template>
 
@@ -98,7 +98,15 @@ const handleBackgroundClick = (): void => {
    }
 
    &-content {
-      margin: 68px 12px 0;
+      @media (max-width: 1440px) {
+         margin: 68px 12px 0;
+      }
+
+      @media (min-width: 1441px) {
+         margin: 68px auto 0;
+         width: 100%;
+         max-width: 1135px;
+      }
 
       @media print {
          margin: 12px;

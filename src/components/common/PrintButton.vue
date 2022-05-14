@@ -1,5 +1,6 @@
 <template>
    <icon-button
+      v-once
       class="print-button"
       size="22px"
       :filled="false"

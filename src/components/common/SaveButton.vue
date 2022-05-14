@@ -1,7 +1,8 @@
 <template>
    <icon-button
-      v-if="isAuthenticated"
-      class="print-button"
+      v-if="isAuthenticated && menu?.id"
+      v-memo="[isAuthenticated, menu?.id]"
+      class="save-button"
       size="22px"
       :filled="false"
       title="Сохранить"
@@ -21,7 +22,7 @@ import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
-   name: 'PrintButton',
+   name: 'SaveButton',
 });
 
 const userStore = useUserStore();
@@ -44,7 +45,7 @@ const saveAction = (): void => {
 </script>
 
 <style lang="less">
-.print-button svg {
+.save-button svg {
    fill: v-bind(iconColor);
 }
 </style>
