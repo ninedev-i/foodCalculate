@@ -16,6 +16,8 @@ export interface DishMenu {
    id: string;
    type: number;
    title: string;
+   user_id: number;
+   is_default: boolean;
    ingredients: Ingredient[];
 }
 
@@ -40,6 +42,8 @@ export interface Ingredient {
    type: number;
    quantity?: number;
    count_caption: string;
+   user_id: number;
+   is_default: boolean;
 }
 
 export type SaveIngredient = Omit<Ingredient, 'id'>;

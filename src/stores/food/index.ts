@@ -113,6 +113,16 @@ export const useFoodStore = defineStore('food', {
             this.ingredients = data;
          });
       },
+      deleteIngredient(id: number) {
+         api.delete(`ingredient/${id}`).then(({ data }) => {
+            this.ingredients = data;
+         });
+      },
+      deleteDishFromBase(id: number) {
+         api.delete(`dish/${id}`).then(({ data }) => {
+            this.dishes = data;
+         });
+      },
       async saveDish(data: SaveDish) {
          this.dishes = await api.post('dish', data).then(({ data }) => data);
          saveToLocalStorage(this.timetable);
@@ -125,7 +135,6 @@ export const useFoodStore = defineStore('food', {
             addedItem.ingredients = [];
          }
          timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, addedDish);
-         console.log(addedItem.id);
          this.timetable = timetable;
          if (addedDish.title) {
             saveToLocalStorage(timetable);

@@ -12,13 +12,25 @@
          <div v-if="group.expanded">
             <div
                v-for="(item, key) in (menuType === 'dishes' ? dishesByGroup(groupId) : ingredientsByGroup(groupId))"
-               :id="item.id"
                :key="key"
-               class="item"
-               draggable="true"
-               @dragstart="dragStart"
+               class="item-wrapper"
             >
-               {{ cutDishName(item.title) }}
+               <div
+                  :id="item.id"
+                  class="item"
+                  draggable="true"
+                  @dragstart="dragStart"
+               >
+                  {{ cutDishName(item.title) }}
+               </div>
+               <div
+                  v-if="!item.is_default"
+                  class="item-delete"
+                  title="Удалить"
+                  @click="deleteItemNumber = item.id"
+               >
+                  <cross-icon />
+               </div>
             </div>
             <add-ingredient v-if="menuType === 'ingredients'" :type="groupId" />
          </div>
@@ -34,12 +46,24 @@
          Свое блюдо
       </div>
    </aside>
+
+   <common-dialog
+      :is-opened="deleteItemNumber !== null"
+      :heading="`Удаление ${menuType === 'ingredients' ? 'ингредиента' : 'блюда'}`"
+      @close="deleteItemNumber = null"
+      @accept="deleteItem(deleteItemNumber)"
+   >
+      Вы действительно хотите удалить {{ menuType === 'ingredients' ? 'ингредиент' : 'блюдо' }}
+      <b>{{ menuType === 'ingredients' ? foodStore.ingredientById(deleteItemNumber)?.title : foodStore.dishById(deleteItemNumber)?.title }}</b>?
+   </common-dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, reactive } from 'vue';
+import { computed, defineComponent, reactive, ref } from 'vue';
 import AddIngredient from '@/components/AddIngredient.vue';
+import CommonDialog from '@/components/common/Dialog.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
+import CrossIcon from '@/assets/cross.svg';
 import { Group } from '@/stores/food/types';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
@@ -58,6 +82,7 @@ const ingredientsByGroup = computed(() => foodStore.ingredientsByGroup);
 const dishesByGroup = computed(() => foodStore.dishesByGroup);
 const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
+const deleteItemNumber = ref(null);
 
 const dragStart = (ev: DragEvent): void => {
    const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
@@ -74,6 +99,14 @@ const toggleGroup = (groupId: number): void => {
 };
 
 const cutDishName = (caption: string): string => caption.replace(/(каша|суп)/i, '').trim();
+
+const deleteItem = (id: number) => {
+   if (menuType.value === 'dishes') {
+      foodStore.deleteDishFromBase(id);
+   } else {
+      foodStore.deleteIngredient(id);
+   }
+};
 </script>
 
 <style scoped lang="less">
@@ -143,6 +176,16 @@ h3 {
    font-weight: bold;
    width: fit-content;
    font-size: 15px;
+
+   &-wrapper {
+      display: flex;
+      align-items: baseline;
+   }
+
+   &-delete {
+      cursor: pointer;
+      width: 8px;
+   }
 
    &::first-letter {
       text-transform: uppercase;
