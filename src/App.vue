@@ -42,7 +42,7 @@ Promise
 
 foodStore.$subscribe((mutation) => {
    const events = mutation.events as DebuggerEventExtraInfo;
-   if (events.key === 'ingredients' && !events.oldValue.length && events.newValue.length) {
+   if (events && events.key === 'ingredients' && !events.oldValue.length && events.newValue.length) {
       foodStore.setTimetableFromStorage();
       settingsStore.setSettingsFromStorage();
    }
