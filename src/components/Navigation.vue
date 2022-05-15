@@ -1,6 +1,7 @@
 <template>
    <div class="navigation-container">
       <nav class="navigation-routes">
+         <div class="navigation-logo">Еда в поход</div>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.profile">Профиль</router-link>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.home">Меню</router-link>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.summary" :people="{people: +people}">Итого</router-link>
@@ -67,6 +68,14 @@ const getPeopleCaption = (val: number): string => {
       }
    }
 
+   &-logo {
+      font-weight: bolder;
+      font-size: 18px;
+      margin: 0 24px;
+      white-space: nowrap;
+      color: @iconAccentedColor
+   }
+
    &-settings {
       display: flex;
       background: #a2a6f1;
@@ -100,6 +109,7 @@ const getPeopleCaption = (val: number): string => {
 
    &-routes {
       display: flex;
+      align-items: baseline;
    }
 
    &-link {

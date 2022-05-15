@@ -43,7 +43,7 @@
                         v-if="menuKey === 0"
                         class="timeline-menu-dish-sortZone"
                         :data-index="menuKey"
-                        @dragover="drawSortZone($event, dish)"
+                        @dragover="drawSortZone($event)"
                         @dragleave="removeSortZone($event)"
                         @drop="sortDish($event, menuKey)"
                      ></div>
