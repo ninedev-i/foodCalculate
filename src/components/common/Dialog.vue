@@ -1,14 +1,17 @@
 <template>
    <dialog ref="dialog" class="dialog" @close="emit('close')">
       <h4 class="dialog-title">{{ heading }}</h4>
+      <button v-if="isHideActions" class="dialog-close" @click="decline">
+         <cross-icon />
+      </button>
 
       <div class="dialog-content">
          <slot />
       </div>
 
       <div class="dialog-actions">
-         <common-button appearance="outlined" @click="decline">{{ declineCaption }}</common-button>
-         <common-button @click="accept">{{ acceptCaption }}</common-button>
+         <common-button v-if="!isHideActions" appearance="outlined" @click="decline">{{ declineCaption }}</common-button>
+         <common-button v-if="!isHideActions" @click="accept">{{ acceptCaption }}</common-button>
       </div>
    </dialog>
 </template>
@@ -16,6 +19,7 @@
 <script lang="ts" setup>
 import { defineComponent, ref, watch } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
+import CrossIcon from '@/assets/cross.svg';
 
 defineComponent({
    name: 'Dialog',
@@ -36,6 +40,10 @@ const props = defineProps({
    declineCaption: {
       type: String,
       default: 'Нет'
+   },
+   isHideActions: {
+      type: Boolean,
+      default: false
    },
 });
 
@@ -87,6 +95,18 @@ const decline = () => dialog.value.close();
       gap: 12px;
       margin-top: 12px;
       float: right;
+   }
+
+   &-close {
+      all: unset;
+      width: 14px;
+      height: 14px;
+      fill: @iconAccentedColor;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 12px;
    }
 }
 

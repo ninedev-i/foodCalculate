@@ -20,6 +20,7 @@
                   class="item"
                   draggable="true"
                   @dragstart="dragStart"
+                  @click="openDish(item.id)"
                >
                   {{ cutDishName(item.title) }}
                </div>
@@ -56,10 +57,11 @@
       Вы действительно хотите удалить {{ menuType === 'ingredients' ? 'ингредиент' : 'блюдо' }}
       <b>{{ menuType === 'ingredients' ? foodStore.ingredientById(deleteItemNumber)?.title : foodStore.dishById(deleteItemNumber)?.title }}</b>?
    </common-dialog>
+   <dish-dialog v-if="openedDishNumber" :dish-id="openedDishNumber" @close="openedDishNumber = null" />
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, reactive, ref } from 'vue';
 import AddIngredient from '@/components/AddIngredient.vue';
 import CommonDialog from '@/components/common/Dialog.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
@@ -68,6 +70,7 @@ import { Group } from '@/stores/food/types';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
+const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
 
 defineComponent({
    name: 'Sidebar',
@@ -83,6 +86,7 @@ const dishesByGroup = computed(() => foodStore.dishesByGroup);
 const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const deleteItemNumber = ref(null);
+const openedDishNumber = ref(null);
 
 const dragStart = (ev: DragEvent): void => {
    const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
@@ -106,6 +110,10 @@ const deleteItem = (id: number) => {
    } else {
       foodStore.deleteIngredient(id);
    }
+};
+
+const openDish = (id: number) => {
+   openedDishNumber.value = id;
 };
 </script>
 
