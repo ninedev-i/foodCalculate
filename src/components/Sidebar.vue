@@ -48,22 +48,13 @@
       </div>
    </aside>
 
-   <common-dialog
-      :is-opened="deleteItemNumber !== null"
-      :heading="`Удаление ${menuType === 'ingredients' ? 'ингредиента' : 'блюда'}`"
-      @close="deleteItemNumber = null"
-      @accept="deleteItem(deleteItemNumber)"
-   >
-      Вы действительно хотите удалить {{ menuType === 'ingredients' ? 'ингредиент' : 'блюдо' }}
-      <b>{{ menuType === 'ingredients' ? foodStore.ingredientById(deleteItemNumber)?.title : foodStore.dishById(deleteItemNumber)?.title }}</b>?
-   </common-dialog>
+   <delete-item-dialog v-if="deleteItemNumber" :item-id="deleteItemNumber" :menu-type="menuType" @close="deleteItemNumber = null" />
    <dish-dialog v-if="openedDishNumber" :dish-id="openedDishNumber" @close="openedDishNumber = null" />
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, defineComponent, reactive, ref } from 'vue';
 import AddIngredient from '@/components/AddIngredient.vue';
-import CommonDialog from '@/components/common/Dialog.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
 import { Group } from '@/stores/food/types';
@@ -71,6 +62,7 @@ import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
+const DeleteItemDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteItem.vue'));
 
 defineComponent({
    name: 'Sidebar',
@@ -103,14 +95,6 @@ const toggleGroup = (groupId: number): void => {
 };
 
 const cutDishName = (caption: string): string => caption.replace(/(каша|суп)/i, '').trim();
-
-const deleteItem = (id: number) => {
-   if (menuType.value === 'dishes') {
-      foodStore.deleteDishFromBase(id);
-   } else {
-      foodStore.deleteIngredient(id);
-   }
-};
 
 const openDish = (id: number) => {
    openedDishNumber.value = id;

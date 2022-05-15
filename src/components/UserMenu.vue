@@ -58,24 +58,17 @@
       </common-button>
    </div>
 
-   <common-dialog
-      :is-opened="deleteMenuNumber !== null"
-      heading="Удаление меню"
-      @close="deleteMenuNumber = null"
-      @accept="userStore.deleteMenu(deleteMenuNumber)"
-   >
-      Вы действительно хотите удалить это меню?
-   </common-dialog>
+   <delete-menu-dialog v-if="deleteMenuNumber" :menu-id="deleteMenuNumber" @close="deleteMenuNumber = null" />
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
-import CommonDialog from '@/components/common/Dialog.vue';
 import EditableInput from '@/components/common/EditableInput.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
+const DeleteMenuDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteMenu.vue'));
 
 defineComponent({
    name: 'UserMenu',

@@ -38,8 +38,3 @@ onMounted(() => {
    isOpened.value = true;
 });
 </script>
-
-<style lang="less" scoped>
-@import "../../assets/constants.less";
-
-</style>
