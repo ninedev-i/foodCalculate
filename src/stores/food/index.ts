@@ -34,7 +34,6 @@ export const useFoodStore = defineStore('food', {
    }),
    getters: {
       dishById: state => (id: string|number) => state.dishes.find(item => item.id === id),
-      // FIXME: ошибка когда добавляется новое блюдо без типа
       dishesByGroup: state => (groupId: number) => state.dishes.filter(item => item.type === groupId),
       ingredientById: state => (id: number): Ingredient => state.ingredients.find(item => +item.id === +id),
       ingredientsByGroup: state => (groupId: number) => state.ingredients.filter(item => {

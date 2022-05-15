@@ -1,9 +1,6 @@
 <template>
    <div class="layout">
-      <div
-         :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`"
-         @click="handleBackgroundClick"
-      >
+      <div :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`">
          <header class="layout-header">
             <slot name="header"></slot>
          </header>
@@ -35,13 +32,6 @@ router.afterEach(() => {
       settingsStore.toggleIsShowBackground();
    }
 });
-
-const handleBackgroundClick = (): void => {
-   if (isShowBackground.value) {
-      // TODO cancel editing
-      // settingsStore.toggleIsShowBackground();
-   }
-};
 </script>
 
 <style lang="less" scoped>

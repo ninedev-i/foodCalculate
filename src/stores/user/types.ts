@@ -21,19 +21,14 @@ export interface SavedMenu {
    content: DayMenu[];
 }
 
-export interface MenusForInput {
-   [key: number]: string;
-}
-
 export interface UserState {
    email: string;
    menus: SavedMenu[];
-   menusForInput: MenusForInput;
 }
 
 export interface MenuData {
-   content: string;
+   content?: string;
    id?: number;
-   settings: string;
-   title: string;
+   settings?: string;
+   title?: string;
 }

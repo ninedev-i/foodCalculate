@@ -8,7 +8,6 @@ export const useUserStore = defineStore('user', {
    state: (): UserState => ({
       email: null,
       menus: [],
-      menusForInput: []
    }),
    getters: {
       currentMenu: (state) => state.menus.find(item => item.is_current)
@@ -57,20 +56,13 @@ export const useUserStore = defineStore('user', {
          return api.get('menu')
             .then(({ data }: { data: SavedMenu[] }) => {
                this.menus = data;
-               this.menusForInput = data.reduce((obj, cur) => ({ ...obj, [cur.id]: cur.title }), {});
             });
-      },
-      setMenusForInput({ value, id }: { value: string; id: number }) {
-         const updatedData = { ...this.menusForInput };
-         updatedData[id] = value;
-         this.menusForInput = updatedData;
       },
       async addMenu(menuData: MenuData) {
          return api
             .post('menu', menuData)
             .then(({ data }: { data: SavedMenu[] }) => {
                this.menus = data;
-               this.menusForInput = data.reduce((obj, cur) => ({ ...obj, [cur.id]: cur.title }), {});
             });
       },
       async updateMenu(menuData: MenuData) {
@@ -98,7 +90,6 @@ export const useUserStore = defineStore('user', {
             .delete(`menu/${id}`)
             .then(({ data }: { data: SavedMenu[] }) => {
                this.menus = data;
-               this.menusForInput = data.reduce((obj, cur) => ({ ...obj, [cur.id]: cur.title }), {});
             });
       },
    }

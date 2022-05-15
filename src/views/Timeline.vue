@@ -97,8 +97,6 @@ defineComponent({
    name: 'Timeline',
 });
 
-// TODO добавить возможность изменять название дня (например День 1 => Заброска)
-
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const userStore = useUserStore();
