@@ -173,7 +173,7 @@ const getFormattedDate = (date: string): string => {
       }
 
       &-current {
-         background: rgba(89, 251, 196, 0.3);
+         background: @accentColorLight;
          font-weight: bold;
       }
 

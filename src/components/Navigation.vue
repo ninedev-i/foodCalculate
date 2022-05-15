@@ -1,51 +1,21 @@
 <template>
-   <div class="navigation-container">
+   <div v-once class="navigation-container">
       <nav class="navigation-routes">
          <div class="navigation-logo">Еда в поход</div>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.profile">Профиль</router-link>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.home">Меню</router-link>
-         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.summary" :people="{people: +people}">Итого</router-link>
+         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.summary">Итого</router-link>
       </nav>
-
-      <div class="navigation-settings">
-         <common-input
-            label-id="people"
-            class="navigation-input"
-            min="1"
-            max="500"
-            step="1"
-            type="number"
-            input-width="30px"
-            text-align="center"
-            :value="people"
-            :label="getPeopleCaption(people)"
-            @changeValue="(value) => changePeople(value)"
-         />
-      </div>
    </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
-import CommonInput from '@/components/common/Input.vue';
+import { defineComponent } from 'vue';
 import { routes } from '@/router';
-import { useSettingsStore } from '@/stores/settings';
 
 defineComponent({
    name: 'Navigation',
 });
-
-const settingsStore = useSettingsStore();
-const people = computed(() => settingsStore.people);
-
-const changePeople = (val: number): void => settingsStore.changePeople(val);
-
-const getPeopleCaption = (val: number): string => {
-   let cases = [2, 0, 1, 1, 1, 2];
-   return ['человек', 'человека', 'человек'][(val % 100 > 4 && val % 100 < 20)
-      ? 2
-      : cases[(val % 10 < 5) ? val % 10 :5]];
-};
 </script>
 
 <style lang="less">
@@ -62,10 +32,6 @@ const getPeopleCaption = (val: number): string => {
       @media print {
          display: none;
       }
-
-      a {
-         color: @fontColor;
-      }
    }
 
    &-logo {
@@ -74,37 +40,6 @@ const getPeopleCaption = (val: number): string => {
       margin: 0 24px;
       white-space: nowrap;
       color: @iconAccentedColor
-   }
-
-   &-settings {
-      display: flex;
-      background: #a2a6f1;
-      align-self: stretch;
-      align-items: center;
-      padding-right: 6px;
-
-      &:before {
-         padding-right: 12px;
-         display: block;
-         content: '';
-         background: @containerBackground;
-         height: 100%;
-         width: 20px;
-         clip-path: polygon(1px 48px, 20px 48px, 1px 0);
-         margin-left: -1.3px;
-      }
-
-      @media (max-width: @mobileResolution)  {
-         display: none;
-      }
-   }
-
-   &-label {
-      margin-right: 20px;
-   }
-
-   &-input {
-      margin-right: 6px;
    }
 
    &-routes {
@@ -120,16 +55,15 @@ const getPeopleCaption = (val: number): string => {
 
       &:hover {
          font-weight: bold;
-
-         &.navigation-link-active {
-            font-weight: normal;
-            text-decoration: none;
-            cursor: default;
-         }
       }
+
       &-active {
          border-bottom: 4px solid @accentColor;
-         text-decoration: none;
+
+         &:hover {
+            font-weight: normal;
+            cursor: default;
+         }
       }
    }
 }

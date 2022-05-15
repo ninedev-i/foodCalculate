@@ -40,7 +40,7 @@
                </span>
             </div>
             <div v-else class="dish-ingredient-caption">
-               {{ ingredientById(id).title }}, {{ quantity * people }} {{ ingredientById(id).count_caption }}
+               {{ ingredientById(id).title }}, {{ Math.round(quantity * people * coefficient) }} {{ ingredientById(id).count_caption }}
             </div>
          </div>
          <div v-if="!editedDish.ingredients.length" class="dish-ingredient-tip">Перетяните сюда ингредиенты</div>
@@ -116,6 +116,7 @@ const props = defineProps({
 
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
+const coefficient = computed(() => settingsStore.coefficient);
 const emit = defineEmits(['delete-item']);
 const isEdited = ref(!props.dish.title);
 const isMoved = ref(false);

@@ -4,6 +4,7 @@
          <h1>Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
          <print-button />
          <save-button />
+         <settings />
       </div>
 
       <div
@@ -85,6 +86,7 @@ import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import SaveButton from '@/components/common/SaveButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
+import Settings from '@/components/Settings.vue';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
 import { scrollToElementIfIsNotVisible } from '@/utils';

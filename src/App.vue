@@ -20,7 +20,6 @@ import Wrapper from '@/components/common/Wrapper.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
-import { DebuggerEventExtraInfo } from '@vue/reactivity';
 
 defineComponent({
    name: 'App',

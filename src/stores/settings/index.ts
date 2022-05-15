@@ -4,8 +4,8 @@ import { useUserStore } from '@/stores/user';
 import { SavedMenu } from '@/stores/user/types';
 import { MenuType, SettingsState } from './types';
 
-const saveToLocalStorage = (days: number, people: number): void => {
-   localStorage.setItem('settings', JSON.stringify({ days, people }));
+const saveToLocalStorage = (days: number, people: number, coefficient: number): void => {
+   localStorage.setItem('settings', JSON.stringify({ days, people, coefficient }));
 };
 
 export const useSettingsStore = defineStore('settings', {
@@ -13,6 +13,7 @@ export const useSettingsStore = defineStore('settings', {
       isLoading: true,
       isShowBackground: false,
       menuType: 'dishes',
+      coefficient: 1,
       people: 1,
       days: 1,
    }),
@@ -37,7 +38,7 @@ export const useSettingsStore = defineStore('settings', {
          if (data) {
             this.days = data.days;
             this.people = data.people;
-            saveToLocalStorage(this.days, this.people);
+            saveToLocalStorage(this.days, this.people, this.coefficient);
          }
       },
       changeMenuType(type: MenuType) {
@@ -46,21 +47,27 @@ export const useSettingsStore = defineStore('settings', {
       changePeople(people: number) {
          if (people > 0) {
             this.people = +people;
-            saveToLocalStorage(this.days, this.people);
+            saveToLocalStorage(this.days, this.people, this.coefficient);
          }
       },
       changeDays(days: number) {
          if (days > 0 && days <= 500) {
             const foodStore = useFoodStore();
             this.days = +days;
-            saveToLocalStorage(this.days, this.people);
+            saveToLocalStorage(this.days, this.people, this.coefficient);
             foodStore.setTimetable(+days);
+         }
+      },
+      changeCoefficient(coefficient: number) {
+         if (coefficient > 0 && coefficient <= 2) {
+            this.coefficient = +coefficient;
+            saveToLocalStorage(this.days, this.people, this.coefficient);
          }
       },
       removeDay(dayKey: number) {
          const foodStore = useFoodStore();
          this.days -= 1;
-         saveToLocalStorage(this.days, this.people);
+         saveToLocalStorage(this.days, this.people, this.coefficient);
          foodStore.removeDayFromMenu(dayKey);
       },
       toggleIsShowBackground() {

@@ -1,5 +1,12 @@
 <template>
    <div class="input-container">
+      <label
+         v-if="labelId && label"
+         :for="labelId"
+         class="input-label"
+      >
+         {{ label }}
+      </label>
       <input
          :id="labelId"
          :autofocus="autofocus"
@@ -9,14 +16,9 @@
          :value="value"
          required="required"
          :style="style"
+         :step="step"
          @input="$emit('changeValue', $event.target.value)"
       />
-      <label
-         v-if="labelId && label"
-         :for="labelId"
-      >
-         {{ label }}
-      </label>
    </div>
 </template>
 
@@ -35,6 +37,7 @@ const props = defineProps({
    },
    autofocus: Boolean,
    label: String,
+   step: String,
    className: {
       type: String,
       default: ''
@@ -93,6 +96,10 @@ const style = ref({
             color: #a7a7a7;
          }
 
+         &:focus {
+            border-color: @accentColor;
+         }
+
          &[type=number] {
             &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
                -webkit-appearance: none;
@@ -110,6 +117,10 @@ const style = ref({
 
    &-default {
       border: 1px solid @borderColor;
+   }
+
+   &-label {
+      margin-right: 12px;
    }
 }
 </style>

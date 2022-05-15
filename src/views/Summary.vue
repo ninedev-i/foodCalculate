@@ -14,7 +14,7 @@
                      <input type="checkbox" class="summary-checkbox">
                      {{ item.title }}
                   </div>
-                  <div class="summary-table-quantity">{{ item.quantity * people }}</div>
+                  <div class="summary-table-quantity">{{ Math.round(item.quantity * people * coefficient) }}</div>
                   <div class="summary-table-countCaption">{{ item.countCaption }}</div>
                </template>
             </div>
@@ -36,6 +36,7 @@ defineComponent({
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const people = computed(() => settingsStore.people);
+const coefficient = computed(() => settingsStore.coefficient);
 const summaryGrouped = computed(() => foodStore.getSummaryGrouped);
 </script>
 
