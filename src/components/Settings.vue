@@ -46,6 +46,10 @@ const peopleCaption = computed((): string => {
    gap: 10px;
    cursor: pointer;
 
+   @media (max-width: @mobileResolution)  {
+      display: none;
+   }
+
    @media print {
       display: none;
    }
