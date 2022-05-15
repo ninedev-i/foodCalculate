@@ -46,6 +46,10 @@ const peopleCaption = computed((): string => {
    gap: 10px;
    cursor: pointer;
 
+   @media print {
+      display: none;
+   }
+
    &-edit {
       all: unset;
       width: 12px;
