@@ -12,6 +12,13 @@ import InfoIcon from '@/assets/info.svg';
 defineComponent({
    name: 'Alert',
 });
+
+defineProps({
+   type: {
+      type: String,
+      default: 'info'
+   },
+});
 </script>
 
 <style lang="less" scoped>
