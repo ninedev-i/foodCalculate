@@ -1,7 +1,6 @@
 <template>
    <icon-button
       v-if="isAuthenticated && menu?.id"
-      v-memo="[isAuthenticated, menu?.id]"
       class="save-button"
       size="22px"
       :filled="false"

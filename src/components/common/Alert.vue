@@ -1,7 +1,7 @@
 <template>
-   <div v-once class="alert" role="alert">
+   <div v-once :class="`alert alert-${type}`" role="alert">
       <info-icon class="alert-icon" />
-      {{ text }}
+      <div><slot /></div>
    </div>
 </template>
 
@@ -12,13 +12,6 @@ import InfoIcon from '@/assets/info.svg';
 defineComponent({
    name: 'Alert',
 });
-
-defineProps({
-   text: {
-      type: String,
-      required: true
-   },
-});
 </script>
 
 <style lang="less" scoped>
@@ -27,13 +20,25 @@ defineProps({
 .alert {
    display: flex;
    align-items: center;
-   background: @accentColorLight;
    margin: 6px 0;
    border-radius: 2px;
    padding: 6px 12px;
    font-size: 14px;
    gap: 12px;
    max-width: fit-content;
+
+   &-info {
+      background: @accentColorLight;
+   }
+
+   &-warning {
+      background: #ffdb98;
+
+      svg {
+         transform: rotate(180deg);
+         fill: #d38800;
+      }
+   }
 
    &-icon {
       fill: @iconAccentedColor;

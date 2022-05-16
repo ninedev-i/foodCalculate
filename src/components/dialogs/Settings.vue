@@ -33,7 +33,7 @@
             @changeValue="(value) => editedCoefficient = value"
          />
       </div>
-      <info-alert text="Количество ингредиентов умножается на коэффициент и количество человек." />
+      <info-alert>Количество ингредиентов умножается на коэффициент и количество человек.</info-alert>
    </common-dialog>
 </template>
 

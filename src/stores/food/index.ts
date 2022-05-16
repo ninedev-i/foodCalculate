@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import api from '@/utils';
 import { DayMenu, Dish, DishMenu, FoodState, GroupItem, Ingredient, MovedDish, SaveDish, SaveIngredient } from './types';
 
-const getDishFormat = (): Dish[] => [
+const getMealsFormat = (): Dish[] => [
    { name: 'Завтрак', menu: [] }, { name: 'Обед', menu: [] }, { name: 'Ужин', menu: [] }
 ];
 
@@ -12,7 +12,7 @@ const saveToLocalStorage = (timetable: DayMenu[]): void => {
 
 export const useFoodStore = defineStore('food', {
    state: (): FoodState => ({
-      timetable: [{ dishes: getDishFormat() }],
+      timetable: [{ meals: getMealsFormat() }],
       dishes: [],
       ingredients: [],
       isTimetableChanged: false,
@@ -42,7 +42,7 @@ export const useFoodStore = defineStore('food', {
       getSummaryIngredients: (state) => {
          const output = new Map();
          state.timetable
-            .map(item => item.dishes).flat()
+            .map(item => item.meals).flat()
             .map(item => item.menu).flat()
             .map(item => item.ingredients).flat()
             .forEach((ingredient) => {
@@ -77,17 +77,6 @@ export const useFoodStore = defineStore('food', {
       },
    },
    actions: {
-      setTimetable(data: number) {
-         const timetable = this.timetable.slice(0);
-         const difference = data - timetable.length;
-         if (difference > 0) {
-            for (let i = 0; i < difference; i++) {
-               timetable.push({ dishes: getDishFormat() });
-            }
-         }
-         this.timetable = timetable;
-         saveToLocalStorage(timetable);
-      },
       setTimetableFromStorage(dataFromBase?: DayMenu[]) {
          const data = dataFromBase || JSON.parse(localStorage.getItem('timetable'));
          if (data) {
@@ -118,8 +107,12 @@ export const useFoodStore = defineStore('food', {
          });
       },
       deleteDishFromBase(id: number) {
-         api.delete(`dish/${id}`).then(({ data }) => {
-            this.dishes = data;
+         api.delete(`dish/${id}`, { data: { current: this.timetable } }).then(({ data }) => {
+            this.dishes = data.dishList;
+            if (Array.isArray(data.current)) {
+               this.timetable = data.current;
+               saveToLocalStorage(this.timetable);
+            }
          });
       },
       async saveDish(data: SaveDish) {
@@ -127,13 +120,16 @@ export const useFoodStore = defineStore('food', {
          saveToLocalStorage(this.timetable);
          this.isTimetableChanged = true;
       },
+      async checkIsDishUsed(id: number): Promise<string[]> {
+         return api.post(`dish/is_used/${id}`, { current: JSON.stringify(this.timetable) }).then(res => res.data);
+      },
       addDish({ addedDish, dayKey, dishKey, sortNumber }: { addedDish: DishMenu; dayKey: number; dishKey: number; sortNumber: number }) {
          const timetable = this.timetable.slice(0);
          const addedItem = addedDish;
          if (!addedItem.ingredients) {
             addedItem.ingredients = [];
          }
-         timetable[dayKey].dishes[dishKey].menu.splice(sortNumber, 0, addedDish);
+         timetable[dayKey].meals[dishKey].menu.splice(sortNumber, 0, addedDish);
          this.timetable = timetable;
          if (addedDish.title) {
             saveToLocalStorage(timetable);
@@ -142,15 +138,15 @@ export const useFoodStore = defineStore('food', {
          this.isTimetableChanged = true;
       },
       moveDish({ moveFrom, moveTo, movedDish, sortNumber }: { moveFrom: MovedDish; moveTo: MovedDish; movedDish: DishMenu; sortNumber: number }) {
-         const id = movedDish.id;
-         this._removeDish({ id, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey });
+         const computedId = movedDish.computed_id;
+         this._removeDish({ computedId, dayKey: moveFrom.dayKey, dishKey: moveFrom.dishKey });
          this.isTimetableChanged = true;
-         this.timetable[moveTo.dayKey].dishes[moveTo.dishKey].menu.splice(sortNumber, 0, movedDish);
+         this.timetable[moveTo.dayKey].meals[moveTo.dishKey].menu.splice(sortNumber, 0, movedDish);
          this._updateDishIds(moveTo.dayKey, moveTo.dishKey);
          saveToLocalStorage(this.timetable);
       },
       sortDish({ moveFrom, sortNumber, movedDish }: { moveFrom: MovedDish; sortNumber: number; movedDish: DishMenu}) {
-         const currentMenu = this.timetable[moveFrom.dayKey].dishes[moveFrom.dishKey].menu;
+         const currentMenu = this.timetable[moveFrom.dayKey].meals[moveFrom.dishKey].menu;
          const currentNumber = currentMenu.map(item => item.id).indexOf(movedDish.id);
          const deletedItem = currentNumber > sortNumber ? currentNumber + 1 : currentNumber;
          currentMenu.splice(sortNumber, 0, movedDish);
@@ -160,14 +156,14 @@ export const useFoodStore = defineStore('food', {
          saveToLocalStorage(this.timetable);
          this.isTimetableChanged = true;
       },
-      deleteDish({ id, dayKey, dishKey }: { id: string; dayKey: number; dishKey: number }) {
-         this._removeDish({ id, dayKey, dishKey });
+      deleteDish({ computedId, dayKey, dishKey }: { computedId: string; dayKey: number; dishKey: number }) {
+         this._removeDish({ computedId, dayKey, dishKey });
          this._updateDishIds(dayKey, dishKey);
          this.isTimetableChanged = true;
       },
-      updateDish({ dayKey, dishKey, dishId, dishName, ingredients }: { dayKey: number; dishKey: number; dishId: string; dishName: string; ingredients: Ingredient[]}) {
-         this.timetable[dayKey].dishes[dishKey].menu.map((item) => {
-            if (item.id === dishId) {
+      updateDish({ dayKey, dishKey, computedId, dishName, ingredients }: { dayKey: number; dishKey: number; dishName: string; computedId: string; ingredients: Ingredient[]}) {
+         this.timetable[dayKey].meals[dishKey].menu.map((item) => {
+            if (item.computed_id === computedId) {
                item.title = dishName;
                item.ingredients = ingredients;
             }
@@ -175,15 +171,26 @@ export const useFoodStore = defineStore('food', {
          saveToLocalStorage(this.timetable);
          this.isTimetableChanged = true;
       },
-      removeDayFromMenu(deletedDayKey: number) {
+      addDayToTimetable(data: number) {
+         const timetable = this.timetable.slice(0);
+         const difference = data - timetable.length;
+         if (difference > 0) {
+            for (let i = 0; i < difference; i++) {
+               timetable.push({ meals: getMealsFormat() });
+            }
+         }
+         this.timetable = timetable;
+         saveToLocalStorage(timetable);
+      },
+      removeDayFromTimetable(deletedDayKey: number) {
          let updatedTimetable = this.timetable.slice(0);
          updatedTimetable = updatedTimetable.filter((day: DayMenu, dayKey: number) => {
             if (dayKey + 1 > deletedDayKey) {
-               return day.dishes.map(item => {
+               return day.meals.map(item => {
                   item.menu.map(dish => {
-                     const ids = dish.id.split('_');
+                     const ids = dish.computed_id.split('_');
                      ids[0] = String(+ids[0] - 1);
-                     dish.id = ids.join('_');
+                     dish.computed_id = ids.join('_');
                      return dish;
                   });
                   return item;
@@ -203,19 +210,14 @@ export const useFoodStore = defineStore('food', {
       },
 
       _updateDishIds(dayKey: number, dishKey: number) {
-         this.timetable[dayKey].dishes[dishKey].menu.map((item, key) => {
-            item.id = `${dayKey}_${dishKey}_${key}`;
+         this.timetable[dayKey].meals[dishKey].menu.map((item, key) => {
+            item.computed_id = `${dayKey}_${dishKey}_${key}`;
             return item;
          });
       },
-      _removeDish({ id, dayKey, dishKey }: { id: string; dayKey: number; dishKey: number }) {
-         const editedMenu = this.timetable[dayKey].dishes[dishKey].menu.slice(0);
-         if (id) {
-            this.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => id !== item.id);
-         } else {
-            // Удалим свое блюдо при отмене редактирования
-            this.timetable[dayKey].dishes[dishKey].menu = editedMenu.filter((item) => item.title);
-         }
+      _removeDish({ computedId, dayKey, dishKey }: { computedId: string; dayKey: number; dishKey: number }) {
+         const editedMenu = this.timetable[dayKey].meals[dishKey].menu.slice(0);
+         this.timetable[dayKey].meals[dishKey].menu = editedMenu.filter((item) => computedId !== item.computed_id);
          saveToLocalStorage(this.timetable);
       },
    }

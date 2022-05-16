@@ -55,7 +55,7 @@ export const useSettingsStore = defineStore('settings', {
             const foodStore = useFoodStore();
             this.days = +days;
             saveToLocalStorage(this.days, this.people, this.coefficient);
-            foodStore.setTimetable(+days);
+            foodStore.addDayToTimetable(+days);
          }
       },
       changeCoefficient(coefficient: number) {
@@ -68,7 +68,7 @@ export const useSettingsStore = defineStore('settings', {
          const foodStore = useFoodStore();
          this.days -= 1;
          saveToLocalStorage(this.days, this.people, this.coefficient);
-         foodStore.removeDayFromMenu(dayKey);
+         foodStore.removeDayFromTimetable(dayKey);
       },
       toggleIsShowBackground() {
          this.isShowBackground = !this.isShowBackground;

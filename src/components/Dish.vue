@@ -6,7 +6,7 @@
       @drop="dropIngredient($event, dayKey - 1, dishKey)"
       @dragend="dragEnd"
    >
-      <form>
+      <form @submit.prevent>
          <div v-if="dish.title" class="dish-title" :data-dish-number="dish.id">{{ dish.title }}</div>
          <common-input
             v-else
@@ -50,7 +50,7 @@
                v-if="isEdited"
                width="85px"
                appearance="outlined"
-               @click="cancelEdit(id)"
+               @click="cancelEdit"
             >
                Отменить
             </common-button>
@@ -167,7 +167,7 @@ const saveDish = (): void => {
    foodStore.updateDish({
       dayKey,
       dishKey,
-      dishId: dish.id,
+      computedId: dish.computed_id,
       dishName: dish.title || dishName.value,
       ingredients: editedDish.value.ingredients
    });
@@ -177,10 +177,10 @@ const saveDish = (): void => {
    foodStore.setEditedDishIngredients([]);
 };
 
-const cancelEdit = (id: string | null): void => {
+const cancelEdit = (): void => {
    isEdited.value = !isEdited.value;
-   if (!id) {
-      foodStore.deleteDish({ id, dayKey: props.dayKey, dishKey: props.dishKey });
+   if (!props.dish.id) {
+      foodStore.deleteDish({ computedId: props.dish.computed_id, dayKey: props.dayKey, dishKey: props.dishKey });
    }
    settingsStore.toggleIsShowBackground();
    settingsStore.changeMenuType('dishes');
@@ -224,7 +224,7 @@ const deleteIngredient = (id: number): void => {
 const router = useRouter();
 router.beforeEach((to, from, next) => {
    if (isEdited.value) {
-      cancelEdit(null);
+      cancelEdit();
    }
    next();
 });

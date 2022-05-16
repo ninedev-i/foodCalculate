@@ -13,7 +13,8 @@ export interface Group {
 }
 
 export interface DishMenu {
-   id: string;
+   id: number;
+   computed_id: string;
    type: number;
    title: string;
    user_id: number;
@@ -33,7 +34,7 @@ export interface SaveDish {
 }
 
 export interface DayMenu {
-   dishes: Dish[];
+   meals: Dish[];
 }
 
 export interface Ingredient {

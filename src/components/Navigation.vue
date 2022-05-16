@@ -32,6 +32,10 @@ defineComponent({
       @media print {
          display: none;
       }
+
+      a {
+         color: @fontColor;
+      }
    }
 
    &-logo {
