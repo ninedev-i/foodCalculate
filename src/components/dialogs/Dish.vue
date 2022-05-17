@@ -113,7 +113,7 @@ const deleteIngredient = (id: number): void => {
 };
 
 const saveDish = (): void => {
-   if (!props.dish.id) {
+   if (!props.dish?.id) {
       if (!dishName.value) {
          return;
       }
