@@ -1,6 +1,6 @@
 <template>
    <select
-      v-model="value"
+      v-model="selectedValue"
       class="select"
       @change="$emit('changeValue', value);"
       >
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 defineComponent({
    name: 'Select',
@@ -17,7 +17,7 @@ defineComponent({
 
 defineEmits(['changeValue']);
 
-defineProps({
+const props = defineProps({
    items: {
       type: Array,
    },
@@ -27,6 +27,7 @@ defineProps({
    }
 });
 
+const selectedValue = ref(props.value);
 </script>
 
 <style lang="less" scoped>
