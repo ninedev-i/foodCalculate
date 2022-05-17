@@ -35,8 +35,8 @@ defineProps({
 .select {
    width: 100%;
    border: 1px solid @accentColor;
-   border-radius: 4px;
-   padding: 0.25em 0.5em;
+   border-radius: 2px;
+   padding: 6px;
    cursor: pointer;
    background-color: #fff;
 

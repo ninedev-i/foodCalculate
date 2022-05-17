@@ -11,7 +11,6 @@ const saveToLocalStorage = (days: number, people: number, coefficient: number): 
 export const useSettingsStore = defineStore('settings', {
    state: (): SettingsState => ({
       isLoading: true,
-      isShowBackground: false,
       menuType: 'dishes',
       coefficient: 1,
       people: 1,
@@ -69,9 +68,6 @@ export const useSettingsStore = defineStore('settings', {
          this.days -= 1;
          saveToLocalStorage(this.days, this.people, this.coefficient);
          foodStore.removeDayFromTimetable(dayKey);
-      },
-      toggleIsShowBackground() {
-         this.isShowBackground = !this.isShowBackground;
       },
    }
 });

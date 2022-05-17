@@ -26,21 +26,3 @@ const api = axios.create({
    }
 });
 export default api;
-
-export const scrollToElementIfIsNotVisible = (domElement: HTMLElement | null, layout: HTMLElement | null): Promise<void> => {
-   return new Promise(() => {
-      const o = new IntersectionObserver(([entry]) => {
-         const isVisible = entry.intersectionRatio === 1;
-         if (!isVisible) {
-            const parent = (domElement as HTMLElement).offsetParent;
-            layout?.scrollTo({
-               top: (parent as HTMLElement).offsetTop,
-               left: 0,
-               behavior: 'smooth'
-            });
-         }
-         o.disconnect();
-      });
-      o.observe(domElement);
-   });
-};

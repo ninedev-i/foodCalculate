@@ -65,5 +65,39 @@ export interface FoodState {
 
 export interface MovedDish {
    dayKey: number;
-   dishKey: number;
+   mealKey: number;
+}
+
+export interface AddDishArguments {
+   addedDish: DishMenu;
+   dayKey: number;
+   mealKey: number;
+   sortNumber: number;
+}
+
+export interface MoveDishArguments {
+   moveFrom: MovedDish;
+   moveTo: MovedDish;
+   movedDish: DishMenu;
+   sortNumber: number;
+}
+
+export interface SortDishArguments {
+   moveFrom: MovedDish;
+   sortNumber: number;
+   movedDish: DishMenu;
+}
+
+export interface DeleteDishArguments {
+   computedId: string;
+   dayKey: number;
+   mealKey: number;
+}
+
+export interface UpdateDishArguments {
+   dayKey: number;
+   mealKey: number;
+   dishName: string;
+   computedId: string;
+   ingredients: Ingredient[];
 }

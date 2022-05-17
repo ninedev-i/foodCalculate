@@ -9,7 +9,7 @@
       Вы действительно хотите удалить {{ menuType === 'ingredients' ? 'ингредиент' : 'блюдо' }}
       <b>{{ menuType === 'ingredients' ? foodStore.ingredientById(itemId)?.title : foodStore.dishById(itemId)?.title }}</b>?
 
-      <warning-alert v-if="dishUsedInMenus.length" type="warning">
+      <warning-alert v-if="dishUsedInMenus.length && menuType === 'dishes'" type="warning">
          <div v-if="dishUsedInMenus.length === 1 && dishUsedInMenus.includes('current')">Это блюдо используется в текущем меню и будет из него удалено.</div>
          <div v-else>
             <p>Это блюдо используется в следующих меню: <b>{{ dishUsedInMenus.filter(item => item !== 'current').join(', ') }}</b>.</p>
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onBeforeMount, ref } from 'vue';
+import { defineComponent, onBeforeMount, onMounted, ref } from 'vue';
 import CommonDialog from '@/components/common/Dialog.vue';
 import WarningAlert from '@/components/common/Alert.vue';
 import { useFoodStore } from '@/stores/food';
@@ -53,7 +53,12 @@ const deleteItem = (id: number) => {
 };
 
 onBeforeMount(async () => {
-   dishUsedInMenus.value = await foodStore.checkIsDishUsed(props.itemId);
+   if (props.menuType === 'dishes') {
+      dishUsedInMenus.value = await foodStore.checkIsDishUsed(props.itemId);
+   }
+});
+
+onMounted(async () => {
    isOpened.value = true;
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
    <div class="layout">
-      <div :class="`layout-page ${isShowBackground ? 'layout-page-isEdited' : ''}`">
+      <div class="layout-page">
          <header class="layout-header">
             <slot name="header"></slot>
          </header>
@@ -8,7 +8,7 @@
             <slot name="content"></slot>
          </main>
       </div>
-      <loading-indicator v-if="settingsStore.isLoading" />
+      <loading-indicator v-if="isLoading" />
    </div>
 </template>
 
@@ -24,14 +24,8 @@ defineComponent({
 
 const router = useRouter();
 const settingsStore = useSettingsStore();
-const isShowBackground = computed(() => settingsStore.isShowBackground);
+const isLoading = computed(() => settingsStore.isLoading);
 const pageWidth = computed(() => router.currentRoute.value.meta.isWithSidebar ? 'calc(100% - 262px)' : '100%');
-
-router.afterEach(() => {
-   if (isShowBackground.value) {
-      settingsStore.toggleIsShowBackground();
-   }
-});
 </script>
 
 <style lang="less" scoped>
@@ -69,10 +63,6 @@ router.afterEach(() => {
       position: fixed;
       height: 100vh;
       overflow-y: scroll;
-
-      &-isEdited {
-         overflow-y: hidden;
-      }
 
       @media (max-width: @mobileResolution)  {
          width: 100%;

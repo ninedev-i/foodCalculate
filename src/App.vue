@@ -4,9 +4,7 @@
          <navigation />
       </template>
       <template #content>
-         <wrapper>
-            <router-view />
-         </wrapper>
+         <router-view />
       </template>
    </layout>
 </template>
@@ -16,7 +14,6 @@ import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import Layout from '@/components/common/Layout.vue';
 import Navigation from '@/components/Navigation.vue';
-import Wrapper from '@/components/common/Wrapper.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';

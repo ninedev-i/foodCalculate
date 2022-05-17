@@ -1,6 +1,6 @@
 <template>
    <dialog ref="dialog" class="dialog" @close="emit('close')">
-      <h4 class="dialog-title">{{ heading }}</h4>
+      <h4 v-if="heading" class="dialog-title">{{ heading }}</h4>
       <button v-if="isHideActions" class="dialog-close" @click="decline">
          <cross-icon />
       </button>
@@ -14,6 +14,7 @@
          <common-button v-if="!isHideActions" @click="accept">{{ acceptCaption }}</common-button>
       </div>
    </dialog>
+   <div v-if="isOpened && !isModal" class="dialog-fakeBackdrop"></div>
 </template>
 
 <script lang="ts" setup>
@@ -45,6 +46,10 @@ const props = defineProps({
       type: Boolean,
       default: false
    },
+   isModal: {
+      type: Boolean,
+      default: true
+   },
 });
 
 const emit = defineEmits(['accept', 'close']);
@@ -53,7 +58,11 @@ const dialog = ref(null);
 
 watch(() => props.isOpened, (isOpened) => {
    if (isOpened) {
-      dialog.value.showModal();
+      if (props.isModal) {
+         dialog.value.showModal();
+      } else {
+         dialog.value.show();
+      }
    }
 });
 
@@ -74,6 +83,7 @@ const decline = () => dialog.value.close();
    padding: 20px;
    top: 50%;
    left: 50%;
+   z-index: 12;
    -ms-transform: translateX(-50%) translateY(-50%);
    transform: translateX(-50%) translateY(-50%);
 
@@ -107,6 +117,16 @@ const decline = () => dialog.value.close();
       top: 0;
       right: 0;
       margin: 12px;
+   }
+
+   &-fakeBackdrop {
+      position: fixed;
+      background: #00000080;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 11;
    }
 }
 

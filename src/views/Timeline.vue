@@ -27,17 +27,17 @@
 
          <div class="timeline-menu">
             <div
-               v-for="(meal, dishKey) in timetable[dayKey - 1]?.meals"
-               :key="dishKey"
+               v-for="(meal, mealKey) in timetable[dayKey - 1]?.meals"
+               :key="mealKey"
                class="timeline-menu-dish"
-               @dragover="allowDrop($event, dayKey - 1, dishKey)"
-               @dragleave="removeBorder($event, dayKey - 1, dishKey)"
+               @dragover="allowDrop($event, dayKey - 1, mealKey)"
+               @dragleave="removeBorder($event, dayKey - 1, mealKey)"
             >
                <div class="timeline-menu-title">{{ meal.name }}</div>
                <div
-                  :ref="(el) => {divs[`day_${dayKey - 1}_${dishKey}`] = el}"
+                  :ref="(el) => {divs[`day_${dayKey - 1}_${mealKey}`] = el}"
                   class="timeline-menu-dishes"
-                  @drop="drop($event, dayKey - 1, dishKey)"
+                  @drop="drop($event, dayKey - 1, mealKey)"
                >
                   <div v-for="(dish, menuKey) in meal.menu" :key="menuKey" class="timeline-menu-dishes-container">
                      <div
@@ -51,8 +51,8 @@
                      <dish-item
                         :dish="dish"
                         :day-key="dayKey - 1"
-                        :dish-key="dishKey"
-                        @delete-item="deleteDish(dish.computed_id, dayKey - 1, dishKey)"
+                        :meal-key="mealKey"
+                        @delete-item="deleteDish(dish.computed_id, dayKey - 1, mealKey)"
                      />
                      <div
                         class="timeline-menu-dish-sortZone"
@@ -89,7 +89,6 @@ import IconButton from '@/components/common/IconButton.vue';
 import Settings from '@/components/Settings.vue';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
-import { scrollToElementIfIsNotVisible } from '@/utils';
 import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
 import { useUserStore } from '@/stores/user';
@@ -111,65 +110,50 @@ onBeforeUpdate(() => {
 const days = computed(() => settingsStore.days);
 const timetable = computed(() => foodStore.timetable);
 const currentMenu = computed(() => userStore.currentMenu);
-const isShowBackground = computed(() => settingsStore.isShowBackground);
 
-const addDish = (id: string, dayKey: number, dishKey: number, sortNumber: number): void => {
+const addDish = (id: string, dayKey: number, mealKey: number, sortNumber: number): void => {
    const addedDish = { ...foodStore.dishById(+id) };
-   foodStore.addDish({ addedDish, dayKey, dishKey, sortNumber });
+   foodStore.addDish({ addedDish, dayKey, mealKey, sortNumber });
 };
 
-const moveDish = (dishJSON: string, moveFrom: MovedDish, moveTo: { dayKey: number; dishKey: number }, sortNumber: number ): void => {
+const moveDish = (dishJSON: string, moveFrom: MovedDish, moveTo: { dayKey: number; mealKey: number }, sortNumber: number ): void => {
    const movedDish = JSON.parse(dishJSON);
    foodStore.moveDish({ movedDish, moveFrom, moveTo, sortNumber });
 };
 
-const deleteDish = (computedId: string, dayKey: number, dishKey: number): void => {
-   foodStore.deleteDish({ computedId, dayKey, dishKey });
+const deleteDish = (computedId: string, dayKey: number, mealKey: number): void => {
+   foodStore.deleteDish({ computedId, dayKey, mealKey });
    settingsStore.changeMenuType('dishes');
-   if (isShowBackground.value) {
-      settingsStore.toggleIsShowBackground();
-   }
 };
 
-const allowDrop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+const allowDrop = (ev: DragEvent, dayKey: number, mealKey: number): void => {
    ev.preventDefault();
    if (ev.dataTransfer.types.includes('addingredient')) {
       return;
    }
-   divs.value[`day_${dayKey}_${dishKey}`].classList.add('timeline-menu-dishes-hovered');
+   divs.value[`day_${dayKey}_${mealKey}`].classList.add('timeline-menu-dishes-hovered');
 };
 
-const removeBorder = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+const removeBorder = (ev: DragEvent, dayKey: number, mealKey: number): void => {
    ev.preventDefault();
    if ((ev.currentTarget as HTMLElement).contains(ev.relatedTarget as Node) || ev.dataTransfer.types.includes('addingredient')) {
       return;
    }
-   divs.value[`day_${dayKey}_${dishKey}`].classList.remove('timeline-menu-dishes-hovered');
+   divs.value[`day_${dayKey}_${mealKey}`].classList.remove('timeline-menu-dishes-hovered');
 };
 
-const drop = (ev: DragEvent, dayKey: number, dishKey: number): void => {
+const drop = (ev: DragEvent, dayKey: number, mealKey: number): void => {
    ev.preventDefault();
    const addedDish = ev.dataTransfer.getData('addDish');
    const movedDish = ev.dataTransfer.getData('moveDish');
-   const sortNumber = +(ev.target as HTMLElement).dataset.index || foodStore.timetable[dayKey].meals[dishKey].menu.length;
+   const sortNumber = +(ev.target as HTMLElement).dataset.index || foodStore.timetable[dayKey].meals[mealKey].menu.length;
 
    if (addedDish) {
-      if (addedDish === 'null') {
-         // Свое блюдо
-         setTimeout(() => {
-            scrollToElementIfIsNotVisible(
-               document.querySelector('.dish-edited'),
-               document.querySelector('.layout-page')
-            );
-            settingsStore.changeMenuType('ingredients');
-            settingsStore.toggleIsShowBackground();
-         }, 100);
-      }
-      addDish(addedDish, dayKey, dishKey, sortNumber);
+      addDish(addedDish, dayKey, mealKey, sortNumber);
    } else if (movedDish) {
       const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
-      if (moveFrom.dayKey !== dayKey || moveFrom.dishKey !== dishKey) {
-         moveDish(movedDish, moveFrom, { dayKey, dishKey }, sortNumber);
+      if (moveFrom.dayKey !== dayKey || moveFrom.mealKey !== mealKey) {
+         moveDish(movedDish, moveFrom, { dayKey, mealKey }, sortNumber);
       }
    }
 
@@ -203,7 +187,7 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
 
    const moveFrom = JSON.parse(ev.dataTransfer.getData('moveSettings'));
    const movedDish = JSON.parse(ev.dataTransfer.getData('moveDish'));
-   const currentNumber = foodStore.timetable[moveFrom.dayKey].meals[moveFrom.dishKey].menu.map(item => item.id).indexOf(movedDish.id);
+   const currentNumber = foodStore.timetable[moveFrom.dayKey].meals[moveFrom.mealKey].menu.map(item => item.id).indexOf(movedDish.id);
 
    if (Math.abs(currentNumber - sortNumber) !== 0 && sortNumber - currentNumber !== 1) {
       foodStore.sortDish({ movedDish, moveFrom, sortNumber });
@@ -240,7 +224,6 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
          height: 28px;
          width: 28px;
          justify-content: space-evenly;
-         // FIXME попробовать иконку крестик
       }
    }
 
@@ -252,7 +235,6 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
          padding: 12px;
          min-height: 120px;
          height: 100%;
-         position: relative;
          margin: 4px;
 
          &-container {

@@ -1,5 +1,19 @@
 <template>
    <aside class="sidebar">
+      <div class="sidebar-header">
+         <icon-button
+            v-if="menuType === 'dishes'"
+            :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
+            :disabled="!isAuthenticated"
+            class="timeline-addDay"
+            caption="Добавить блюдо"
+            size="26px"
+            @click="toggleDishDialog(true, true)"
+         >
+            <plus-icon />
+         </icon-button>
+      </div>
+
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" :key="groupId">
          <div
             class="sidebar-category"
@@ -20,7 +34,7 @@
                   class="item"
                   draggable="true"
                   @dragstart="dragStart"
-                  @click="openDish(item.id)"
+                  @click="toggleDishDialog(true, false, item.id)"
                >
                   {{ cutDishName(item.title) }}
                </div>
@@ -36,27 +50,24 @@
             <add-ingredient v-if="menuType === 'ingredients'" :type="groupId" />
          </div>
       </div>
-
-      <div
-         v-if="menuType === 'dishes'"
-         :class="`item item-custom ${isAuthenticated ? '' :'item-custom-disabled'}`"
-         :draggable="isAuthenticated"
-         :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
-         @dragstart="dragStart"
-      >
-         Свое блюдо
-      </div>
    </aside>
 
    <delete-item-dialog v-if="deleteItemNumber" :item-id="deleteItemNumber" :menu-type="menuType" @close="deleteItemNumber = null" />
-   <dish-dialog v-if="openedDishNumber" :dish-id="openedDishNumber" @close="openedDishNumber = null" />
+   <dish-dialog
+      v-if="dishDialogSettings.isOpened"
+      :dish="dishDialogSettings.dish"
+      :is-edited="dishDialogSettings.isEdited"
+      @close="toggleDishDialog(false)"
+   />
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, defineComponent, reactive, ref } from 'vue';
+import IconButton from '@/components/common/IconButton.vue';
 import AddIngredient from '@/components/AddIngredient.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
+import PlusIcon from '@/assets/plus.svg';
 import { Group } from '@/stores/food/types';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
@@ -78,7 +89,7 @@ const dishesByGroup = computed(() => foodStore.dishesByGroup);
 const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const deleteItemNumber = ref(null);
-const openedDishNumber = ref(null);
+const dishDialogSettings = ref({ isOpened: false, isEdited: false, dish: null });
 
 const dragStart = (ev: DragEvent): void => {
    const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
@@ -96,8 +107,10 @@ const toggleGroup = (groupId: number): void => {
 
 const cutDishName = (caption: string): string => caption.replace(/(каша|суп)/i, '').trim();
 
-const openDish = (id: number) => {
-   openedDishNumber.value = id;
+const toggleDishDialog = (isOpened: boolean, isEdited: boolean = false, dishId: number | null = null) => {
+   if (menuType.value === 'dishes') {
+      dishDialogSettings.value = { isOpened, isEdited, dish: foodStore.dishById(dishId) };
+   }
 };
 </script>
 
@@ -137,6 +150,12 @@ h3 {
 
    @media print {
       display: none;
+   }
+
+   &-header {
+      display: flex;
+      margin: 0 6px;
+      align-self: start;
    }
 
    &-category {
@@ -187,18 +206,10 @@ h3 {
       text-transform: uppercase;
    }
 
-   &:not(.item-custom-disabled):hover {
+   &:hover {
       box-shadow: @boxShadowHovered;
       padding: 4px 10px;
       cursor: move;
-   }
-
-   &-custom {
-      margin: 24px 12px 12px;
-
-      &-disabled {
-         color: gray;
-      }
    }
 }
 </style>
