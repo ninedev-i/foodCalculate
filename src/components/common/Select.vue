@@ -2,7 +2,7 @@
    <select
       v-model="selectedValue"
       class="select"
-      @change="$emit('changeValue', value);"
+      @change="$emit('changeValue', selectedValue);"
       >
       <option v-for="option in items" :key="option.id" :value="option.id">{{ option.name }}</option>
    </select>
