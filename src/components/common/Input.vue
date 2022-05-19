@@ -87,7 +87,7 @@ const handleInput = (ev: Event) => {
       }
    }
 
-   emit('changeValue', [ev, value]);
+   emit('changeValue', value);
    emit('update:modelValue', value);
 };
 
