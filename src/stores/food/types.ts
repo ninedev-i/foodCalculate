@@ -101,3 +101,12 @@ export interface UpdateDishArguments {
    computedId: string;
    ingredients: Ingredient[];
 }
+
+export interface UpdatedMeal {
+   name: string;
+   key?: number;
+   menu: [];
+   sortNumber?: number;
+   isNew?: boolean;
+   isDeleted?: boolean;
+}

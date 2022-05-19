@@ -68,6 +68,10 @@ h1 {
    margin: 0 0 12px 0;
 }
 
+h5 {
+   font-size: 14px;
+}
+
 a {
    text-decoration: none;
 

@@ -12,7 +12,8 @@ import {
    SaveDish,
    SaveIngredient,
    SortDishArguments,
-   UpdateDishArguments
+   UpdateDishArguments,
+   UpdatedMeal
 } from './types';
 
 const getMealsFormat = (): Dish[] => [
@@ -99,6 +100,33 @@ export const useFoodStore = defineStore('food', {
       setIsTimetableChanged(value: boolean) {
          this.isTimetableChanged = value;
       },
+      updateMealTitle(updatedMeals: UpdatedMeal[]) {
+         const addedMeals = updatedMeals.filter(item => {
+            if (item.isNew) {
+               delete item.isNew;
+               return item;
+            } else {
+               return false;
+            }
+         });
+
+         this.timetable.map(day => {
+            day.meals = day.meals.filter((meal, i) => {
+               const updated = updatedMeals.find(item => item.key === i);
+               if (updated.isDeleted) {
+                  return false;
+               }
+               meal.name = updated.name;
+               return meal;
+            });
+            if (addedMeals.length) {
+               day.meals = [...day.meals, ...addedMeals];
+            }
+            return day;
+         });
+         this.setIsTimetableChanged(true);
+         saveToLocalStorage(this.timetable);
+      },
       async getDishes() {
          return api.get('dish').then(({ data }) => {
             this.dishes = data;
@@ -131,7 +159,7 @@ export const useFoodStore = defineStore('food', {
       async saveDish(data: SaveDish) {
          this.dishes = await api.post('dish', data).then(({ data }) => data);
          saveToLocalStorage(this.timetable);
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
       },
       async checkIsDishUsed(id: number): Promise<string[]> {
          return api.post(`dish/is_used/${id}`, { current: JSON.stringify(this.timetable) }).then(res => res.data);
@@ -148,12 +176,12 @@ export const useFoodStore = defineStore('food', {
             saveToLocalStorage(timetable);
          }
          this._updateDishIds(dayKey, mealKey);
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
       },
       moveDish({ moveFrom, moveTo, movedDish, sortNumber }: MoveDishArguments) {
          const computedId = movedDish.computed_id;
          this._removeDish({ computedId, dayKey: moveFrom.dayKey, mealKey: moveFrom.mealKey });
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
          this.timetable[moveTo.dayKey].meals[moveTo.mealKey].menu.splice(sortNumber, 0, movedDish);
          this._updateDishIds(moveTo.dayKey, moveTo.mealKey);
          saveToLocalStorage(this.timetable);
@@ -167,12 +195,12 @@ export const useFoodStore = defineStore('food', {
          this._updateDishIds(moveFrom.dayKey, moveFrom.mealKey);
 
          saveToLocalStorage(this.timetable);
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
       },
       deleteDish({ computedId, dayKey, mealKey }: DeleteDishArguments) {
          this._removeDish({ computedId, dayKey, mealKey });
          this._updateDishIds(dayKey, mealKey);
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
       },
       updateDish({ dayKey, mealKey, computedId, dishName, ingredients }: UpdateDishArguments) {
          this.timetable[dayKey].meals[mealKey].menu.map((item) => {
@@ -182,7 +210,7 @@ export const useFoodStore = defineStore('food', {
             }
          });
          saveToLocalStorage(this.timetable);
-         this.isTimetableChanged = true;
+         this.setIsTimetableChanged(true);
       },
       addDayToTimetable(data: number) {
          const timetable = this.timetable.slice(0);

@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, defineEmits, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 defineComponent({
    name: 'Input',
