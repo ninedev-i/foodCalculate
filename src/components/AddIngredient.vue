@@ -12,6 +12,7 @@
       </icon-button>
       <form v-else class="addIngredient-form" @submit.prevent="saveIngredient">
          <common-input
+            v-model="ingredientCaption"
             class="addIngredient-input"
             label-id="add-ingredient"
             autofocus
@@ -19,17 +20,14 @@
             input-width="110px"
             placeholder="Ингредиент"
             padding="4px"
-            :value="ingredientCaption"
-            @change="(ev) => ingredientCaption = ev.target.value"
          />
          <common-input
+            v-model="countCaption"
             class="addIngredient-input"
             type="text"
             input-width="20px"
             placeholder="ед. измерения"
             padding="4px"
-            :value="countCaption"
-            @change="(ev) => countCaption = ev.target.value"
          />
 
          <icon-button

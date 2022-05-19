@@ -9,25 +9,30 @@
       </label>
       <input
          :id="labelId"
+         v-model="inputValue"
+         :type="type"
          :autofocus="autofocus"
          :name="name"
          :class="`${borderBottom ? 'input-borderBottom' : 'input-default'} ${className}`"
          v-bind="$attrs"
-         :value="value"
          required="required"
          :style="style"
+         :min="min"
+         :max="max"
          :step="step"
-         @input="$emit('changeValue', $event.target.value)"
+         @input="handleInput"
       />
    </div>
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, defineEmits, onMounted, ref } from 'vue';
 
 defineComponent({
    name: 'Input',
 });
+
+const emit = defineEmits(['update:modelValue', 'changeValue']);
 
 const props = defineProps({
    name: String,
@@ -38,6 +43,12 @@ const props = defineProps({
    autofocus: Boolean,
    label: String,
    step: String,
+   min: String,
+   type: {
+      type: String,
+      default: 'text'
+   },
+   max: String,
    className: {
       type: String,
       default: ''
@@ -59,10 +70,26 @@ const props = defineProps({
       type: String,
       default: 'inherit'
    },
-   value: {
-      required: true,
-   },
+   value: [String, Number],
+   modelValue: [String, Number],
 });
+
+const inputValue = ref(props.value ?? props.modelValue);
+
+const handleInput = (ev: Event) => {
+   const value = (ev.target as HTMLInputElement).value;
+
+   if (props.type === 'number') {
+      if (props.min && +value < +props.min) {
+         inputValue.value = props.min;
+      } else if (props.max && +value > +props.max) {
+         inputValue.value = props.max;
+      }
+   }
+
+   emit('changeValue', [ev, value]);
+   emit('update:modelValue', value);
+};
 
 onMounted(() => {
    if (props.autofocus && props.labelId) {

@@ -19,25 +19,23 @@
          <div class="profile-authWrapper">
             <div class="profile-inputs">
                <common-input
+                  v-model="email"
                   name="email"
                   type="text"
                   class="profile-input"
                   padding="6px 12px"
                   margin="0 0 6px"
                   placeholder="Почта"
-                  :value="email"
                   :autofocus="true"
-                  @changeValue="(value) => email = value"
                />
                <common-input
+                  v-model="password"
                   name="password"
                   type="password"
                   class="profile-input"
                   padding="6px 12px"
                   margin="0 0 12px"
                   placeholder="Пароль"
-                  :value="password"
-                  @changeValue="(value) => password = value"
                />
                <common-button
                   type="submit"

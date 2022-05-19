@@ -7,15 +7,13 @@
    >
       {{ value }}
    </button>
-
-   <div v-else class="editableInput-container">
+   <form v-else class="editableInput-container" @keyup.esc="cancel" @submit.prevent="save">
       <common-input
+         v-model="editedValue"
          type="text"
          input-width="fit-content"
          padding="5px 8px"
-         :autofocus="true"
-         :value="editedValue"
-         @change="(ev) => editedValue = ev.target.value"
+         autofocus
       />
 
       <common-button
@@ -32,19 +30,19 @@
          class="editableInput-action"
          margin="0 0 0 6px"
          title="Сохранить"
-         @click="save"
+         type="submit"
       >
-         <expand-arrow-icon />
+         <accept-icon />
       </common-button>
-   </div>
+   </form>
 </template>
 
 <script lang="ts" setup>
 import { defineComponent, ref } from 'vue';
+import AcceptIcon from '@/assets/accept.svg';
+import CrossIcon from '@/assets/cross.svg';
 import CommonButton from '@/components/common/Button.vue';
 import CommonInput from '@/components/common/Input.vue';
-import CrossIcon from '@/assets/cross.svg';
-import ExpandArrowIcon from '@/assets/expandArrow.svg';
 
 defineComponent({
    name: 'EditableInput',
@@ -59,13 +57,13 @@ const editedValue = ref(props.value);
 const isEdited = ref(false);
 
 const cancel = () => {
-   isEdited.value = false;
    editedValue.value = props.value;
+   isEdited.value = false;
 };
 
 const save = () => {
    isEdited.value = false;
-   emit('save', editedValue.value);
+   emit('save', editedValue.value.trim());
 };
 </script>
 

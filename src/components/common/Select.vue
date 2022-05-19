@@ -2,7 +2,7 @@
    <select
       v-model="selectedValue"
       class="select"
-      @change="$emit('changeValue', selectedValue);"
+      @change="$emit('update:modelValue', selectedValue);"
       >
       <option v-for="option in items" :key="option.id" :value="option.id">{{ option.name }}</option>
    </select>
@@ -15,19 +15,19 @@ defineComponent({
    name: 'Select',
 });
 
-defineEmits(['changeValue']);
+defineEmits(['update:modelValue']);
 
 const props = defineProps({
    items: {
       type: Array,
    },
-   value: {
+   modelValue: {
       type: Number,
       default: 0
    }
 });
 
-const selectedValue = ref(props.value);
+const selectedValue = ref(props.modelValue);
 </script>
 
 <style lang="less" scoped>

@@ -26,19 +26,17 @@
          >
             <common-input
                v-if="!dish?.id"
+               v-model="dishName"
                autofocus
                padding="6px 12px"
                class="dishDialog-titleInput"
                placeholder="Название блюда"
-               :value="dishName"
-               @changeValue="(value) => dishName = value"
             />
             <common-select
                v-if="!dish?.title"
+               v-model="dishType"
                class="dishDialog-select"
                :items="dishGroups"
-               :value="dishType"
-               @changeValue="(val) => dishType = val"
             />
             <div v-for="({id, quantity}, key) in ingredients" :key="key" class="dishDialog-ingredient">
                <div v-if="isEdited" class="dishDialog-ingredients">
@@ -50,7 +48,7 @@
                      input-width="30px"
                      margin="0 6px"
                      :value="quantity"
-                     @changeValue="(value) => changeInputValue(id, value)"
+                     @changeValue="(value) => handleQuantityChange(id, value)"
                   />
                   <span class="dishDialog-ingredient-caption">{{ ingredientById(id).count_caption }}/чел.</span>
                   <span class="dishDialog-ingredient-delete" @click="deleteIngredient(id)">
@@ -102,7 +100,7 @@ if (props.isEdited) {
    settingsStore.changeMenuType('ingredients');
 }
 
-const changeInputValue = (ingredientId: number, value: string): void => {
+const handleQuantityChange = (ingredientId: number, value: string): void => {
    ingredients.value.find((item: Ingredient) => item.id === ingredientId).quantity = +value;
 };
 

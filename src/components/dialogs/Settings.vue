@@ -10,19 +10,18 @@
       <div class="settingsDialog">
          <label for="people">Кол-во человек</label>
          <common-input
-            :value="editedPeople"
+            v-model="editedPeople"
             type="number"
             min="1"
-            max="500"
+            max="100"
             step="1"
             padding="6px 12px"
             label-id="people"
             input-width="20px"
-            @changeValue="(value) => editedPeople = value"
          />
          <label for="coefficient">Коэффициент</label>
          <common-input
-            :value="editedCoefficient"
+            v-model="editedCoefficient"
             type="number"
             min="0.1"
             max="2"
@@ -30,7 +29,6 @@
             padding="6px 12px"
             label-id="coefficient"
             input-width="20px"
-            @changeValue="(value) => editedCoefficient = value"
          />
       </div>
       <info-alert>Количество ингредиентов умножается на коэффициент и количество человек.</info-alert>
