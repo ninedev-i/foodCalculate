@@ -5,10 +5,19 @@
             v-if="menuType === 'dishes'"
             :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
             :disabled="!isAuthenticated"
-            class="timeline-addDay"
             caption="Добавить блюдо"
             size="26px"
             @click="toggleDishDialog(true, true)"
+         >
+            <plus-icon />
+         </icon-button>
+         <icon-button
+            v-else-if="menuType === 'ingredients'"
+            :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои ингредиенты' : ''"
+            :disabled="!isAuthenticated"
+            caption="Добавить ингредиент"
+            size="26px"
+            @click="isAddIngredientDialogOpened = true"
          >
             <plus-icon />
          </icon-button>
@@ -47,7 +56,6 @@
                   <cross-icon />
                </div>
             </div>
-            <add-ingredient v-if="menuType === 'ingredients'" :type="groupId" />
          </div>
       </div>
    </aside>
@@ -59,12 +67,15 @@
       :is-edited="dishDialogSettings.isEdited"
       @close="toggleDishDialog(false)"
    />
+   <add-ingredient-dialog
+      v-if="isAddIngredientDialogOpened"
+      @close="isAddIngredientDialogOpened = false"
+   />
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, defineComponent, reactive, ref } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
-import AddIngredient from '@/components/AddIngredient.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
 import PlusIcon from '@/assets/plus.svg';
@@ -73,6 +84,7 @@ import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
+const AddIngredientDialog = defineAsyncComponent(() => import('@/components/dialogs/AddIngredient.vue'));
 const DeleteItemDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteItem.vue'));
 
 defineComponent({
@@ -90,6 +102,7 @@ const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item
 const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
 const deleteItemNumber = ref(null);
 const dishDialogSettings = ref({ isOpened: false, isEdited: false, dish: null });
+const isAddIngredientDialogOpened = ref(false);
 
 const dragStart = (ev: DragEvent): void => {
    const type = menuType.value === 'dishes' ? 'addDish' : 'addIngredient';
@@ -154,7 +167,7 @@ h3 {
 
    &-header {
       display: flex;
-      margin: 0 6px;
+      margin: 12px 6px;
       align-self: start;
    }
 

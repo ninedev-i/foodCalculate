@@ -47,7 +47,7 @@ export interface Ingredient {
    is_default: boolean;
 }
 
-export type SaveIngredient = Omit<Ingredient, 'id'>;
+export type SaveIngredient = Pick<Ingredient, 'title' | 'type' | 'count_caption'>;
 
 export interface FoodState {
    timetable: DayMenu[];

@@ -6,7 +6,7 @@
       :is-modal="!isEdited"
       accept-caption="Сохранить"
       decline-caption="Отменить"
-      @accept="saveDish"
+      :before-close="saveDish"
       @close="settingsStore.changeMenuType('dishes')"
    >
       <div class="dishDialog">
@@ -20,6 +20,7 @@
 
          <form
             v-else
+            ref="form"
             @submit.prevent
             @drop="dropIngredient"
             @dragover="allowDrop"
@@ -94,6 +95,7 @@ const ingredientById = computed(() => foodStore.ingredientById);
 const dishGroups = computed(() => foodStore.dishGroups);
 const ingredients = ref(props.dish ? JSON.parse(JSON.stringify(props.dish.ingredients)) : []);
 const dishName = ref('');
+const form = ref(null);
 const dishType = ref(0);
 
 if (props.isEdited) {
@@ -110,10 +112,11 @@ const deleteIngredient = (id: number): void => {
    foodStore.setEditedDishIngredients(existedIngredients);
 };
 
-const saveDish = (): void => {
+const saveDish = (): boolean => {
+   form.value.reportValidity();
    if (!props.dish?.id) {
       if (!dishName.value) {
-         return;
+         return false;
       }
       foodStore.saveDish({
          title: dishName.value,
@@ -122,7 +125,7 @@ const saveDish = (): void => {
       });
       settingsStore.changeMenuType('dishes');
 
-      return;
+      return true;
    }
 
    foodStore.updateDish({
@@ -134,6 +137,8 @@ const saveDish = (): void => {
    });
    settingsStore.changeMenuType('dishes');
    foodStore.setEditedDishIngredients([]);
+
+   return true;
 };
 
 const allowDrop = (ev: DragEvent) => ev.preventDefault();

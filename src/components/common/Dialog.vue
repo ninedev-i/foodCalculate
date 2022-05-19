@@ -50,6 +50,10 @@ const props = defineProps({
       type: Boolean,
       default: true
    },
+   beforeClose: {
+      type: Function,
+      default: () => true
+   },
 });
 
 const emit = defineEmits(['accept', 'close']);
@@ -67,8 +71,11 @@ watch(() => props.isOpened, (isOpened) => {
 });
 
 const accept = () => {
-   emit('accept');
-   dialog.value.close();
+   const isClose = props.beforeClose();
+   if (isClose) {
+      emit('accept');
+      dialog.value.close();
+   }
 };
 
 const decline = () => dialog.value.close();
