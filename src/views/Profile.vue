@@ -27,6 +27,7 @@
                   margin="0 0 6px"
                   placeholder="Почта"
                   :autofocus="true"
+                  @changeValue="resetError"
                />
                <common-input
                   v-model="password"
@@ -34,10 +35,13 @@
                   type="password"
                   class="profile-input"
                   padding="6px 12px"
-                  margin="0 0 12px"
+                  margin="0 0 6px"
                   placeholder="Пароль"
+                  @changeValue="resetError"
                />
+               <div class="profile-error">{{ error }}</div>
                <common-button
+                  margin="12 0 0"
                   type="submit"
                >
                   {{ isLogin ? 'Войти' : 'Зарегистрироваться' }}
@@ -80,6 +84,7 @@ const userEmail = computed(() => userStore.email);
 const email = ref('');
 const password = ref('');
 const isLogin = ref(true);
+const error = ref('');
 
 const toggleIsLogin = () => isLogin.value = !isLogin.value;
 
@@ -87,21 +92,42 @@ const register = () => {
    if (!email.value || !password.value) {
       return;
    }
-   userStore.register({
-      email: email.value,
-      password: password.value,
-      password_confirmation: password.value,
-   }).then(() => login());
+   userStore
+      .register({
+         email: email.value,
+         password: password.value,
+         password_confirmation: password.value,
+      })
+      .then(() => login())
+      .catch(({ response }) => {
+         const { status, data } = response;
+         if (status === 422 && data.errors[0].rule === 'unique') {
+            error.value = 'Пользователь с таким email уже существует';
+         }
+      });
 };
 
 const login = () => {
    if (!email.value || !password.value) {
       return;
    }
-   userStore.login({
-      email: email.value,
-      password: password.value,
-   });
+   userStore
+      .login({
+         email: email.value,
+         password: password.value,
+      })
+      .catch(({ response }) => {
+         const { status } = response;
+         if (status === 400) {
+            error.value = 'Неверная почта или пароль';
+         }
+      });
+};
+
+const resetError = () => {
+   if (error.value) {
+      error.value = '';
+   }
 };
 
 const logout = () => userStore.logout();
@@ -175,6 +201,13 @@ const logout = () => userStore.logout();
       &:hover {
          color: @linkColor;
       }
+   }
+
+   &-error {
+      font-size: 13px;
+      margin-bottom: 12px;
+      color: #f00000;
+      text-align: center;
    }
 }
 </style>
