@@ -123,18 +123,16 @@ const saveDish = (): boolean => {
          type: dishType.value,
          ingredients: JSON.stringify(ingredients.value)
       });
-      settingsStore.changeMenuType('dishes');
-
-      return true;
+   } else {
+      foodStore.updateDish({
+         dayKey: props.dayKey,
+         mealKey: props.mealKey,
+         computedId: props.computedId,
+         dishName: props.dish.title,
+         ingredients: ingredients.value
+      });
    }
 
-   foodStore.updateDish({
-      dayKey: props.dayKey,
-      mealKey: props.mealKey,
-      computedId: props.computedId,
-      dishName: props.dish.title,
-      ingredients: ingredients.value
-   });
    settingsStore.changeMenuType('dishes');
    foodStore.setEditedDishIngredients([]);
 
