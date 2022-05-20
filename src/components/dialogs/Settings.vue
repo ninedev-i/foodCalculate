@@ -102,7 +102,7 @@ const closeSettings = () => {
 const updateSettings = () => {
    settingsStore.changePeople(editedPeople.value);
    settingsStore.changeCoefficient(editedCoefficient.value);
-   foodStore.updateMealTitle(meals.value);
+   foodStore.updateMeals(meals.value);
    closeSettings();
 };
 
