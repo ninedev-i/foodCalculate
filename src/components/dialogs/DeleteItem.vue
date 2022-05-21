@@ -20,14 +20,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onBeforeMount, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CommonDialog from '@/components/common/Dialog.vue';
 import WarningAlert from '@/components/common/Alert.vue';
 import { useFoodStore } from '@/stores/food';
-
-defineComponent({
-   name: 'DeleteItemDialog',
-});
 
 const props = defineProps({
    itemId: {
@@ -44,6 +40,10 @@ const foodStore = useFoodStore();
 const isOpened = ref(false);
 const dishUsedInMenus = ref([]);
 
+if (props.menuType === 'dishes') {
+   dishUsedInMenus.value = await foodStore.checkIsDishUsed(props.itemId);
+}
+
 const deleteItem = (id: number) => {
    if (props.menuType === 'dishes') {
       foodStore.deleteDishFromBase(id);
@@ -51,12 +51,6 @@ const deleteItem = (id: number) => {
       foodStore.deleteIngredient(id);
    }
 };
-
-onBeforeMount(async () => {
-   if (props.menuType === 'dishes') {
-      dishUsedInMenus.value = await foodStore.checkIsDishUsed(props.itemId);
-   }
-});
 
 onMounted(async () => {
    isOpened.value = true;

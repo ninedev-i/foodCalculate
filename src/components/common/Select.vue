@@ -9,11 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue';
-
-defineComponent({
-   name: 'Select',
-});
+import { ref } from 'vue';
 
 defineEmits(['update:modelValue']);
 

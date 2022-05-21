@@ -68,15 +68,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
 import UserMenu from '@/components/UserMenu.vue';
-
-defineComponent({
-   name: 'Profile',
-});
 
 const userStore = useUserStore();
 const userEmail = computed(() => userStore.email);

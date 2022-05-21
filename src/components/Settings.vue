@@ -11,14 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import EditIcon from '@/assets/edit.svg';
 import { useSettingsStore } from '@/stores/settings';
 const SettingsDialog = defineAsyncComponent(() => import('@/components/dialogs/Settings.vue'));
-
-defineComponent({
-   name: 'Settings',
-});
 
 const isDialogOpened = ref(false);
 const settingsStore = useSettingsStore();

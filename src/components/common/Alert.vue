@@ -6,12 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
 import InfoIcon from '@/assets/info.svg';
-
-defineComponent({
-   name: 'Alert',
-});
 
 defineProps({
    type: {

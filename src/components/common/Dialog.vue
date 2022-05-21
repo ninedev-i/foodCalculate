@@ -18,13 +18,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
 import CrossIcon from '@/assets/cross.svg';
-
-defineComponent({
-   name: 'Dialog',
-});
 
 const props = defineProps({
    isOpened: {

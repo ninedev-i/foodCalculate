@@ -11,11 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue';
-
-defineComponent({
-   name: 'Button',
-});
+import { ref } from 'vue';
 
 const props = defineProps({
    disabled: {

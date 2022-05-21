@@ -1,7 +1,5 @@
 {
-  "name": "food_calculator",
-  "version": "0.1.0",
-  "private": true,
+  "name": "food_calculate",
   "scripts": {
     "dev": "vite",
     "build": "vite build"

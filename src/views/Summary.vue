@@ -24,14 +24,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
-
-defineComponent({
-   name: 'Summary',
-});
 
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();

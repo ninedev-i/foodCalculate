@@ -10,12 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
 import { routes } from '@/router';
-
-defineComponent({
-   name: 'Navigation',
-});
 </script>
 
 <style lang="less">

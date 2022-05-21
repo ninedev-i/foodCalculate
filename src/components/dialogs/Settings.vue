@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CrossIcon from '@/assets/cross.svg';
 import PlusIcon from '@/assets/plus.svg';
 import InfoAlert from '@/components/common/Alert.vue';
@@ -73,10 +73,6 @@ import IconButton from '@/components/common/IconButton.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
 import { UpdatedMeal } from '@/stores/food/types';
-
-defineComponent({
-   name: 'SettingsDialog',
-});
 
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();

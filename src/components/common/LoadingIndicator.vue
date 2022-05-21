@@ -8,12 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
 import Loader from '@/assets/loader.svg';
-
-defineComponent({
-   name: 'LoadingIndicator',
-});
 
 const loadingTexts = ['Разводим костер', 'Чистим котлы', 'Собираем хворост'];
 

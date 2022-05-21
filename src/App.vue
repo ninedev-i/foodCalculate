@@ -10,17 +10,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import Layout from '@/components/common/Layout.vue';
 import Navigation from '@/components/Navigation.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
-
-defineComponent({
-   name: 'App',
-});
 
 const userStore = useUserStore();
 const foodStore = useFoodStore();

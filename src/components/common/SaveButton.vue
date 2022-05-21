@@ -13,16 +13,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
 import SaveIcon from '@/assets/save.svg';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
-
-defineComponent({
-   name: 'SaveButton',
-});
 
 const userStore = useUserStore();
 const foodStore = useFoodStore();

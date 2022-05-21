@@ -38,15 +38,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import AcceptIcon from '@/assets/accept.svg';
 import CrossIcon from '@/assets/cross.svg';
 import CommonButton from '@/components/common/Button.vue';
 import CommonInput from '@/components/common/Input.vue';
-
-defineComponent({
-   name: 'EditableInput',
-});
 
 const props = defineProps({
    value: String

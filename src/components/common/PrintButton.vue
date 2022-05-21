@@ -12,13 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
 import PrintIcon from '@/assets/print.svg';
-
-defineComponent({
-   name: 'PrintButton',
-});
 
 const printAction = (): void => window.print();
 </script>

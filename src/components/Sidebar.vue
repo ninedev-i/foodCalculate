@@ -60,7 +60,9 @@
       </div>
    </aside>
 
-   <delete-item-dialog v-if="deleteItemNumber" :item-id="deleteItemNumber" :menu-type="menuType" @close="deleteItemNumber = null" />
+   <Suspense>
+      <delete-item-dialog v-if="deleteItemNumber" :item-id="deleteItemNumber" :menu-type="menuType" @close="deleteItemNumber = null" />
+   </Suspense>
    <dish-dialog
       v-if="dishDialogSettings.isOpened"
       :dish="dishDialogSettings.dish"
@@ -74,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, reactive, ref } from 'vue';
+import { computed, defineAsyncComponent, reactive, ref } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
@@ -86,10 +88,6 @@ import { useUserStore } from '@/stores/user';
 const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
 const AddIngredientDialog = defineAsyncComponent(() => import('@/components/dialogs/AddIngredient.vue'));
 const DeleteItemDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteItem.vue'));
-
-defineComponent({
-   name: 'Sidebar',
-});
 
 const foodStore = useFoodStore();
 const userStore = useUserStore();

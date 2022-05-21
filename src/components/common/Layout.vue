@@ -13,14 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import LoadingIndicator from '@/components/common/LoadingIndicator.vue';
 import { useSettingsStore } from '@/stores/settings';
-
-defineComponent({
-   name: 'Layout',
-});
 
 const router = useRouter();
 const settingsStore = useSettingsStore();

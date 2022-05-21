@@ -33,15 +33,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import CommonDialog from '@/components/common/Dialog.vue';
 import CommonInput from '@/components/common/Input.vue';
 import CommonSelect from '@/components/common/Select.vue';
 import { useFoodStore } from '@/stores/food';
-
-defineComponent({
-   name: 'AddIngredientDialog',
-});
 
 const foodStore = useFoodStore();
 const isOpened = ref(false);

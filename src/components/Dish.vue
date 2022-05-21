@@ -43,16 +43,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import CrossIcon from '@/assets/cross.svg';
 import EditIcon from '@/assets/edit.svg';
 import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
 const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
-
-defineComponent({
-   name: 'Dish',
-});
 
 const props = defineProps({
    dish: {

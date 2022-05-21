@@ -26,11 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onMounted, ref } from 'vue';
-
-defineComponent({
-   name: 'Input',
-});
+import { onMounted, ref } from 'vue';
 
 const emit = defineEmits(['update:modelValue', 'changeValue']);
 

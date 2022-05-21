@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import CrossIcon from '@/assets/cross.svg';
 import CommonDialog from '@/components/common/Dialog.vue';
 import CommonInput from '@/components/common/Input.vue';
@@ -72,10 +72,6 @@ import CommonSelect from '@/components/common/Select.vue';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 import { Ingredient } from '@/stores/food/types';
-
-defineComponent({
-   name: 'DishDialog',
-});
 
 const props = defineProps({
    computedId: String,

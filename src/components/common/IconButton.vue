@@ -12,11 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue';
-
-defineComponent({
-   name: 'IconButton',
-});
+import { computed } from 'vue';
 
 const props = defineProps({
    size: {

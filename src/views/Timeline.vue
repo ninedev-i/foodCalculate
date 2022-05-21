@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, ref, onBeforeUpdate, Ref } from 'vue';
+import { computed, ref, onBeforeUpdate, Ref } from 'vue';
 import Sidebar from '@/components/Sidebar.vue';
 import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
@@ -93,10 +93,6 @@ import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
 import { useUserStore } from '@/stores/user';
 import { MovedDish } from '@/stores/food/types';
-
-defineComponent({
-   name: 'Timeline',
-});
 
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();

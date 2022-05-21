@@ -62,17 +62,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
 import EditableInput from '@/components/common/EditableInput.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 const DeleteMenuDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteMenu.vue'));
-
-defineComponent({
-   name: 'UserMenu',
-});
 
 const userStore = useUserStore();
 const foodStore = useFoodStore();
