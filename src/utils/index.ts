@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { RouteLocationNormalized } from 'vue-router';
 
 export const getToken = () => {
    let token = localStorage.getItem('token');
@@ -14,6 +15,13 @@ export const isAuthenticated = () => !!getToken();
 export const setToken = (token: string): void => localStorage.setItem('token', token);
 
 export const destroyToken = (): void => localStorage.removeItem('token');
+
+export const auth = (route: RouteLocationNormalized) => {
+   if (route.query.token) {
+      setToken(route.query.token as string);
+      window.location.assign('/');
+   }
+};
 
 const api = axios.create({
    baseURL: import.meta.env.VITE_SERVICE_URL as string,
