@@ -33,3 +33,4 @@ jobs:
           script: |
             cd /var/www/foodCalculate
             docker-compose up -d --build
+            docker image prune --filter label=stage=builder -f
