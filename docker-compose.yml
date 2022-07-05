@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  food_overtour_ru:
+    container_name: food_overtour_ru
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    networks:
+      - overtour
+    ports:
+      - "3000:80"
+networks:
+  overtour:
+    external: true
