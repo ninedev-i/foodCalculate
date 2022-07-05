@@ -1,5 +1,5 @@
 FROM node:16.13.1-alpine as builder
-
+LABEL stage=builder
 RUN mkdir /app && chown -R node:node /app
 WORKDIR /app
 
