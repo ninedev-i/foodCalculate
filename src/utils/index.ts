@@ -17,8 +17,8 @@ export const setToken = (token: string): void => localStorage.setItem('token', t
 export const destroyToken = (): void => localStorage.removeItem('token');
 
 export const auth = (route: RouteLocationNormalized) => {
-   if (route.query.token) {
-      setToken(route.query.token as string);
+   if (route.params.token) {
+      setToken(route.params.token as string);
       window.location.assign('/');
    }
 };
