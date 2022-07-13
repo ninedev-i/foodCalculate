@@ -12,7 +12,7 @@ export const routes = {
 export default createRouter({
    history: createWebHistory(),
    routes: [
-      { path: routes.auth, component: () => import('@/views/Profile.vue'), beforeEnter: auth },
+      { path: routes.auth, component: () => import('@/views/Timeline.vue'), beforeEnter: auth },
       { path: routes.home, component: () => import('@/views/Timeline.vue'), meta: { isWithSidebar: true } },
       { path: routes.profile, component: () => import('@/views/Profile.vue') },
       { path: routes.summary, component: () => import('@/views/Summary.vue') },
