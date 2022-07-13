@@ -1,16 +1,37 @@
 <template>
-   <div v-once class="navigation-container">
-      <nav class="navigation-routes">
+   <div class="navigation-container">
+      <nav v-once class="navigation-routes">
          <div class="navigation-logo">Еда в поход</div>
-         <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.profile">Профиль</router-link>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.home">Меню</router-link>
          <router-link class="navigation-link" active-class="navigation-link-active" :to="routes.summary">Итого</router-link>
       </nav>
+      <div class="navigation-avatar">
+         <common-menu :items="menuItems">
+            <avatar :name="userEmail" />
+         </common-menu>
+      </div>
    </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+import CommonMenu from '@/components/common/Menu.vue';
+import Avatar from '@/components/common/Avatar.vue';
 import { routes } from '@/router';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const logout = () => userStore.logout();
+const userEmail = computed(() => userStore.email);
+const menuItems = computed(() => userEmail.value
+   ? [
+      { caption: 'Выйти', url: '', action: logout },
+   ]
+   : [
+      { caption: 'Зарегистрироваться', url: `${import.meta.env.VITE_OVERTOUR_URL}/auth/register?redirect=${window.location.origin}` },
+      { caption: 'Войти', url: `${import.meta.env.VITE_OVERTOUR_URL}/auth/login?redirect=${window.location.origin}` },
+   ]
+);
 </script>
 
 <style lang="less">
@@ -22,7 +43,7 @@ import { routes } from '@/router';
       background: @containerBackground;
       box-shadow: @boxShadowHovered;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
 
       @media print {
          display: none;
@@ -64,6 +85,10 @@ import { routes } from '@/router';
             cursor: default;
          }
       }
+   }
+
+   &-avatar {
+      margin: 0 12px;
    }
 }
 </style>

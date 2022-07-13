@@ -1,6 +1,11 @@
 <template>
-   <div class="userMenu-container">
-      <h4 class="userMenu-heading">Сохраненные меню</h4>
+   <common-dialog
+      is-hide-actions
+      :is-opened="isOpened"
+      heading="Сохраненные меню"
+      accept-caption="Добавить"
+      decline-caption="Отменить"
+   >
       <table class="userMenu-table">
          <tr>
             <th>Название</th>
@@ -51,25 +56,26 @@
 
       <common-button
          width="80px"
-         margin="12px"
          @click="addMenu"
       >
          Добавить
       </common-button>
-   </div>
 
-   <delete-menu-dialog v-if="deleteMenuNumber" :menu-id="deleteMenuNumber" @close="deleteMenuNumber = null" />
+      <delete-menu-dialog v-if="deleteMenuNumber" :menu-id="deleteMenuNumber" @close="deleteMenuNumber = null" />
+   </common-dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import CommonButton from '@/components/common/Button.vue';
+import CommonDialog from '@/components/common/Dialog.vue';
 import EditableInput from '@/components/common/EditableInput.vue';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 const DeleteMenuDialog = defineAsyncComponent(() => import('@/components/dialogs/DeleteMenu.vue'));
 
+const isOpened = ref(false);
 const userStore = useUserStore();
 const foodStore = useFoodStore();
 const settingsStore = useSettingsStore();
@@ -109,23 +115,16 @@ const getFormattedDate = (date: string): string => {
       minute: 'numeric',
    });
 };
+
+onMounted(() => {
+   isOpened.value = true;
+});
 </script>
 
 <style lang="less">
-@import "../assets/constants.less";
+@import "../../assets/constants.less";
 
 .userMenu {
-   &-container {
-      background: @containerBackground;
-      border: 1px solid @borderColorLight;
-      box-shadow: @boxShadow;
-      margin-top: 12px;
-   }
-
-   &-heading {
-      margin: 12px;
-   }
-
    &-table {
       width: 100%;
       font-size: 14px;

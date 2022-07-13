@@ -1,5 +1,5 @@
 <template>
-   <dialog ref="dialog" class="dialog" @close="emit('close')">
+   <dialog ref="dialog" class="dialog" @close="emit('close')" @keydown.esc="emit('close')">
       <h4 v-if="heading" class="dialog-title">{{ heading }}</h4>
       <button v-if="isHideActions" class="dialog-close" @click="decline">
          <cross-icon />
