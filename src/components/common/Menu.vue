@@ -15,18 +15,16 @@
 import { ref } from 'vue';
 import { computePosition, offset, shift } from '@floating-ui/dom';
 
-const trigger = ref();
-const tooltip = ref();
-const isTooltipHovered = ref(false);
-
-const props = defineProps({
+defineProps({
    items: {
       type: Array,
       default: () => []
    },
 });
 
-console.log(props.items);
+const trigger = ref();
+const tooltip = ref();
+const isTooltipHovered = ref(false);
 
 const update = () => {
    computePosition(trigger.value, tooltip.value,
