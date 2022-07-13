@@ -4,7 +4,7 @@ import { auth } from '@/utils';
 export const routes = {
    home: '/',
    add: '/add',
-   auth: '/auth/:token',
+   auth: '/auth-:token',
    profile: '/profile',
    summary: '/summary',
 };

@@ -2,7 +2,8 @@
   "name": "food_calculate",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@floating-ui/dom": "^0.5.4",
