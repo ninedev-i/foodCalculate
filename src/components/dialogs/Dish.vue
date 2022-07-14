@@ -111,14 +111,11 @@ const deleteIngredient = (id: number): void => {
 const saveDish = (): boolean => {
    form.value.reportValidity();
    const filteredIngredients = ingredients.value.filter((item: Ingredient) => item.quantity);
-   if (!props.dish?.id) {
-      if (!dishName.value) {
-         return false;
-      }
-      foodStore.saveDish({
-         title: dishName.value,
-         type: dishType.value,
-         ingredients: JSON.stringify(filteredIngredients)
+   if (!filteredIngredients.length) {
+      foodStore.deleteDish({
+         computedId: props.computedId,
+         dayKey: props.dayKey,
+         mealKey: props.mealKey
       });
    } else {
       foodStore.updateDish({
