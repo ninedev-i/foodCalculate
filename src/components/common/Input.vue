@@ -21,6 +21,7 @@
          :max="max"
          :step="step"
          @input="handleInput"
+         @blur="handleBlur"
       />
    </div>
 </template>
@@ -72,19 +73,24 @@ const props = defineProps({
 
 const inputValue = ref(props.value ?? props.modelValue);
 
-const handleInput = (ev: Event) => {
-   const value = (ev.target as HTMLInputElement).value;
-
+const handleInput = ({ target }: { target: HTMLInputElement }) => {
+   const value = props.type === 'number' ? target.valueAsNumber : target.value;
    if (props.type === 'number') {
-      if (props.min && +value < +props.min) {
+      if (value && props.min && value < +props.min) {
          inputValue.value = props.min;
-      } else if (props.max && +value > +props.max) {
+      } else if (props.max && value > +props.max) {
          inputValue.value = props.max;
       }
    }
 
    emit('changeValue', value);
    emit('update:modelValue', value);
+};
+
+const handleBlur = ({ target }: { target: HTMLInputElement }) => {
+   if (props.type === 'number' && (isNaN(target.valueAsNumber) || !target.valueAsNumber && props.min)) {
+      inputValue.value = props.min || 1;
+   }
 };
 
 onMounted(() => {

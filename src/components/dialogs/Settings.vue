@@ -17,7 +17,9 @@
             step="1"
             padding="6px 12px"
             label-id="people"
-            input-width="20px"
+            input-width="40px"
+            placeholder="> 1"
+            text-align="center"
          />
          <label for="coefficient">Коэффициент</label>
          <common-input
@@ -28,7 +30,9 @@
             step="0.1"
             padding="6px 12px"
             label-id="coefficient"
-            input-width="20px"
+            input-width="40px"
+            placeholder="0.1 - 2"
+            text-align="center"
          />
       </div>
       <info-alert>Количество ингредиентов умножается на коэффициент и количество человек.</info-alert>

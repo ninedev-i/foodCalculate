@@ -4,10 +4,10 @@
          :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}
          ${rounded ? 'iconButton-icon-rounded' : ''}`"
          :style="`width: ${size}; height: ${size}`"
->
+      >
          <slot />
       </span>
-      <span class="iconButton-caption">{{ caption }}</span>
+      <span v-if="caption" class="iconButton-caption">{{ caption }}</span>
    </button>
 </template>
 
