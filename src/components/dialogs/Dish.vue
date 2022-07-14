@@ -110,6 +110,7 @@ const deleteIngredient = (id: number): void => {
 
 const saveDish = (): boolean => {
    form.value.reportValidity();
+   const filteredIngredients = ingredients.value.filter((item: Ingredient) => item.quantity);
    if (!props.dish?.id) {
       if (!dishName.value) {
          return false;
@@ -117,7 +118,7 @@ const saveDish = (): boolean => {
       foodStore.saveDish({
          title: dishName.value,
          type: dishType.value,
-         ingredients: JSON.stringify(ingredients.value)
+         ingredients: JSON.stringify(filteredIngredients)
       });
    } else {
       foodStore.updateDish({
@@ -125,7 +126,7 @@ const saveDish = (): boolean => {
          mealKey: props.mealKey,
          computedId: props.computedId,
          dishName: props.dish.title,
-         ingredients: ingredients.value
+         ingredients: filteredIngredients
       });
    }
 
