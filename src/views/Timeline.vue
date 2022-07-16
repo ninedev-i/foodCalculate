@@ -42,6 +42,13 @@
                   class="timeline-menu-dishes"
                   @drop="drop($event, dayKey - 1, mealKey)"
                >
+                  <div
+                     v-if="dayKey === 1 && mealKey === 1 && !meal.menu.length"
+                     class="timeline-cookingPot"
+                  >
+                     <cooking-pot-icon class="timeline-cookingPot-icon" />
+                     <p class="timeline-cookingPot-caption">Перетяните блюда справа</p>
+                  </div>
                   <div v-for="(dish, menuKey) in meal.menu" :key="menuKey" class="timeline-menu-dishes-container">
                      <div
                         v-if="menuKey === 0"
@@ -91,6 +98,7 @@ import SaveButton from '@/components/common/SaveButton.vue';
 import ListButton from '@/components/common/ListButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import Settings from '@/components/Settings.vue';
+import CookingPotIcon from '@/assets/cookingPot.svg';
 import MinusIcon from '@/assets/minus.svg';
 import PlusIcon from '@/assets/plus.svg';
 import { useSettingsStore } from '@/stores/settings';
@@ -210,6 +218,22 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
    &-actions {
       display: flex;
       gap: 4px;
+   }
+
+   &-cookingPot {
+      text-align: center;
+      margin-top: 20px;
+
+      &-caption {
+         font-size: 14px;
+         margin-top: 6px;
+         color: @iconAccentedColor;
+      }
+
+      &-icon {
+         fill: @iconAccentedColor;
+         width: 40px;
+      }
    }
 
    &-day {
