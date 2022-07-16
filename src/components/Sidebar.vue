@@ -1,26 +1,32 @@
 <template>
    <aside class="sidebar">
       <div class="sidebar-header">
-         <icon-button
+         <popup
             v-if="menuType === 'dishes'"
-            :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
-            :disabled="!isAuthenticated"
-            caption="Добавить блюдо"
-            size="26px"
-            @click="toggleDishDialog(true, true)"
+            :text="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои блюда' : ''"
          >
-            <plus-icon />
-         </icon-button>
-         <icon-button
+            <icon-button
+               :disabled="!isAuthenticated"
+               caption="Добавить блюдо"
+               size="26px"
+               @click="toggleDishDialog(true, true)"
+            >
+               <plus-icon />
+            </icon-button>
+         </popup>
+         <popup
             v-else-if="menuType === 'ingredients'"
-            :title="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои ингредиенты' : ''"
-            :disabled="!isAuthenticated"
-            caption="Добавить ингредиент"
-            size="26px"
-            @click="isAddIngredientDialogOpened = true"
+            :text="!isAuthenticated ? 'Авторизуйтесь чтобы добавлять свои ингредиенты' : ''"
          >
-            <plus-icon />
-         </icon-button>
+            <icon-button
+               :disabled="!isAuthenticated"
+               caption="Добавить ингредиент"
+               size="26px"
+               @click="isAddIngredientDialogOpened = true"
+            >
+               <plus-icon />
+            </icon-button>
+         </popup>
       </div>
 
       <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" :key="groupId">
@@ -78,6 +84,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, reactive, ref } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
+import Popup from '@/components/common/Popup.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
 import PlusIcon from '@/assets/plus.svg';
