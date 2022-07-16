@@ -1,18 +1,20 @@
 <template>
-   <icon-button
-      v-once
-      class="print-button"
-      size="22px"
-      :filled="false"
-      title="Распечатать"
-      @click="printAction"
-   >
-      <print-icon />
-   </icon-button>
+   <popup text="Распечатать">
+      <icon-button
+         v-once
+         class="print-button"
+         size="22px"
+         :filled="false"
+         @click="printAction"
+      >
+         <print-icon />
+      </icon-button>
+   </popup>
 </template>
 
 <script lang="ts" setup>
 import IconButton from '@/components/common/IconButton.vue';
+import Popup from '@/components/common/Popup.vue';
 import PrintIcon from '@/assets/print.svg';
 
 const printAction = (): void => window.print();

@@ -2,10 +2,12 @@
    <section class="timeline-container">
       <div class="timeline-header">
          <h1>Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
-         <list-button />
-         <print-button />
-         <save-button />
-         <settings />
+         <div class="timeline-actions">
+            <list-button />
+            <print-button />
+            <save-button />
+            <settings />
+         </div>
       </div>
 
       <div
@@ -203,6 +205,11 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
       h1 {
          margin: 0 12px 0 12px;
       }
+   }
+
+   &-actions {
+      display: flex;
+      gap: 4px;
    }
 
    &-day {

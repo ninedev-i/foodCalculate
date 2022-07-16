@@ -1,20 +1,22 @@
 <template>
-   <icon-button
-      v-if="isAuthenticated && menu?.id"
-      class="save-button"
-      size="22px"
-      :filled="false"
-      title="Сохранить"
-      :disabled="!isDataChanged"
-      @click="saveAction"
-   >
-      <save-icon />
-   </icon-button>
+   <popup :text="!isAuthenticated ? 'Авторизуйтесь чтобы сохранять меню' : 'Сохранить меню'">
+      <icon-button
+         v-if="isAuthenticated && menu?.id"
+         class="save-button"
+         size="22px"
+         :filled="false"
+         :disabled="!isDataChanged"
+         @click="saveAction"
+      >
+         <save-icon />
+      </icon-button>
+   </popup>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import IconButton from '@/components/common/IconButton.vue';
+import Popup from '@/components/common/Popup.vue';
 import SaveIcon from '@/assets/save.svg';
 import { useUserStore } from '@/stores/user';
 import { useFoodStore } from '@/stores/food';
