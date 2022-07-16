@@ -1,7 +1,8 @@
 <template>
    <section class="timeline-container">
       <div class="timeline-header">
-         <h1 @click="userMenuOpened = true">Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
+         <h1>Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
+         <list-button />
          <print-button />
          <save-button />
          <settings />
@@ -77,17 +78,15 @@
    </section>
 
    <sidebar />
-   <Suspense>
-      <user-menu-dialog v-if="userMenuOpened" @close="userMenuOpened = null" />
-   </Suspense>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onBeforeUpdate, Ref, defineAsyncComponent } from 'vue';
+import { computed, ref, onBeforeUpdate, Ref } from 'vue';
 import Sidebar from '@/components/Sidebar.vue';
 import DishItem from '@/components/Dish.vue';
 import PrintButton from '@/components/common/PrintButton.vue';
 import SaveButton from '@/components/common/SaveButton.vue';
+import ListButton from '@/components/common/ListButton.vue';
 import IconButton from '@/components/common/IconButton.vue';
 import Settings from '@/components/Settings.vue';
 import MinusIcon from '@/assets/minus.svg';
@@ -97,12 +96,9 @@ import { useFoodStore } from '@/stores/food';
 import { useUserStore } from '@/stores/user';
 import { MovedDish } from '@/stores/food/types';
 
-const UserMenuDialog = defineAsyncComponent(() => import('@/components/dialogs/UserMenu.vue'));
-
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const userStore = useUserStore();
-const userMenuOpened = ref(false);
 const divs: Ref<{ [key: string]: HTMLElement }> = ref({});
 
 onBeforeUpdate(() => {
@@ -206,9 +202,6 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
 
       h1 {
          margin: 0 12px 0 12px;
-         cursor: pointer;
-         text-decoration: underline;
-         text-decoration-style: dashed;
       }
    }
 
