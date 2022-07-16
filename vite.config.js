@@ -7,6 +7,9 @@ export default {
    build: {
       sourcemap: true,
    },
+   server: {
+      port: 3000
+   },
    resolve: {
       alias: {
          '@': path.resolve(__dirname, './src'),
