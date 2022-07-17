@@ -5,6 +5,11 @@
          <print-button />
       </div>
 
+      <template v-if="!hasDishesInMenu">
+         <p>Здесь пока ничего нет.</p>
+         <p>Добавьте блюда в меню, чтобы подсчитать количество ингредиентов.</p>
+      </template>
+
       <template v-for="(group, i) in summaryGrouped" :key="i">
          <div v-if="group.items.length" class="summary-table-group">
             <div class="summary-table-group-title">{{ group.name }}</div>
@@ -34,6 +39,7 @@ const foodStore = useFoodStore();
 const people = computed(() => settingsStore.people);
 const coefficient = computed(() => settingsStore.coefficient);
 const summaryGrouped = computed(() => foodStore.getSummaryGrouped);
+const hasDishesInMenu = computed(() => foodStore.hasDishesInMenu);
 </script>
 
 <style lang="less">
