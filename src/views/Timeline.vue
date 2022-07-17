@@ -43,7 +43,7 @@
                   @drop="drop($event, dayKey - 1, mealKey)"
                >
                   <div
-                     v-if="dayKey === 1 && mealKey === 1 && !meal.menu.length"
+                     v-if="dayKey === 1 && mealKey === 1 && !hasDishesInMenu"
                      class="timeline-cookingPot"
                   >
                      <cooking-pot-icon class="timeline-cookingPot-icon" />
@@ -118,6 +118,7 @@ onBeforeUpdate(() => {
 const days = computed(() => settingsStore.days);
 const timetable = computed(() => foodStore.timetable);
 const currentMenu = computed(() => userStore.currentMenu);
+const hasDishesInMenu = computed(() => foodStore.hasDishesInMenu);
 
 const addDish = (id: string, dayKey: number, mealKey: number, sortNumber: number): void => {
    const addedDish = { ...foodStore.dishById(+id) };

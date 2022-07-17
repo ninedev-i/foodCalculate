@@ -54,7 +54,7 @@ export const useFoodStore = defineStore('food', {
       ingredientsByGroup: state => (groupId: number) => state.ingredients.filter(item => {
          return item.type === groupId && !state.editedDishIngredients.includes(item.id as number);
       }),
-      getSummaryIngredients: (state) => {
+      getSummaryIngredients: state => {
          const output = new Map();
          state.timetable
             .map(item => item.meals).flat()
@@ -77,7 +77,7 @@ export const useFoodStore = defineStore('food', {
 
          return output;
       },
-      getSummaryGrouped: (state) => {
+      getSummaryGrouped: state => {
          const output: Group[] = JSON.parse(JSON.stringify(state.ingredientGroups));
          output.map((group) => {
             group.items = [];
@@ -90,6 +90,7 @@ export const useFoodStore = defineStore('food', {
          });
          return output;
       },
+      hasDishesInMenu: state => !!state.timetable.map(day => day.meals).flat().map(meal => meal.menu).flat().length
    },
    actions: {
       setTimetableFromStorage(dataFromBase?: DayMenu[]) {
