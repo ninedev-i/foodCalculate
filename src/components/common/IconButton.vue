@@ -1,5 +1,5 @@
 <template>
-   <button :class="`iconButton ${disabled ? 'iconButton-disabled' : ''}`" :disabled="disabled">
+   <button class="iconButton" :disabled="disabled">
       <span
          :class="`${filled ? 'iconButton-icon-filled' : 'iconButton-icon-empty'}
          ${rounded ? 'iconButton-icon-rounded' : ''}`"
@@ -53,7 +53,7 @@ const boxShadow = computed(() => props.disabled ? 'none' : '0 2px 8px 0 #0404041
       display: none;
    }
 
-   &-disabled {
+   &:disabled {
       cursor: default;
 
       .iconButton-caption {

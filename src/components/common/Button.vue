@@ -1,7 +1,7 @@
 <template>
    <button
       :disabled="disabled"
-      :class="`button button-${appearance} ${disabled ? 'button-disabled' : ''}`"
+      :class="`button button-${appearance}`"
       v-bind="$attrs"
       :style="style"
       :type="type"
@@ -34,16 +34,11 @@ const props = defineProps({
       type: String,
       default: 'auto'
    },
-   fontSize: {
-      type: String,
-      default: '12px'
-   },
 });
 
 const style = ref({
    width: props.width,
    margin: props.margin,
-   fontSize: props.fontSize,
 });
 </script>
 
@@ -53,6 +48,7 @@ const style = ref({
 .button {
    padding: 6px 12px;
    font-weight: bold;
+   font-size: 12px;
    border-radius: 4px;
    font-family: 'Open Sans', sans-serif;
 
@@ -62,7 +58,7 @@ const style = ref({
       border: 1px solid #42eab2;
    }
 
-   &:not(.button-disabled) {
+   &:not(:disabled) {
       cursor: pointer;
    }
 
@@ -70,7 +66,7 @@ const style = ref({
       border: 1px solid @accentColor;
       background: @accentColor;
 
-      &:not(.button-disabled):hover {
+      &:not(:disabled):hover {
          background: @accentColorHovered;
       }
    }
@@ -79,11 +75,11 @@ const style = ref({
       border: 1px solid @accentColor;
       background: none;
 
-      &.button-disabled {
+      &:disabled {
          border: 1px solid @borderColor;
       }
 
-      &:not(.button-disabled):hover {
+      &:not(:disabled):hover {
          background: @accentColorLight;
       }
    }
