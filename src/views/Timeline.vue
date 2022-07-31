@@ -1,5 +1,5 @@
 <template>
-   <section class="timeline-container">
+   <section>
       <div class="timeline-header">
          <h1>Меню {{ currentMenu ? `«${currentMenu.title}»` : '' }}</h1>
          <div class="timeline-actions">
@@ -210,6 +210,7 @@ const sortDish = (ev: DragEvent, sortNumber: number): void => {
 .timeline {
    &-header {
       display: flex;
+      align-items: center;
 
       h1 {
          margin: 0 12px 0 12px;

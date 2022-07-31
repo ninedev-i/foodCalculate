@@ -45,6 +45,8 @@ const peopleCaption = computed((): string => {
    padding: 7px 12px;
    gap: 10px;
    cursor: pointer;
+   height: 34px;
+   box-sizing: border-box;
 
    @media (max-width: @mobileResolution)  {
       display: none;

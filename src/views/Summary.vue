@@ -50,6 +50,7 @@ const hasDishesInMenu = computed(() => foodStore.hasDishesInMenu);
 
    &-header {
       display: flex;
+      align-items: center;
 
       h1 {
          margin: 0 12px 0 0;
