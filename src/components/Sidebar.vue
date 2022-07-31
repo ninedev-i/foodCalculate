@@ -135,10 +135,6 @@ const toggleDishDialog = (isOpened: boolean, isEdited: boolean = false, dishId: 
 <style scoped lang="less">
 @import "../assets/constants.less";
 
-h3 {
-   margin: 12px;
-   text-align: center;
-}
 .sidebar {
    display: flex;
    flex-direction: column;
@@ -172,7 +168,7 @@ h3 {
 
    &-header {
       display: flex;
-      margin: 12px 6px;
+      margin: 10px 6px;
       align-self: start;
    }
 
