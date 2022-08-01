@@ -62,8 +62,6 @@
             </div>
          </div>
       </form>
-
-      <user-menu v-if="userEmail" />
    </section>
 </template>
 
@@ -72,7 +70,6 @@ import { computed, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import CommonInput from '@/components/common/Input.vue';
 import CommonButton from '@/components/common/Button.vue';
-import UserMenu from '@/components/dialogs/UserMenu.vue';
 
 const userStore = useUserStore();
 const userEmail = computed(() => userStore.email);

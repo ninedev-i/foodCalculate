@@ -17,7 +17,7 @@ import {
    UpdatedMeal
 } from './types';
 
-const getMealsFormat = (): Dish[] => [
+export const getMealsFormat = (): Dish[] => [
    { name: 'Завтрак', menu: [] }, { name: 'Обед', menu: [] }, { name: 'Ужин', menu: [] }
 ];
 
@@ -241,6 +241,9 @@ export const useFoodStore = defineStore('food', {
       },
       setEditedDishIngredients(ids: number[]) {
          this.editedDishIngredients = ids;
+      },
+      removeAllDishes(): void {
+         this.timetable = [{ meals: getMealsFormat() }];
       },
 
       _updateDishIds(dayKey: number, mealKey: number) {

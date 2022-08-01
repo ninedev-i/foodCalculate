@@ -69,5 +69,10 @@ export const useSettingsStore = defineStore('settings', {
          saveToLocalStorage(this.days, this.people, this.coefficient);
          foodStore.removeDayFromTimetable(dayKey);
       },
+      removeAllSettings(): void {
+         this.coefficient = 1;
+         this.people = 1;
+         this.days = 1;
+      },
    }
 });

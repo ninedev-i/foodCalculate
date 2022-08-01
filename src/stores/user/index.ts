@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import api, { setToken, destroyToken, isAuthenticated } from '@/utils';
 import { useSettingsStore } from '@/stores/settings';
-import { useFoodStore } from '@/stores/food';
+import { getMealsFormat, useFoodStore } from '@/stores/food';
 import { LoginData, MenuData, RegisterData, SavedMenu, UserState } from './types';
 
 export const useUserStore = defineStore('user', {
@@ -33,6 +33,11 @@ export const useUserStore = defineStore('user', {
                this.getSiteData();
                destroyToken();
             });
+         const foodStore = useFoodStore();
+         const settingsStore = useSettingsStore();
+         foodStore.removeAllDishes();
+         settingsStore.removeAllSettings();
+         localStorage.clear();
       },
       async getUserInfo(): Promise<void> {
          return new Promise((resolve) => {
@@ -56,6 +61,20 @@ export const useUserStore = defineStore('user', {
          return api.get('menu')
             .then(({ data }: { data: SavedMenu[] }) => {
                this.menus = data;
+
+               // Создадим у нового пользователя Меню
+               if (this.email && !data.length) {
+                  const data = {
+                     title: 'Поход',
+                     settings: localStorage.getItem('settings')
+                        ? JSON.stringify(localStorage.getItem('settings'))
+                        : JSON.stringify({ people: 1, days: 1, coefficient: 1 }),
+                     content: localStorage.getItem('timetable')
+                        ? JSON.stringify(localStorage.getItem('timetable'))
+                        : JSON.stringify([{ meals: getMealsFormat() }]),
+                  };
+                  this.addMenu(data);
+               }
             });
       },
       async addMenu(menuData: MenuData) {
