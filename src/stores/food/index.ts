@@ -158,8 +158,8 @@ export const useFoodStore = defineStore('food', {
             }
          });
       },
-      async saveDish(data: SaveDish) {
-         this.dishes = await api.post('dish', data).then(({ data }) => data);
+      async saveDish({ title, type, ingredients }: SaveDish) {
+         this.dishes = await api.post('dish', { title, type, ingredients: JSON.stringify(ingredients) }).then(({ data }) => data);
          this.setIsTimetableChanged(true);
          saveToLocalStorage(this.timetable);
       },

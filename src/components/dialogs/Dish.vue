@@ -57,7 +57,7 @@
                   </span>
                </div>
             </div>
-            <div v-if="!ingredients.length" class="dishDialog-ingredient-tip">Перетяните сюда ингредиенты</div>
+            <div v-if="!ingredients.length" :class="`dishDialog-ingredient-tip ${isEmptyIngredients ? 'dishDialog-ingredient-tip-error' : ''}`">Перетяните сюда ингредиенты</div>
          </form>
       </div>
    </common-dialog>
@@ -87,6 +87,7 @@ const props = defineProps({
 const foodStore = useFoodStore();
 const settingsStore = useSettingsStore();
 const isOpened = ref(false);
+const isEmptyIngredients = ref(false);
 const ingredientById = computed(() => foodStore.ingredientById);
 const dishGroups = computed(() => foodStore.dishGroups);
 const ingredients = ref(props.dish ? JSON.parse(JSON.stringify(props.dish.ingredients)) : []);
@@ -111,18 +112,28 @@ const deleteIngredient = (id: number): void => {
 const saveDish = (): boolean => {
    form.value.reportValidity();
    const filteredIngredients = ingredients.value.filter((item: Ingredient) => item.quantity);
-   if (!filteredIngredients.length) {
+   if (props.dish?.title && !filteredIngredients.length) {
       foodStore.deleteDish({
          computedId: props.computedId,
          dayKey: props.dayKey,
          mealKey: props.mealKey
       });
-   } else {
+   } else if (props.dish) {
       foodStore.updateDish({
          dayKey: props.dayKey,
          mealKey: props.mealKey,
          computedId: props.computedId,
-         dishName: dishName.value,
+         dishName: props.dish.title,
+         ingredients: filteredIngredients
+      });
+   } else {
+      if (!filteredIngredients.length) {
+         isEmptyIngredients.value = true;
+         return false;
+      }
+      foodStore.saveDish({
+         title: dishName.value,
+         type: dishType.value,
          ingredients: filteredIngredients
       });
    }
@@ -159,6 +170,10 @@ onMounted(() => {
       &-tip {
          color: #d6d6d6;
          font-size: 14px;
+
+         &-error {
+            color: red;
+         }
       }
 
       &-delete {
