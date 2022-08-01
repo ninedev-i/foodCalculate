@@ -72,6 +72,7 @@ export const useUserStore = defineStore('user', {
                      content: localStorage.getItem('timetable')
                         ? JSON.stringify(localStorage.getItem('timetable'))
                         : JSON.stringify([{ meals: getMealsFormat() }]),
+                     is_current: true
                   };
                   this.addMenu(data);
                }
