@@ -122,7 +122,7 @@ const saveDish = (): boolean => {
          dayKey: props.dayKey,
          mealKey: props.mealKey,
          computedId: props.computedId,
-         dishName: props.dish.title,
+         dishName: dishName.value,
          ingredients: filteredIngredients
       });
    }
