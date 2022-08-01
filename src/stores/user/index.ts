@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', {
 
                // Создадим у нового пользователя Меню
                if (this.email && !data.length) {
-                  const data = {
+                  const defaultMenuData = {
                      title: 'Поход',
                      settings: localStorage.getItem('settings')
                         ? JSON.stringify(localStorage.getItem('settings'))
@@ -74,7 +74,21 @@ export const useUserStore = defineStore('user', {
                         : JSON.stringify([{ meals: getMealsFormat() }]),
                      is_current: true
                   };
-                  this.addMenu(data);
+                  this.addMenu(defaultMenuData);
+               }
+
+               if (this.email && !localStorage.getItem('settings') || !localStorage.getItem('timetable')) {
+                  setTimeout(() => {
+                     const settings = useSettingsStore();
+                     const foodStore = useFoodStore();
+                     const currentMenu = data.find(item => item.is_current);
+                     settings.changePeople(currentMenu.settings.people);
+                     settings.changeDays(currentMenu.settings.days);
+                     // FIXME коэффициент не сохраняется?
+                     settings.changeCoefficient(currentMenu.settings?.coefficient || 1);
+                     foodStore.setTimetableFromStorage(currentMenu.content);
+                     localStorage.setItem('timetable', JSON.stringify(currentMenu.content));
+                  }, 0);
                }
             });
       },

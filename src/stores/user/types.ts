@@ -15,6 +15,7 @@ export interface SavedMenu {
    title: string;
    updated_at: string;
    settings: {
+      coefficient: number;
       days: number;
       people: number;
    };
