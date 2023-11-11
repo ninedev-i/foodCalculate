@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^0.5.4",
-    "axios": "^0.26.1",
+    "axios": "^1.6.0",
     "core-js": "^3.20.1",
     "pinia": "^2.0.14",
     "vue": "^3.2.33",
