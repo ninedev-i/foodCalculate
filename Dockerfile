@@ -1,4 +1,4 @@
-FROM node:16.13.1-alpine as builder
+FROM node:20.10.0-alpine as builder
 LABEL stage=builder
 RUN mkdir /app && chown -R node:node /app
 WORKDIR /app
