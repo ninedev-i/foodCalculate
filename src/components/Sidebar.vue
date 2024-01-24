@@ -29,18 +29,18 @@
          </popup>
       </div>
 
-      <div v-for="(group, groupId) in (menuType === 'dishes' ? dishGroups : ingredientGroups)" :key="groupId">
+      <div v-for="[groupName, group] in (menuType === 'dishes' ? dishGroups : ingredientGroups)" :key="groupName">
          <div
             class="sidebar-category"
-            @click="toggleGroup(groupId)"
+            @click="toggleGroup(groupName)"
          >
             <expand-arrow-icon :class="`sidebar-category-spoiler ${!group.expanded ? 'sidebar-category-spoiler-closed' : ''}`" />
-            <span class="sidebar-category-title">{{ group.name }}</span>
+            <span class="sidebar-category-title">{{ groupName }}</span>
          </div>
 
          <div v-if="group.expanded">
             <div
-               v-for="(item, key) in (menuType === 'dishes' ? dishesByGroup(groupId) : ingredientsByGroup(groupId))"
+               v-for="(item, key) in group.items"
                :key="key"
                class="item-wrapper"
             >
@@ -88,7 +88,6 @@ import Popup from '@/components/common/Popup.vue';
 import ExpandArrowIcon from '@/assets/expandArrow.svg';
 import CrossIcon from '@/assets/cross.svg';
 import PlusIcon from '@/assets/plus.svg';
-import { Group } from '@/stores/food/types';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
@@ -101,11 +100,9 @@ const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 const menuType = computed(() => settingsStore.menuType);
 const isAuthenticated = computed(() => !!userStore.email);
-const ingredientsByGroup = computed(() => foodStore.ingredientsByGroup);
-const dishesByGroup = computed(() => foodStore.dishesByGroup);
-const dishGroups = reactive(foodStore.dishGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
-const ingredientGroups = reactive(foodStore.ingredientGroups.map((item: Group) => ({ ...item, ...{ expanded: true } })));
-const deleteItemNumber = ref(null);
+const dishGroups = reactive(foodStore.dishMenusGrouped);
+const ingredientGroups = reactive(foodStore.ingredientsGrouped);
+const deleteItemNumber = ref<number>(null);
 const dishDialogSettings = ref({ isOpened: false, isEdited: false, dish: null });
 const isAddIngredientDialogOpened = ref(false);
 
@@ -115,12 +112,9 @@ const dragStart = (ev: DragEvent): void => {
    return ev.dataTransfer.setData(type, target.getAttribute('id'));
 };
 
-const toggleGroup = (groupId: number): void => {
-   (menuType.value === 'dishes' ? dishGroups : ingredientGroups).map((group: Group) => {
-      if (group.id === groupId) {
-         group.expanded = !group.expanded;
-      }
-   });
+const toggleGroup = (groupName: string): void => {
+   const group = menuType.value === 'dishes' ? dishGroups : ingredientGroups;
+   group.get(groupName).toggle();
 };
 
 const cutDishName = (caption: string): string => caption.replace(/(каша|суп)/i, '').trim();

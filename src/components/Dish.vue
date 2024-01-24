@@ -9,7 +9,7 @@
 
       <div v-for="({id, quantity}, key) in dish.ingredients" :key="key" class="dish-ingredient">
          <div class="dish-ingredient-caption">
-            {{ ingredientById(id).title }}, {{ Math.round(quantity * people * coefficient) }} {{ ingredientById(id).count_caption }}
+            {{ ingredientById(+id).title }}, {{ Math.round(quantity * people * coefficient) }} {{ ingredientById(+id).count_caption }}
          </div>
       </div>
 
@@ -48,18 +48,10 @@ import CrossIcon from '@/assets/cross.svg';
 import EditIcon from '@/assets/edit.svg';
 import { useSettingsStore } from '@/stores/settings';
 import { useFoodStore } from '@/stores/food';
+import { DishMenu } from '@/stores/food/types';
 const DishDialog = defineAsyncComponent(() => import('@/components/dialogs/Dish.vue'));
 
-const props = defineProps({
-   dish: {
-      type: Object,
-      required: true,
-   },
-   title: String,
-   dayKey: Number,
-   mealKey: Number,
-});
-
+const props = defineProps<{ dish: DishMenu; dayKey: number; mealKey: number}>();
 const settingsStore = useSettingsStore();
 const foodStore = useFoodStore();
 const coefficient = computed(() => settingsStore.coefficient);

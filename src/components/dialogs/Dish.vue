@@ -13,7 +13,7 @@
          <template v-if="!isEdited">
             <div v-for="({id, quantity}, key) in ingredients" :key="key" class="dishDialog-ingredient">
                <div class="dishDialog-ingredient-caption">
-                  {{ ingredientById(id).title }}, {{ quantity }} {{ ingredientById(id).count_caption }}
+                  {{ ingredientById(+id).title }}, {{ quantity }} {{ ingredientById(+id).count_caption }}
                </div>
             </div>
          </template>
@@ -41,7 +41,7 @@
             />
             <div v-for="({id, quantity}, key) in ingredients" :key="key" class="dishDialog-ingredient">
                <div v-if="isEdited" class="dishDialog-ingredients">
-                  <span>{{ ingredientById(id).title }}</span>
+                  <span>{{ ingredientById(+id).title }}</span>
                   <common-input
                      border-bottom
                      type="number"
@@ -51,8 +51,8 @@
                      :value="quantity"
                      @changeValue="(value) => handleQuantityChange(id, value)"
                   />
-                  <span class="dishDialog-ingredient-caption">{{ ingredientById(id).count_caption }}/чел.</span>
-                  <span class="dishDialog-ingredient-delete" @click="deleteIngredient(id)">
+                  <span class="dishDialog-ingredient-caption">{{ ingredientById(+id).count_caption }}/чел.</span>
+                  <span class="dishDialog-ingredient-delete" @click="deleteIngredient(+id)">
                      <cross-icon />
                   </span>
                </div>
@@ -71,19 +71,9 @@ import CommonInput from '@/components/common/Input.vue';
 import CommonSelect from '@/components/common/Select.vue';
 import { useFoodStore } from '@/stores/food';
 import { useSettingsStore } from '@/stores/settings';
-import { Ingredient } from '@/stores/food/types';
+import { DishMenu, Ingredient } from '@/stores/food/types';
 
-const props = defineProps({
-   computedId: String,
-   dayKey: Number,
-   mealKey: Number,
-   dish: Object,
-   isEdited: {
-      type: Boolean,
-      default: false
-   }
-});
-
+const props = defineProps<{ computedId?: string; dayKey?: number; mealKey?: number; dish?: DishMenu; isEdited: boolean }>();
 const foodStore = useFoodStore();
 const settingsStore = useSettingsStore();
 const isOpened = ref(false);
@@ -104,7 +94,7 @@ const handleQuantityChange = (ingredientId: number, value: string): void => {
 };
 
 const deleteIngredient = (id: number): void => {
-   ingredients.value = ingredients.value.filter((item: Ingredient) => item.id !== String(id));
+   ingredients.value = ingredients.value.filter((item: Ingredient) => +item.id !== +id);
    const existedIngredients = foodStore.editedDishIngredients.filter(ingredient => ingredient === id);
    foodStore.setEditedDishIngredients(existedIngredients);
 };

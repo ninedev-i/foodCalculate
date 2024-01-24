@@ -1,6 +1,6 @@
 <template>
    <div class="layout">
-      <div class="layout-page">
+      <div v-if="!isLoading" class="layout-page">
          <header class="layout-header">
             <slot name="header"></slot>
          </header>

@@ -12,6 +12,12 @@ export interface Group {
    items?: GroupItem[];
 }
 
+export interface GroupedItems {
+   expanded?: boolean;
+   toggle: () => void;
+   items?: DishMenu[] | Ingredient[];
+}
+
 export interface DishMenu {
    id: number;
    computed_id: string;
@@ -38,7 +44,7 @@ export interface DayMenu {
 }
 
 export interface Ingredient {
-   id: string | number;
+   id: number;
    title: string;
    type: number;
    quantity?: number;
@@ -51,8 +57,10 @@ export type SaveIngredient = Pick<Ingredient, 'title' | 'type' | 'count_caption'
 
 export interface FoodState {
    timetable: DayMenu[];
-   dishes: DishMenu[];
-   ingredients: Ingredient[];
+   dishes: Map<number, DishMenu>;
+   ingredients: Map<number, Ingredient>;
+   ingredientsGrouped: Map<string, GroupedItems>;
+   dishMenusGrouped: Map<string, GroupedItems>;
    isTimetableChanged: boolean;
    ingredientGroups: Group[];
    dishGroups: Group[];

@@ -53,9 +53,9 @@ export const useUserStore = defineStore('user', {
       },
       async getSiteData() {
          const foodStore = useFoodStore();
-         foodStore.getIngredients();
-         foodStore.getDishes();
-         this.getMenus();
+         await foodStore.getIngredients();
+         await foodStore.getDishes();
+         await this.getMenus();
       },
       async getMenus() {
          return api.get('menu')
@@ -82,10 +82,10 @@ export const useUserStore = defineStore('user', {
                      const settings = useSettingsStore();
                      const foodStore = useFoodStore();
                      const currentMenu = data.find(item => item.is_current);
-                     settings.changePeople(currentMenu.settings.people);
-                     settings.changeDays(currentMenu.settings.days);
+                     settings.changePeople(currentMenu?.settings?.people || 1);
+                     settings.changeDays(currentMenu?.settings?.days || 1);
                      // FIXME коэффициент не сохраняется?
-                     settings.changeCoefficient(currentMenu.settings?.coefficient || 1);
+                     settings.changeCoefficient(currentMenu?.settings?.coefficient || 1);
                      foodStore.setTimetableFromStorage(currentMenu.content);
                      localStorage.setItem('timetable', JSON.stringify(currentMenu.content));
                   }, 0);
