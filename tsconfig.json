@@ -4,6 +4,7 @@
     "module": "ESNext",
     "sourceMap": true,
     "strict": true,
+    "skipLibCheck": true,
     "strictNullChecks": false,
     "noUnusedLocals": false,
     "jsx": "preserve",
