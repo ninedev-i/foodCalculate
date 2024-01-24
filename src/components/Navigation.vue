@@ -23,13 +23,19 @@ import { useUserStore } from '@/stores/user';
 const userStore = useUserStore();
 const logout = () => userStore.logout();
 const userEmail = computed(() => userStore.email);
+const registerUrl = new URL(`${import.meta.env.VITE_OVERTOUR_URL}/auth/register`);
+registerUrl.searchParams.set('redirect', window.location.origin);
+
+const loginUrl = new URL(`${import.meta.env.VITE_OVERTOUR_URL}/auth/login`);
+loginUrl.searchParams.set('redirect', window.location.origin);
+
 const menuItems = computed(() => userEmail.value
    ? [
       { caption: 'Выйти', url: '', action: logout },
    ]
    : [
-      { caption: 'Зарегистрироваться', url: `${import.meta.env.VITE_OVERTOUR_URL}/auth/register?redirect=${window.location.origin}` },
-      { caption: 'Войти', url: `${import.meta.env.VITE_OVERTOUR_URL}/auth/login?redirect=${window.location.origin}` },
+      { caption: 'Зарегистрироваться', url: registerUrl },
+      { caption: 'Войти', url: loginUrl },
    ]
 );
 </script>
